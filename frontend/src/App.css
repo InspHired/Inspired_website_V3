@@ -1,0 +1,16 @@
+.App {
+    min-height: 100vh;
+    background: #faf6f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #faf6f0;
+    color: #1a1e24;
+}
