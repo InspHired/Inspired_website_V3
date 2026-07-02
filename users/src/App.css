@@ -1,0 +1,14 @@
+:root {
+  --bg: #faf6f0;
+  --text-dark: #000000;
+  --teal: #509b9e;
+  --orange: #d96b43;
+  --yellow: #e4af51;
+  --navy: #1f3540;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
