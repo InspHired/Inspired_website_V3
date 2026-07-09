@@ -3,70 +3,112 @@ import { useAuth } from '../contexts/AuthContext';
 import { adminApi } from '../services/api';
 import './AdminDashboard.css';
 
-// Professional SVG Icons
+// Premium SVG Icons System (Unified 2px stroke, crisp design)
 const Icons = {
-    Dashboard: () => (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-    ),
     Home: () => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
         </svg>
     ),
     About: () => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
-            <path d="M12 16v-4"/>
-            <path d="M12 8h.01"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
         </svg>
     ),
     Services: () => (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+        </svg>
+    ),
+    Career: () => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
             <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
         </svg>
     ),
-    Career: () => (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 6V2M8 18l4 4 4-4M8 6l4-4 4 4"/>
-            <rect x="4" y="10" width="16" height="12" rx="2"/>
-        </svg>
-    ),
     Contact: () => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
         </svg>
     ),
     Logout: () => (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
             <polyline points="16 17 21 12 16 7"/>
             <line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
     ),
     Save: () => (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
             <polyline points="17 21 17 13 7 13 7 21"/>
             <polyline points="7 3 7 8 15 8"/>
         </svg>
     ),
     User: () => (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
         </svg>
     ),
-    ChevronRight: () => (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6"/>
+    
+    /* Clean Content-Type Indicators (Slightly thicker 2.5px stroke for micro-clarity) */
+    TextSnippet: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+    ),
+    Heading: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 4v16M18 4v16M6 12h12"/>
+        </svg>
+    ),
+    Phone: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+    ),
+    MapPin: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+        </svg>
+    ),
+    Image: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+        </svg>
+    ),
+    Target: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
         </svg>
     )
+};
+
+// Helper function to dynamically pull context-relevant field icons
+const getSectionIcon = (sectionName) => {
+    const name = sectionName.toLowerCase();
+    if (name.includes('title') || name.includes('badge')) return <Icons.Heading />;
+    if (name.includes('email') || name.includes('description') || name.includes('values') || name.includes('content')) return <Icons.TextSnippet />;
+    if (name.includes('phone')) return <Icons.Phone />;
+    if (name.includes('address') || name.includes('location')) return <Icons.MapPin />;
+    if (name.includes('image') || name.includes('logo') || name.includes('banner')) return <Icons.Image />;
+    if (name.includes('mission') || name.includes('vision') || name.includes('target')) return <Icons.Target />;
+    return <Icons.TextSnippet />;
 };
 
 const AdminDashboard = () => {
@@ -112,10 +154,7 @@ const AdminDashboard = () => {
     };
 
     const handleContentChange = (id, value) => {
-        setEditingContent(prev => ({
-            ...prev,
-            [id]: value
-        }));
+        setEditingContent(prev => ({ ...prev, [id]: value }));
     };
 
     const showMessage = (msg, type = 'success') => {
@@ -129,15 +168,11 @@ const AdminDashboard = () => {
 
     const handleSaveAll = async () => {
         setSaving(true);
-        
         try {
             const updates = [];
             content.forEach(item => {
                 if (editingContent[item.id] !== item.value) {
-                    updates.push({
-                        id: item.id,
-                        value: editingContent[item.id]
-                    });
+                    updates.push({ id: item.id, value: editingContent[item.id] });
                 }
             });
 
@@ -161,15 +196,9 @@ const AdminDashboard = () => {
         }
     };
 
-    const getPageContent = () => {
-        return content.filter(item => item.page === selectedPage);
-    };
-
-    const pageContent = getPageContent();
-
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
+    const pageContent = content.filter(item => item.page === selectedPage);
+    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+    const activePageConfig = pages.find(p => p.id === selectedPage);
 
     if (loading) {
         return (
@@ -233,40 +262,29 @@ const AdminDashboard = () => {
                 <header className="dashboard-header">
                     <div className="header-left">
                         <span className="page-icon">
-                            {pages.find(p => p.id === selectedPage)?.icon && 
-                                React.createElement(pages.find(p => p.id === selectedPage).icon)}
+                            {activePageConfig && activePageConfig.icon && (
+                                <activePageConfig.icon />
+                            )}
                         </span>
-                        <h1>
-                            {pages.find(p => p.id === selectedPage)?.label || selectedPage}
-                        </h1>
-                        <span className="content-count">
-                            {pageContent.length} sections
-                        </span>
+                        <h1>{activePageConfig?.label || selectedPage}</h1>
+                        <span className="content-count">{pageContent.length} sections</span>
                     </div>
                     <div className="header-actions">
-                        <button 
-                            onClick={handleSaveAll} 
-                            className="save-btn"
-                            disabled={saving}
-                        >
+                        <button onClick={handleSaveAll} className="save-btn" disabled={saving}>
                             <span className="save-icon"><Icons.Save /></span>
                             {saving ? 'Saving...' : 'Save All Changes'}
                         </button>
                     </div>
                 </header>
                 
-                {message && (
-                    <div className={`message-banner ${messageType}`}>
-                        {message}
-                    </div>
-                )}
+                {message && <div className={`message-banner ${messageType}`}>{message}</div>}
                 
                 <div className="dashboard-content">
                     {pageContent.length === 0 ? (
                         <div className="empty-state">
                             <span className="empty-icon">📝</span>
                             <h3>No Content Found</h3>
-                            <p>This page doesn't have any content yet. Add some content in the database.</p>
+                            <p>This page doesn't have any content yet.</p>
                         </div>
                     ) : (
                         <div className="content-editor">
@@ -274,18 +292,7 @@ const AdminDashboard = () => {
                                 <div key={item.id} className="editor-item">
                                     <label className="editor-label">
                                         <span className="label-icon">
-                                            {item.section.includes('title') ? '📌' :
-                                             item.section.includes('description') ? '📝' :
-                                             item.section.includes('email') ? '📧' :
-                                             item.section.includes('phone') ? '📞' :
-                                             item.section.includes('address') ? '📍' :
-                                             item.section.includes('image') ? '🖼️' :
-                                             item.section.includes('badge') ? '🏷️' :
-                                             item.section.includes('mission') ? '🎯' :
-                                             item.section.includes('vision') ? '👁️' :
-                                             item.section.includes('values') ? '💎' :
-                                             item.section.includes('service') ? '⚡' :
-                                             '✏️'}
+                                            {getSectionIcon(item.section)}
                                         </span>
                                         {item.section.replace(/-/g, ' ').toUpperCase()}
                                     </label>
