@@ -28,13 +28,15 @@ const s = {
   secSub: { fontSize: 16, lineHeight: 1.6, color: C.slateLight, margin: 0 },
 };
 
-const ceo = {
-  name: "Landry Mutombo",
-  role: "Chief Executive",
-  img: "../assets/insphiredTeam/Mr L.png",
+// Default center content when no ring member is selected — generic, no individual photo.
+const defaultCenter = {
+  name: "InspHired Team",
+  role: "The team ready to assist you on your journey",
+  img: null,
 };
 
 const ringTeam = [
+  { name: "Landry Mutombo", role: "Chief Executive", img: "../assets/insphiredTeam/Mr L.png" },
   { name: "Norma Banda", role: "Managing Partner", img: "../assets/insphiredTeam/Norma.png" },
   { name: "Rochelle Titus", role: "Managing Partner", img: "../assets/insphiredTeam/Rochelle.png" },
   { name: "Joyce Muya", role: "Managing Partner", img: "../assets/insphiredTeam/Joyce.png" },
@@ -68,7 +70,7 @@ function TeamsPage() {
   }, []);
 
   const active = ringTeam.find((m) => m.name === activeMember);
-  const centerContent = active || ceo;
+  const centerContent = active || defaultCenter;
 
   return (
     <section style={{ ...s.section, background: C.white }}>
@@ -134,16 +136,24 @@ function TeamsPage() {
 
           <div className="team-center">
             <span className="team-center-avatar" style={{ borderColor: C.teal }}>
-              <img
-                src={centerContent.img}
-                alt={centerContent.name}
-                className="team-img"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  e.target.nextSibling.style.display = "flex";
+              {centerContent.img ? (
+                <img
+                  src={centerContent.img}
+                  alt={centerContent.name}
+                  className="team-img"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.nextSibling.style.display = "flex";
+                  }}
+                />
+              ) : null}
+              <span
+                className="team-fallback"
+                style={{
+                  background: `${C.teal}22`,
+                  display: centerContent.img ? "none" : "flex",
                 }}
-              />
-              <span className="team-fallback" style={{ background: `${C.teal}22` }}>
+              >
                 <i className="fas fa-user-tie" style={{ color: C.teal, fontSize: "2rem" }} aria-hidden="true"></i>
               </span>
             </span>

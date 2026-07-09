@@ -111,27 +111,27 @@ function About() {
   return (
     <section id="about" className="container">
       <div className="about-grid">
-        <div>
-          <h2 className="section-title">Where African Talent Meets Opportunity</h2>
+        <div className="about-text-col">
+          <span className="about-eyebrow">Who we are</span>
+          <h2 className="section-title">Connecting African talent to real opportunity</h2>
 
           <p className="section-text">
-            Founded in 2015, InspHired set out with a clear mission - to bridge
-            the gap between candidates and clients through innovative technology
-            and dedicated talent specialists. What started as a focused
-            recruitment firm has steadily grown into a full talent ecosystem
-            serving employers and job seekers across the continent.
+            InspHired started in 2015 with a simple goal: make hiring feel human
+            again. Not another faceless job board, not another CV black hole —
+            an actual team of specialists who take the time to understand both
+            the candidate and the company on the other side.
           </p>
 
           <p className="section-text section-text-spaced">
-            Today, InspHired operates a multi-platform digital infrastructure
-            engineered to simplify hiring. We are home to a team of passionate
-            professionals who believe the right placement changes lives -
-            creating long-term value for candidates, growing enterprises, and
-            communities across Africa.
+            That focus grew into something bigger — a full ecosystem of tools
+            and people working together across the continent. But the mission
+            hasn't changed: the right placement can change a life, grow a
+            business, and strengthen a community. That's still what drives
+            everything we build.
           </p>
 
           <div className="quote-block">
-            We don't just fill jobs - we build careers, relationships, and futures.
+            We don't just fill jobs — we build careers, relationships, and futures.
           </div>
         </div>
 

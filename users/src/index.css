@@ -334,7 +334,20 @@ section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
-  align-items: center;
+  align-items: start; /* was 'center' — now both columns start at the same top edge */
+}
+.about-text-col {
+  padding-top: 8px; /* small nudge so the heading roughly lines up with the circle's top */
+}
+
+.about-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 12px;
 }
 
 .section-text {

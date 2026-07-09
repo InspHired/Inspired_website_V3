@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Hero from "../pages/Hero";
-import About from "../pages/About";
+import Info from "./info.jsx";
 import MissionVision from "../pages/MissionVision";
 import Ecosystem from "../pages/Ecosystem";
 import Values from "../pages/Values";
 import Team from "../pages/TeamPage";
+import Testimonials from "../pages/Testimonials.jsx"
+
 import Footer from "../components/Footer";
 
 function HomePage() {
@@ -24,11 +26,10 @@ function HomePage() {
   return (
     <main>
       <Hero />
-      <About />
-      <MissionVision />
+      <Info />
       <Ecosystem />
-      <Values />
       <Team />
+      <Testimonials />
       <Footer />
     </main>
   );
