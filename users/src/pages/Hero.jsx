@@ -22,8 +22,22 @@ function Hero() {
           </p>
 
           <div className="cta-group">
-            <button className="btn-primary">Find Talent</button>
-            <button className="btn-secondary">Available Jobs</button>
+            <a
+              href="https://app.insphired.jobs/jobs?standalone=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Find Talent
+            </a>
+            <a
+              href="https://connect.insphired.jobs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+            >
+              Available Jobs
+            </a>
           </div>
         </div>
       </div>
