@@ -1,3 +1,4 @@
+// frontend/src/services/api.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api';
@@ -32,8 +33,21 @@ api.interceptors.response.use(
 
 // Public API methods
 export const publicApi = {
-    getContent: (page) => api.get(`/public/content/${page}`),
-    getAllContent: () => api.get('/public/content')
+    getPageContent: (page) => {
+        console.log(`📄 Fetching ${page} content...`);
+        return api.get(`/public/${page}`);
+    },
+    getAllPages: () => {
+        console.log('📄 Fetching all pages...');
+        return Promise.all([
+            publicApi.getPageContent('home'),
+            publicApi.getPageContent('about'),
+            publicApi.getPageContent('contact'),
+            publicApi.getPageContent('career-lab'),
+            publicApi.getPageContent('employers'),
+            publicApi.getPageContent('services')
+        ]);
+    }
 };
 
 // Admin API methods
@@ -50,9 +64,14 @@ export const adminApi = {
         console.log('📥 Fetching admin content...');
         return api.get('/admin/content');
     },
-    updateContent: (id, value) => {
+    updateContent: (id, value, table, originalId, originalKey) => {
         console.log(`📝 Updating content ${id}...`);
-        return api.put(`/admin/content/${id}`, { value });
+        return api.put(`/admin/content/${id}`, { 
+            value, 
+            table, 
+            originalId, 
+            originalKey 
+        });
     }
 };
 
