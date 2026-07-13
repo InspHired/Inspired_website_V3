@@ -149,7 +149,6 @@ const JobotPage = () => {
         }
       `}</style>
 
-      
 
       {/* ── HERO ── */}
       <header style={styles.heroSection}>

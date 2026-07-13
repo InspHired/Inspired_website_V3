@@ -1,0 +1,76 @@
+.avatar-layer{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:480px;
+
+    pointer-events:none;
+
+    z-index:3;
+}
+
+.avatar-node{
+
+    position:absolute;
+
+    width:74px;
+    height:74px;
+
+    transform:translate(-50%,-50%);
+
+    animation:
+    float 5s ease-in-out infinite,
+    glow 3s ease-in-out infinite;
+}
+
+.avatar-node img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* or try contain */
+    object-position: center;
+    border-radius: 50%;
+
+    border:4px solid white;
+
+    background:white;
+
+    box-shadow:
+    0 0 12px rgba(80,155,158,.5),
+    0 0 25px rgba(80,155,158,.3);
+
+}
+@keyframes float{
+
+0%,100%{
+
+transform:
+translate(-50%,-50%)
+translateY(0);
+
+}
+
+50%{
+
+transform:
+translate(-50%,-50%)
+translateY(-12px);
+
+}
+
+}
+@keyframes glow{
+
+0%,100%{
+
+filter:drop-shadow(0 0 5px rgba(80,155,158,.5));
+
+}
+
+50%{
+
+filter:drop-shadow(0 0 18px rgba(80,155,158,.9));
+
+}
+
+}

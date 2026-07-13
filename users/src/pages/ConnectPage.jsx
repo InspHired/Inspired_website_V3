@@ -64,8 +64,6 @@ const ConnectPage = () => {
         }
       `}</style>
 
-      
-
       {/* ── HERO ── */}
       <header style={styles.heroSection}>
         <div style={styles.container}>
