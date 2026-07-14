@@ -1,0 +1,344 @@
+
+.team-section {
+  background-color: #faf6f0;
+  padding: 80px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+
+.sec-head {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+
+.sec-head::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #509b9e, transparent);
+  opacity: 0.3;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #509b9e;
+  font-weight: 600;
+  margin-bottom: 8px;
+  position: relative;
+  padding: 0 20px;
+}
+
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 1px;
+  background: #509b9e;
+  opacity: 0.2;
+}
+
+.eyebrow::before {
+  right: 100%;
+}
+
+.eyebrow::after {
+  left: 100%;
+}
+
+.title {
+  display: block;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: #1f3540;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+/* Subtle underline accent on title */
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #509b9e, #e4af51);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+.subtitle {
+  display: block;
+  font-size: 1.05rem;
+  color: #1f3540;
+  opacity: 0.6;
+  max-width: 600px;
+  margin: 16px auto 0;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+
+.stack-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.team-card {
+  position: absolute;
+  width: 280px;
+  background: #1f3540;
+  border-radius: 24px;
+  padding: 24px;
+  text-align: center;
+  color: #ffffff;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  pointer-events: none;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.team-card.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: all;
+  z-index: 3;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.team-card.left {
+  opacity: 0.6;
+  transform: scale(0.85) translateX(-180px) translateY(10px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.team-card.right {
+  opacity: 0.6;
+  transform: scale(0.85) translateX(180px) translateY(10px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.team-card.hidden {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.avatar-box {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  overflow: hidden;
+  background: #509b9e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(80, 155, 158, 0.3);
+}
+
+.avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-box i {
+  font-size: 3rem;
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.team-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #0c0909;
+}
+
+.team-card .role {
+  font-size: 0.8rem;
+  color: #509b9e;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.team-card .desc {
+  font-size: 0.8rem;
+  color: #434446;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .team-card {
+    width: 240px;
+    padding: 20px;
+  }
+
+  .team-card.left {
+    transform: scale(0.8) translateX(-120px) translateY(10px);
+  }
+
+  .team-card.right {
+    transform: scale(0.8) translateX(120px) translateY(10px);
+  }
+
+  .avatar-box {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 640px) {
+  .team-section {
+    padding: 60px 0;
+  }
+
+  .sec-head {
+    margin-bottom: 32px;
+  }
+
+  .sec-head::before {
+    width: 40px;
+    top: -12px;
+  }
+
+  .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    padding: 0 12px;
+    margin-bottom: 6px;
+  }
+
+  .eyebrow::before,
+  .eyebrow::after {
+    width: 16px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .title::after {
+    width: 40px;
+    height: 2px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    padding: 0 16px;
+    margin-top: 14px;
+  }
+
+  .team-card {
+    width: 200px;
+    padding: 16px;
+  }
+
+  .team-card.left {
+    transform: scale(0.7) translateX(-80px) translateY(15px);
+  }
+
+  .team-card.right {
+    transform: scale(0.7) translateX(80px) translateY(15px);
+  }
+
+  .avatar-box {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar-box i {
+    font-size: 2rem;
+  }
+
+  .team-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .team-card .role {
+    font-size: 0.7rem;
+  }
+
+  .team-card .desc {
+    font-size: 0.7rem;
+  }
+}
+.stack-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  position: relative;
+  background: #faf6f0;
+  overflow: hidden;
+}
+
+.team-card {
+  position: absolute;
+  width: 300px;
+  background: #ffffff;
+  border: 1px solid #e5dfd5;
+  border-radius: 24px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  opacity: 0;
+  transform: scale(0.6);
+  z-index: 1;
+}
+
+
+.team-card.active {
+  opacity: 1;
+  transform: scale(1.1) translateX(0);
+  z-index: 10;
+  border-bottom: 8px solid #509b9e;
+}
+
+
+.team-card.left { opacity: 0.6; transform: scale(0.85) translateX(-320px); z-index: 5; }
+.team-card.right { opacity: 0.6; transform: scale(0.85) translateX(320px); z-index: 5; }
+
+.avatar-box { 
+  width: 120px; height: 120px; margin: 0 auto 20px; 
+  background: #fdfaf7; border-radius: 50%; 
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+.avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-box i { font-size: 3rem; color: #509b9e; }
