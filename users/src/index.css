@@ -1426,3 +1426,88 @@ footer a:hover {
     font-size: 10.5px;
   }
 }
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 60;
+  position: relative;
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2.5px;
+  background: var(--navy);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.hamburger-btn-open .hamburger-line:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.hamburger-btn-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.hamburger-btn-open .hamburger-line:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 53, 64, 0.4);
+  z-index: 40;
+}
+
+@media (max-width: 900px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(78vw, 320px);
+    background: var(--bg);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 100px 32px 40px;
+    box-shadow: var(--shadow-md);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+    overflow-y: auto;
+  }
+
+  .nav-links-open {
+    transform: translateX(0);
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 14px 0;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--border-light);
+    width: 100%;
+  }
+
+  .nav-links .btn-consult {
+    margin-top: 16px;
+    width: 100%;
+  }
+}

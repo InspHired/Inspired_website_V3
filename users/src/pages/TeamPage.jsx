@@ -36,15 +36,15 @@ const defaultCenter = {
 };
 
 const ringTeam = [
-  { name: "Landry Mutombo", role: "Chief Executive", img: "../assets/insphiredTeam/Mr L.png" },
+  { name: "Landry Mutombo", role: "Chief Executive", img: "../assets/insphiredTeam/Mr_L.png" },
   { name: "Norma Banda", role: "Managing Partner", img: "../assets/insphiredTeam/Norma.png" },
   { name: "Rochelle Titus", role: "Managing Partner", img: "../assets/insphiredTeam/Rochelle.png" },
   { name: "Joyce Muya", role: "Managing Partner", img: "../assets/insphiredTeam/Joyce.png" },
-  { name: "Stefanie Peters", role: "Managing Partner", img: "../assets/insphiredTeam/Stef.png" },
+  { name: "Stefanie Peters", role: "Managing Partner", img: "../assets/insphiredTeam/Steff.png" },
   { name: "Deborah Mubenga", role: "Head of Operations", img: "../assets/insphiredTeam/Deborah.png" },
   { name: "Gègè Sena Saleh", role: "Head of Finance", img: "../assets/insphiredTeam/Gege.png" },
   { name: "Unathi Mbasa", role: "Operations Team Lead", img: "../assets/insphiredTeam/Unathi.png" },
-  { name: "Ene-ene Netshiswinzhe", role: "HR Generalist", img: "https://raw.githubusercontent.com/InspHired/Inspired_website_V3/blob/main/users/public/assets/insphiredTeam/Ene-ene.png" },
+  { name: "Ene-ene Netshiswinzhe", role: "HR Generalist", img: "../assets/insphiredTeam/Ene-ene.png" },
   { name: "Tumelo Mpeta", role: "Talent Marketing & ATS Coordinator", img: "../assets/insphiredTeam/Tumelo.png" },
   { name: "Phamela Mthitshane", role: "Candidate Manager", img: "../assets/insphiredTeam/Phamela.png" },
   { name: "Sharrity Mhlanga", role: "Recruitment Researcher", img: "../assets/insphiredTeam/Sharity.png" },

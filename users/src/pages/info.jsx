@@ -92,6 +92,8 @@ function StageIcon({ type, color }) {
 
 function About() {
   const [activeNode, setActiveNode] = useState(null);
+  const [completedSteps, setCompletedSteps] = useState([]); // array of completed step ids, in order
+  const [shakeId, setShakeId] = useState(null);
 
   const nodePositions = useMemo(() => {
     const radius = 44;
@@ -105,6 +107,30 @@ function About() {
       };
     });
   }, []);
+
+  const nextUnlockedIndex = completedSteps.length; // index of the one node currently unlocked
+  const allComplete = completedSteps.length === flowSteps.length;
+
+  const handleNodeClick = (node, index) => {
+    const isCompleted = completedSteps.includes(node.id);
+    const isUnlocked = index === nextUnlockedIndex;
+
+    if (isCompleted) {
+      // Already done — just show its detail again, no progress change.
+      setActiveNode(node.id);
+      return;
+    }
+
+    if (isUnlocked) {
+      setActiveNode(node.id);
+      setCompletedSteps((prev) => [...prev, node.id]);
+      return;
+    }
+
+    // Locked — give a little shake to signal "not yet."
+    setShakeId(node.id);
+    setTimeout(() => setShakeId(null), 400);
+  };
 
   const active = flowSteps.find((s) => s.id === activeNode);
 
@@ -143,6 +169,7 @@ function About() {
           <svg className="flow-connectors" viewBox="0 0 100 100" preserveAspectRatio="none">
             {nodePositions.map((node, i) => {
               const next = nodePositions[(i + 1) % nodePositions.length];
+              const isPathLit = completedSteps.includes(node.id) && completedSteps.includes(next.id);
               return (
                 <line
                   key={i}
@@ -150,32 +177,61 @@ function About() {
                   y1={node.top}
                   x2={next.left}
                   y2={next.top}
-                  stroke="rgba(31, 53, 64, 0.15)"
-                  strokeWidth="0.5"
+                  stroke={isPathLit ? "var(--teal)" : "rgba(31, 53, 64, 0.15)"}
+                  strokeWidth={isPathLit ? "1" : "0.5"}
                   strokeDasharray="2 2"
+                  style={{ transition: "stroke 0.4s ease, stroke-width 0.4s ease" }}
                 />
               );
             })}
           </svg>
 
-          {nodePositions.map((node) => (
-            <button
-              key={node.id}
-              type="button"
-              className={`flow-node ${activeNode === node.id ? "flow-node-active" : ""}`}
-              style={{ left: `${node.left}%`, top: `${node.top}%` }}
-              onClick={() => setActiveNode(activeNode === node.id ? null : node.id)}
-              aria-pressed={activeNode === node.id}
-            >
-              <span className="flow-node-avatar" style={{ background: `${node.color}1A`, borderColor: node.color }}>
-                <StageIcon type={node.id} color={node.color} />
-              </span>
-              <p>{node.label}</p>
-              <span className="flow-tooltip" role="tooltip">
-                {node.detail}
-              </span>
-            </button>
-          ))}
+          {nodePositions.map((node, i) => {
+            const isCompleted = completedSteps.includes(node.id);
+            const isUnlocked = i === nextUnlockedIndex;
+            const isLocked = !isCompleted && !isUnlocked;
+
+            return (
+              <button
+                key={node.id}
+                type="button"
+                className={[
+                  "flow-node",
+                  activeNode === node.id ? "flow-node-active" : "",
+                  isLocked ? "flow-node-locked" : "",
+                  isUnlocked ? "flow-node-unlocked" : "",
+                  shakeId === node.id ? "flow-node-shake" : "",
+                ].join(" ").trim()}
+                style={{ left: `${node.left}%`, top: `${node.top}%` }}
+                onClick={() => handleNodeClick(node, i)}
+                aria-pressed={activeNode === node.id}
+                aria-disabled={isLocked}
+              >
+                <span
+                  className="flow-node-avatar"
+                  style={{
+                    background: isLocked ? "rgba(31, 53, 64, 0.06)" : `${node.color}1A`,
+                    borderColor: isLocked ? "rgba(31, 53, 64, 0.15)" : node.color,
+                  }}
+                >
+                  {isLocked ? (
+                    <i className="fas fa-lock" style={{ color: "rgba(31, 53, 64, 0.35)", fontSize: "0.9rem" }} aria-hidden="true"></i>
+                  ) : (
+                    <StageIcon type={node.id} color={node.color} />
+                  )}
+                  {isCompleted && (
+                    <span className="flow-node-check" style={{ background: node.color }}>
+                      <i className="fas fa-check" aria-hidden="true"></i>
+                    </span>
+                  )}
+                </span>
+                <p style={{ color: isLocked ? "rgba(31, 53, 64, 0.4)" : "var(--navy)" }}>{node.label}</p>
+                <span className="flow-tooltip" role="tooltip">
+                  {isLocked ? "Complete the previous stage first" : node.detail}
+                </span>
+              </button>
+            );
+          })}
 
           <div className="circle-center">
             {active ? (
@@ -185,12 +241,59 @@ function About() {
                 </p>
                 <p className="center-detail">{active.detail}</p>
               </>
+            ) : allComplete ? (
+              <>
+                <p className="center-label" style={{ color: "var(--teal)" }}>
+                  <i className="fas fa-star" aria-hidden="true"></i> All stages explored
+                </p>
+                <p className="center-detail">You've walked the full InspHired journey.</p>
+              </>
             ) : (
-              <span>InspHired</span>
+              <>
+                <span className="center-progress">
+                  {completedSteps.length}/{flowSteps.length}
+                </span>
+                <p className="center-detail">Tap the glowing stage to begin</p>
+              </>
             )}
           </div>
         </div>
       </div>
+
+      <style>{`
+        .flow-node-locked { cursor: not-allowed; opacity: 0.55; }
+        .flow-node-unlocked .flow-node-avatar { animation: nodeGlow 1.8s ease-in-out infinite; }
+        @keyframes nodeGlow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(80, 155, 158, 0.35); }
+          50% { box-shadow: 0 0 0 8px rgba(80, 155, 158, 0); }
+        }
+        .flow-node-shake { animation: nodeShake 0.4s ease; }
+        @keyframes nodeShake {
+          0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+          25% { transform: translate(-50%, -50%) translateX(-4px); }
+          75% { transform: translate(-50%, -50%) translateX(4px); }
+        }
+        .flow-node-check {
+          position: absolute;
+          bottom: -2px;
+          right: -2px;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-size: 0.55rem;
+          border: 2px solid #fff;
+        }
+        .center-progress {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: var(--teal);
+          margin: 0 0 6px;
+        }
+      `}</style>
     </section>
   );
 }

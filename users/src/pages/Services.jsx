@@ -5,37 +5,37 @@ const services = [
   {
     number: '01',
     title: 'Recruitment Process Outsourcing (RPO)',
-    text: 'Streamline your structural hiring operations. We manage the entire recruitment lifecycle end-to-end, unlocking absolute operational freedom so you can scale core operations.',
+    text: 'We take hiring off your plate — managing the entire recruitment process from start to finish, so your team can focus on running the business.',
     accent: 'var(--teal)',
   },
   {
     number: '02',
     title: 'Executive Recruitment',
-    text: 'We specialize in sourcing and placing top-tier executives capable of charting enterprise roadmaps. Our deep executive network matches the right leader with your strategic vision.',
+    text: 'We find and place senior leaders who can genuinely move your business forward, drawing on a deep network built specifically for executive-level hiring.',
     accent: 'var(--orange)',
   },
   {
     number: '03',
     title: 'Specialist Skill Recruitment',
-    text: 'Catering directly to specialized functions across Engineering, IT, Healthcare, and Corporate Finance. Our niche domain divisions source talent with the exact credentials you request.',
+    text: 'For roles that need specific technical expertise — in Engineering, IT, Healthcare, or Finance — we source candidates with the exact credentials the role demands.',
     accent: 'var(--yellow)',
   },
   {
     number: '04',
     title: 'Targeted Headhunting',
-    text: "Engage high-value passive candidates who aren't actively browsing job boards. Every strategic outreach path integrates strict behavioral assessments and meticulous team alignment roadmaps.",
+    text: "We reach the strongest candidates — the ones not actively job-hunting — and vet them carefully for both skill and cultural fit before they ever reach you.",
     accent: 'var(--navy)',
   },
   {
     number: '05',
     title: 'Bulk & Contract Staffing',
-    text: 'Scale production rapidly during seasonal demand peaks or complex project kickoffs. We absorb your end-to-end payroll administration risk and operational bottlenecks seamlessly.',
+    text: "Scale your workforce quickly for seasonal peaks or big project launches. We handle the payroll and admin, so growth doesn't mean extra overhead.",
     accent: 'var(--teal)',
   },
   {
     number: '06',
     title: 'Efficient Temp Recruitment',
-    text: 'Leverage our cutting-edge staffing app to request, track, and manage vetted talent on demand. Built cleanly to support fast, same-day site deployment requirements.',
+    text: 'Request, track, and manage vetted temporary staff through our staffing app — built for speed, including same-day deployment when you need it.',
     accent: 'var(--orange)',
   },
 ];
@@ -145,11 +145,10 @@ const ServicesPage = () => {
             <div>
               <span style={styles.sectionTag}>Empowering candidates</span>
               <h2 style={styles.sectionHeading}>Skills training & development</h2>
-              <p style={styles.empowerText}>
-                We equip talent pipelines with practical technical skillsets,
-                workforce confidence, and market insights to excel right from
-                day one.
-              </p>
+<p style={styles.empowerText}>
+  We give candidates the practical skills, confidence, and market
+  knowledge to walk into a new role ready to succeed from day one.
+</p>
               <div style={styles.btnRow}>
                 <a
                   href="https://calendly.com/recruitment-insphired/book-a-consultation-with-a-client-relationship-manager?month=2026-05"
@@ -193,10 +192,10 @@ const ServicesPage = () => {
           <div style={styles.centerHead}>
             <span style={styles.sectionTag}>Risk management</span>
             <h2 style={styles.sectionHeading}>Employment verification & background screening</h2>
-            <p style={styles.sectionSub}>
-              Protect company culture and verify integrity parameters using
-              absolute data transparency protocols.
-            </p>
+<p style={styles.sectionSub}>
+  Every candidate we place is thoroughly vetted, so you can hire with
+  full confidence and protect what makes your workplace work.
+</p>
           </div>
 
           <div style={styles.screeningList}>

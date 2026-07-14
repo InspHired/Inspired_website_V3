@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import CareerQuiz from '../pages/CareerQuiz';
 
 const CareerLabPage = () => {
   const [activeTab, setActiveTab] = useState('entry');
@@ -75,6 +76,18 @@ const CareerLabPage = () => {
         .tab-btn {
           transition: all var(--transition);
         }
+
+        .quiz-option {
+          transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
+        }
+        .quiz-option:hover {
+          border-color: var(--teal) !important;
+          background-color: #FFFFFF !important;
+          transform: translateX(4px);
+        }
+        .quiz-option:hover i {
+          opacity: 1 !important;
+        }
       `}</style>
 
       
@@ -109,6 +122,21 @@ const CareerLabPage = () => {
           </div>
         </div>
       </header>
+
+      {/* Career Track Quiz */}
+      <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
+        <div style={styles.container}>
+          <div style={styles.sectionHeader}>
+            <span style={styles.sectionTag}>Find your track</span>
+            <h2 style={styles.sectionTitle}>Which programme is right for you?</h2>
+            <p style={styles.sectionSub}>
+              Answer 10 quick questions and we'll match you to the track that fits where you are right now.
+            </p>
+          </div>
+
+          <CareerQuiz />
+        </div>
+      </section>
 
       {/* Who it's for */}
       <section style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
@@ -285,7 +313,7 @@ const CareerLabPage = () => {
       </section>
 
       {/* Registration + Assessment CTA */}
-      <section style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
+      <section id="register-interest" style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
         <div style={styles.container}>
           <div style={styles.formSplitGrid}>
             <div style={styles.formCard}>
