@@ -68,7 +68,7 @@ function Testimonials() {
       <div style={s.container}>
         <div style={s.secHead}>
           <span style={s.eyebrow}>Testimonials</span>
-          <h2 style={s.h2}>What people say</h2>
+          <h2 class="title-3d">What people say</h2>
           <p style={s.secSub}>
             Real words from candidates and clients we've had the privilege to work with.
           </p>
@@ -112,6 +112,27 @@ function Testimonials() {
         @media (max-width: 900px) {
           .testimonial-grid { grid-template-columns: 1fr !important; }
         }
+          .title-3d {
+  display: block;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: #1f3540;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+  
+  /* Glass 3D Effect */
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 8px 16px rgba(80, 155, 158, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+  background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+}
       `}</style>
     </section>
   );
@@ -171,6 +192,8 @@ const styles = {
     color: C.slateLight,
     margin: 0,
   },
+
+
 };
 
 export default Testimonials;

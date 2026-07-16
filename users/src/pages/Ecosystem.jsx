@@ -57,7 +57,7 @@ function Ecosystem() {
       <div className="container">
         <div className="sec-head">
           <span className="eyebrow">The InspHired Ecosystem</span>
-          <h2 className="title">More than a recruitment agency</h2>
+          <h2 className="title-3d">More than a recruitment agency</h2>
           <p className="subtitle">
             Four connected platforms, each solving a different part of the employment challenge — working together as one ecosystem.
           </p>

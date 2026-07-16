@@ -47,7 +47,7 @@ function TeamsCarousel() {
       <div className="container">
         <div className="sec-head">
           <span className="eyebrow">The InspHired Team</span>
-          <h2 className="title">Meet the people behind the vision</h2>
+          <h2 className="title-3d">Meet the people behind the vision</h2>
           <p className="subtitle">
             A diverse team of recruitment experts, operations leaders, and innovators
             working together to connect Africa's talent with global opportunities.
