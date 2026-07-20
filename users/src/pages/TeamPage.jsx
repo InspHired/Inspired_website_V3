@@ -32,7 +32,7 @@ const s = {
 const defaultCenter = {
   name: "InspHired Team",
   role: "The team ready to assist you on your journey",
-  img: null,
+  img: "../assets/insphiredTeam/Ene-ene.png",
 };
 
 const ringTeam = [

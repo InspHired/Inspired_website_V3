@@ -1511,3 +1511,18 @@ footer a:hover {
     width: 100%;
   }
 }
+@keyframes blink{
+
+0%,96%,100%{
+
+transform:scaleY(1);
+
+}
+
+98%{
+
+transform:scaleY(.03);
+
+}
+
+}

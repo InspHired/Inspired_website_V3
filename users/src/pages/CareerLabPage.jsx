@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CareerQuiz from '../pages/CareerQuiz';
+import CareerCoach from '../assets/career-coach.png';
 
-const CareerLabPage = () => {
+function CareerLabPage() {
   const [activeTab, setActiveTab] = useState('entry');
 
   const [formData, setFormData] = useState({
@@ -29,6 +31,24 @@ const CareerLabPage = () => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
   };
+
+  const [coachMessage, setCoachMessage] = useState(
+    "Hi! Hover over a module and I'll explain it."
+);
+
+const moduleMessages = {
+  1: "A strong CV isn't enough on its own. I'll show you how recruiters read job adverts and how to tailor every application for better results.",
+
+  2: "Communication can be the deciding factor in an interview. We'll practise professional emails, interviews and workplace etiquette.",
+
+  3: "Employers expect more than technical skills. We'll help you build confidence, accountability and workplace habits that set you apart.",
+
+  4: "Your first role is only the beginning. Let's create a roadmap for long-term career growth and progression.",
+
+  5: "Mindset influences performance. We'll develop resilience, adaptability and the confidence to thrive in professional environments.",
+
+  6: "Many candidates overlook documentation requirements. We'll make sure you're prepared for compliance checks and employer verification."
+};
 
   const journeySteps = [
     { label: 'Job searching', icon: 'fa-search' },
@@ -90,7 +110,7 @@ const CareerLabPage = () => {
         }
       `}</style>
 
-      
+
 
       {/* Hero */}
       <header style={styles.hero}>
@@ -203,78 +223,155 @@ const CareerLabPage = () => {
       </section>
 
       {/* Curriculum */}
-      <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
-        <div style={styles.container}>
-          <div style={styles.sectionHeader}>
-            <span style={styles.sectionTag}>Curriculum structure</span>
-            <h2 style={styles.sectionTitle}>What the programme covers</h2>
-            <p style={styles.sectionSub}>Career Lab focuses on six core modules built around practical skills employers expect but candidates are rarely taught.</p>
-          </div>
+      <div style={styles.curriculumLayout}>
 
-          <div style={styles.gridThree}>
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>01</span>
-              <h3 style={styles.cardHeading}>Job application strategy</h3>
-              <ul style={styles.cardList}>
-                <li>Understanding how to read and interpret job specifications.</li>
-                <li>Tailoring your CV and application structure specifically to each role.</li>
-                <li>Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.</li>
-                <li>Structuring highly impactful cover letters and strong supporting documents.</li>
-              </ul>
-            </div>
+    <div style={styles.moduleGrid}>
 
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--orange)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>02</span>
-              <h3 style={styles.cardHeading}>Professional communication</h3>
-              <ul style={styles.cardList}>
-                <li>Mastering secure email and communication etiquette in professional environments.</li>
-                <li>Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.</li>
-                <li>Maintaining pristine professional tone and alignment across digital platforms and social media.</li>
-              </ul>
-            </div>
+        <div style={styles.moduleGrid}>
 
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--navy)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>03</span>
-              <h3 style={styles.cardHeading}>Workplace readiness</h3>
-              <ul style={styles.cardList}>
-                <li>Advanced personal time management paradigms and true personal accountability frameworks.</li>
-                <li>Meeting complex deadlines cleanly and balancing competing work priorities.</li>
-                <li>Receiving, processing, and executing constructively on difficult professional performance feedback.</li>
-              </ul>
-            </div>
+  {/* Module 1 */}
+<div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[1])}
+>
+    <span style={styles.moduleNumber}>01</span>
+    <h3 style={styles.cardHeading}>Job application strategy</h3>
+    <ul style={styles.cardList}>
+      <li>Understanding how to read and interpret job specifications.</li>
+      <li>Tailoring your CV and application structure specifically to each role.</li>
+      <li>Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.</li>
+      <li>Structuring highly impactful cover letters and strong supporting documents.</li>
+    </ul>
+  </div>
 
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--yellow)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>04</span>
-              <h3 style={styles.cardHeading}>Career growth & navigation</h3>
-              <ul style={styles.cardList}>
-                <li>Deep-dive look into interpreting the complete end-to-end employment lifecycle.</li>
-                <li>Proactively mapping and planning long-term career milestone developments.</li>
-                <li>Spotting hidden internal opportunities and styling yourself for seamless career progression.</li>
-              </ul>
-            </div>
+  {/* Module 2 */}
+<div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[2])}
+>
+    <span style={styles.moduleNumber}>02</span>
+    <h3 style={styles.cardHeading}>Professional communication</h3>
+    <ul style={styles.cardList}>
+      <li>Mastering secure email and communication etiquette in professional environments.</li>
+      <li>Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.</li>
+      <li>Maintaining pristine professional tone and alignment across digital platforms and social media.</li>
+    </ul>
+  </div>
 
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>05</span>
-              <h3 style={styles.cardHeading}>Professional mindset</h3>
-              <ul style={styles.cardList}>
-                <li>Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.</li>
-                <li>Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.</li>
-                <li>Cultivating a dynamic growth mindset that modern premium employers consistently look out for.</li>
-              </ul>
-            </div>
+  {/* Module 3 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[3])}
+>
+    <span style={styles.moduleNumber}>03</span>
+    <h3 style={styles.cardHeading}>Workplace readiness</h3>
+    <ul style={styles.cardList}>
+      <li>Advanced personal time management paradigms and true personal accountability frameworks.</li>
+      <li>Meeting complex deadlines cleanly and balancing competing work priorities.</li>
+      <li>Receiving, processing, and executing constructively on difficult professional performance feedback.</li>
+    </ul>
+  </div>
 
-            <div style={{ ...styles.moduleCard, borderTop: '5px solid var(--orange)' }} className="interactive-card">
-              <span style={styles.moduleNumber}>06</span>
-              <h3 style={styles.cardHeading}>Compliance & documentation</h3>
-              <ul style={styles.cardList}>
-                <li>Clean preparation systems for strict biometric background checks and screening protocols.</li>
-                <li>Ensuring personal data records, validation files, and identity parameters are audit-compliant.</li>
-                <li>Understanding precisely what verification elements employers check and why it protects company culture.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+  {/* Module 4 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[4])}
+>
+    <span style={styles.moduleNumber}>04</span>
+    <h3 style={styles.cardHeading}>Career growth & navigation</h3>
+    <ul style={styles.cardList}>
+      <li>Deep-dive look into interpreting the complete end-to-end employment lifecycle.</li>
+      <li>Proactively mapping and planning long-term career milestone developments.</li>
+      <li>Spotting hidden internal opportunities and styling yourself for seamless career progression.</li>
+    </ul>
+  </div>
+
+  {/* Module 5 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[5])}
+>
+    <span style={styles.moduleNumber}>05</span>
+    <h3 style={styles.cardHeading}>Professional mindset</h3>
+    <ul style={styles.cardList}>
+      <li>Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.</li>
+      <li>Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.</li>
+      <li>Cultivating a dynamic growth mindset that modern premium employers consistently look out for.</li>
+    </ul>
+  </div>
+
+  {/* Module 6 */}
+ <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[6])}
+>
+    <span style={styles.moduleNumber}>06</span>
+    <h3 style={styles.cardHeading}>Compliance & documentation</h3>
+    <ul style={styles.cardList}>
+      <li>Clean preparation systems for strict biometric background checks and screening protocols.</li>
+      <li>Ensuring personal data records, validation files, and identity parameters are audit-compliant.</li>
+      <li>Understanding precisely what verification elements employers check and why it protects company culture.</li>
+    </ul>
+  </div>
+
+</div>
+
+    </div>
+
+   <div style={styles.avatarPanel}>
+
+    <motion.img
+        src={CareerCoach}
+        alt="Career Coach"
+        style={styles.avatar}
+
+        animate={{
+
+    y:[0,-10,0]
+
+}}
+
+transition={{
+
+    duration:4,
+
+    repeat:Infinity
+
+}}
+    />
+
+    <div style={styles.speechBubble}>
+      <AnimatePresence mode="wait">
+
+<motion.div
+    key={coachMessage}
+
+    initial={{opacity:0,y:10}}
+
+    animate={{opacity:1,y:0}}
+
+    exit={{opacity:0,y:-10}}
+
+    transition={{duration:0.25}}
+
+>
+
+{coachMessage}
+
+</motion.div>
+
+</AnimatePresence>
+    </div>
+
+</div>
+
+</div>
 
       {/* Differentiation */}
       <section style={styles.diffSection}>
@@ -403,7 +500,7 @@ const CareerLabPage = () => {
       <Footer />
     </div>
   );
-};
+}
 
 const globalStyles = {
   pageWrapper: {
@@ -587,10 +684,28 @@ const styles = {
     color: 'var(--navy)',
     margin: '0 0 20px 0'
   },
-  gridThree: {
+    curriculumLayout: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr",
+    gap: "50px",
+    alignItems: "start"
+},
+
+moduleGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "30px"
+},
+
+avatarPanel: {
+    position: "sticky",
+    top: "120px",
+    textAlign: "center"
+},
+  modulesContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: '32px',
+    gap: '32px'
   },
   moduleCard: {
     backgroundColor: '#FFFFFF',
@@ -620,13 +735,13 @@ const styles = {
   },
   cardList: {
     paddingLeft: '20px',
-    margin: 0,
+    margin: '0',
     color: '#5B6670',
     fontSize: '0.93rem',
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',
-    lineHeight: 1.5
+    lineHeight: '1.5'
   },
   diffSection: {
     padding: '100px 0',
@@ -854,6 +969,21 @@ const styles = {
     fontSize: '0.65rem',
     flexShrink: 0,
     marginTop: '2px',
+  },
+  avatar: {
+    width: "280px",
+    borderRadius: "50%",
+    boxShadow: "0 25px 60px rgba(0,0,0,.15)"
+},
+
+speechBubble: {
+    marginTop: "25px",
+    padding: "20px",
+    background: "#fff",
+    borderRadius: "20px",
+    boxShadow: "0 10px 30px rgba(0,0,0,.12)",
+    fontSize: ".95rem",
+    lineHeight: 1.6
   }
 };
 
