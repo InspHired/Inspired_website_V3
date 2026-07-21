@@ -1,5 +1,7 @@
 import NetworkCanvas from "./NetworkCanvas";
 import AvatarLayer from "./AvatarLayer";
+import HeroSpotlight from "../components/HeroSpotlight/HeroStats";
+import HeroStats from "../components/HeroSpotlight/HeroStats";
 
 function Hero() {
   return (
@@ -8,6 +10,8 @@ function Hero() {
       <NetworkCanvas />
 
       <AvatarLayer />
+
+      <HeroStats />
 
       <div className="hero-content">
 
