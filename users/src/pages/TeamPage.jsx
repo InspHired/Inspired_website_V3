@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./TeamsCarousel.css";
-
+ 
 // Color palette
 const C = {
   teal: "#509b9e",
@@ -8,28 +8,17 @@ const C = {
   yellow: "#e4af51",
   navy: "#1f3540",
 };
-
+ 
 // Accent color cycle for cards
 const accentCycle = [C.teal, C.orange, C.yellow, C.teal, C.orange, C.yellow, C.teal, C.orange, C.yellow, C.teal];
-
+ 
 const slides = [
   {
     name: "InspHired Hub",
     role: "We Connect",
     desc: "Bridging the gap between forward-thinking companies and top-tier African talent.",
-    img: "./public/assets/insphiredTeam/team.png"
-  }
-];
-
-// Default center content when no ring member is selected — generic, no individual photo.
-const defaultCenter = {
-  name: "InspHired Team",
-  role: "The team ready to assist you on your journey",
-  img: "../assets/insphiredTeam/Ene-ene.png",
-};
-
-const ringTeam = [
-  
+    img: "../assets/insphiredTeam/team.png"
+  },
   { name: "Landry Mutombo", role: "Chief Executive", img: "../assets/insphiredTeam/Mr_L.png" },
   { name: "Norma Banda", role: "Managing Partner", img: "../assets/insphiredTeam/Norma.png" },
   { name: "Rochelle Titus", role: "Managing Partner", img: "../assets/insphiredTeam/Rochelle.png" },
@@ -41,17 +30,17 @@ const ringTeam = [
   { name: "Ene-ene Netshiswinzhe", role: "HR Generalist", img: "../assets/insphiredTeam/Ene-ene.png" },
   { name: "Tumelo Mpeta", role: "Talent Marketing & ATS Coordinator", img: "../assets/insphiredTeam/Tumelo.png" },
 ];
-
+ 
 function TeamsCarousel() {
   const [index, setIndex] = useState(0);
-
+ 
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
     }, 3000);
     return () => clearInterval(timer);
   }, []);
-
+ 
   return (
     <section className="team-section">
       {/* ===== STYLED HEADER ===== */}
@@ -65,7 +54,7 @@ function TeamsCarousel() {
           </p>
         </div>
       </div>
-
+ 
       {/* ===== CAROUSEL ===== */}
       <div className="stack-container">
         {slides.map((slide, i) => {
@@ -75,10 +64,10 @@ function TeamsCarousel() {
           else if (i === (index - 1 + slides.length) % slides.length) position = "left";
           else if (i === (index + 1) % slides.length) position = "right";
           else position = "hidden";
-
+ 
           // Get accent color for this card
           const accent = accentCycle[i % accentCycle.length];
-
+ 
           return (
             <div
               key={i}
@@ -105,5 +94,5 @@ function TeamsCarousel() {
     </section>
   );
 }
-
+ 
 export default TeamsCarousel;
