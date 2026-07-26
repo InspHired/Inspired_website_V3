@@ -7,19 +7,19 @@ const values = [
     title: "Passion",
     text: "Life is too short to not love what you do. Passion drives everything we do at InspHired.",
     icon: "pulse",
-    accent: "var(--teal)",
+    accent: "var(--teal, #509b9e)",
   },
   {
     title: "Integrity",
     text: "We act with authenticity and always do the right thing for our candidates, clients, and team.",
     icon: "shield",
-    accent: "var(--orange)",
+    accent: "var(--orange, #d96b43)",
   },
   {
     title: "Accountability",
     text: "We take responsibility for our actions with transparency and commitment to excellence.",
     icon: "check",
-    accent: "var(--yellow)",
+    accent: "var(--yellow, #e4af51)",
   },
 ];
 
@@ -52,15 +52,62 @@ function ValueIcon({ type, color }) {
   }
 }
 
-const yearsInBusiness = new Date().getFullYear() - 2015;
+/* ── REALISTIC AVATAR STAGE COMPONENT ── */
+function RealisticAvatarCanvas() {
+  return (
+    <div className="avatar-canvas-container">
+      {/* Background Glows */}
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
 
-// Generic avatar stack for the hero visual — no real photos needed, just varied accent circles.
-const heroAvatars = [
-  { icon: "fa-user-tie", accent: "var(--teal)" },
-  { icon: "fa-user-graduate", accent: "var(--orange)" },
-  { icon: "fa-user-astronaut", accent: "var(--yellow)" },
-  { icon: "fa-user", accent: "var(--navy)" },
-];
+      {/* Main Glass Stage */}
+      <div className="avatar-stage-card">
+
+        {/* Recruiter Card */}
+        <div className="floating-avatar-item float-1">
+          <div className="photo-frame teal-border">
+            <img src="/assets/insphiredTeam/Ene-ene.png" alt="Talent Recruiter" className="avatar-img" />
+          </div>
+          <div className="avatar-badge">
+            <span className="badge-dot teal"></span> Talent Recruiter
+          </div>
+        </div>
+
+        {/* Candidate Card */}
+        <div className="floating-avatar-item float-2">
+          <div className="photo-frame orange-border">
+            <img src="/assets/insphiredTeam/Rochelle.png" alt="Candidate" className="avatar-img" />
+          </div>
+          <div className="avatar-badge">
+            <span className="badge-dot orange"></span> Candidate
+          </div>
+        </div>
+
+        {/* Enterprise Client Card */}
+        <div className="floating-avatar-item float-3">
+          <div className="photo-frame yellow-border">
+            <img src="/assets/insphiredTeam/Tumelo.png" alt="Enterprise Client" className="avatar-img" />
+          </div>
+          <div className="avatar-badge">
+            <span className="badge-dot yellow"></span> Enterprise Client
+          </div>
+        </div>
+
+        {/* Central Core Metrics */}
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">{new Date().getFullYear() - 2015}+</span>
+            <span className="core-label">Years Connecting People</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+const yearsInBusiness = new Date().getFullYear() - 2015;
 
 const AboutPage = () => {
   const [email, setEmail] = useState("");
@@ -73,6 +120,8 @@ const AboutPage = () => {
 
   return (
     <div style={styles.pageWrapper}>
+      
+
       <style>{`
         .value-icon { width: 34px; height: 34px; }
 
@@ -103,39 +152,167 @@ const AboutPage = () => {
         .vi-gbar-3 { animation-delay: 0.5s; }
         @keyframes viGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
 
-        .value-card { transition: transform var(--transition), box-shadow var(--transition) !important; }
-        .value-card:hover { transform: translateY(-6px) !important; box-shadow: var(--shadow-md) !important; }
-
-        .subscribe-input { transition: border-color var(--transition), box-shadow var(--transition); }
-        .subscribe-input:focus {
-          outline: none;
-          border-color: var(--teal) !important;
-          box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
+        /* ── REALISTIC AVATAR STAGE CSS ── */
+        .avatar-canvas-container {
+          position: relative;
+          width: 100%;
+          min-height: 440px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 1000px;
         }
-        .subscribe-btn { transition: transform var(--transition), opacity var(--transition); }
-        .subscribe-btn:hover { transform: translateY(-2px); opacity: 0.95; }
 
-        .hero-orbit-dot { animation: heroOrbit 10s linear infinite; }
-        @keyframes heroOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .avatar-stage-card {
+          position: relative;
+          width: 100%;
+          max-width: 460px;
+          height: 400px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          transform-style: preserve-3d;
+          transform: rotateX(4deg) rotateY(-4deg);
+          transition: transform 0.5s ease;
+        }
 
-        .hero-avatar-float {
-          transition: transform var(--transition);
+        .avatar-stage-card:hover {
+          transform: rotateX(0deg) rotateY(0deg) scale(1.02);
         }
-        .hero-avatar-float:hover {
-          transform: translateY(-4px) scale(1.08);
-          z-index: 5;
+
+        .glow-sphere {
+          position: absolute;
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.35;
+          pointer-events: none;
         }
+        .teal-glow { background: #509b9e; top: -20px; left: -20px; }
+        .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+
+        .floating-avatar-item {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          transition: transform 0.3s ease;
+        }
+
+        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
+        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        /* Image Photo Frames */
+        .photo-frame {
+          width: 86px;
+          height: 86px;
+          border-radius: 50%;
+          padding: 3px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+          overflow: hidden;
+          background: #1f3540;
+        }
+
+        .teal-border { border: 2px solid #509b9e; }
+        .orange-border { border: 2px solid #d96b43; }
+        .yellow-border { border: 2px solid #e4af51; }
+
+        .avatar-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+          display: block;
+        }
+
+        .avatar-badge {
+          background: rgba(15, 27, 34, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 0.72rem;
+          color: #ffffff;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          white-space: nowrap;
+        }
+
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge-dot.teal { background: #509b9e; }
+        .badge-dot.orange { background: #d96b43; }
+        .badge-dot.yellow { background: #e4af51; }
+
+        .center-metallic-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+
+        .core-pulse-ring {
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 1px dashed rgba(228, 175, 81, 0.4);
+          animation: rotateCore 14s linear infinite;
+        }
+        @keyframes rotateCore {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        .core-brand-tag {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+        }
+        .core-number {
+          font-size: 1.5rem;
+          font-weight: 800;
+          color: #e4af51;
+        }
+        .core-label {
+          font-size: 0.58rem;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.7);
+          letter-spacing: 0.5px;
+        }
+
+        .value-card { transition: transform 0.25s ease, box-shadow 0.25s ease !important; }
+        .value-card:hover { transform: translateY(-6px) !important; box-shadow: 0 12px 30px rgba(0,0,0,0.08) !important; }
 
         @media (max-width: 900px) {
           .mv-grid { grid-template-columns: 1fr !important; }
           .subscribe-row { flex-direction: column !important; }
           .subscribe-row input, .subscribe-row button { width: 100% !important; }
           .hero-grid { grid-template-columns: 1fr !important; }
-          .hero-visual-wrap { margin-top: 40px; }
+          .hero-visual-wrap { margin-top: 30px; }
         }
       `}</style>
-
-      <Navbar />
 
       {/* ── HERO ── */}
       <header style={styles.hero}>
@@ -171,38 +348,7 @@ const AboutPage = () => {
             </div>
 
             <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
-              <div style={styles.orbitRing}>
-                <div className="hero-orbit-dot" style={styles.orbitDotWrap}>
-                  <div style={styles.orbitDot}></div>
-                </div>
-
-                <div style={styles.visualCard}>
-                  <img
-                    src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=900&auto=format&fit=crop"
-                    alt="InspHired team collaborating"
-                    style={styles.visualImg}
-                  />
-                  <div style={styles.visualOverlay}></div>
-
-                  <div style={styles.avatarStack}>
-                    {heroAvatars.map((a, i) => (
-                      <div
-                        key={i}
-                        className="hero-avatar-float"
-                        style={{
-                          ...styles.avatarCircle,
-                          borderColor: a.accent,
-                          marginLeft: i === 0 ? 0 : -14,
-                          zIndex: heroAvatars.length - i,
-                        }}
-                      >
-                        <i className={`fas ${a.icon}`} style={{ color: a.accent, fontSize: '0.9rem' }} aria-hidden="true"></i>
-                      </div>
-                    ))}
-                    <span style={styles.avatarStackLabel}>+ our full team</span>
-                  </div>
-                </div>
-              </div>
+              <RealisticAvatarCanvas />
             </div>
           </div>
         </div>
@@ -212,8 +358,8 @@ const AboutPage = () => {
       <section style={styles.sectionWhite}>
         <div style={styles.container}>
           <div className="mv-grid" style={styles.mvGrid}>
-            <div style={{ ...styles.mvCard, borderTop: '4px solid var(--teal)' }}>
-              <div style={{ ...styles.mvIconWrap, background: 'rgba(80, 155, 158, 0.12)', color: 'var(--teal)' }}>
+            <div style={{ ...styles.mvCard, borderTop: '4px solid var(--teal, #509b9e)' }}>
+              <div style={{ ...styles.mvIconWrap, background: 'rgba(80, 155, 158, 0.12)', color: 'var(--teal, #509b9e)' }}>
                 <i className="fas fa-bullseye" aria-hidden="true"></i>
               </div>
               <h3 style={styles.mvTitle}>Our mission</h3>
@@ -223,8 +369,8 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div style={{ ...styles.mvCard, borderTop: '4px solid var(--orange)' }}>
-              <div style={{ ...styles.mvIconWrap, background: 'rgba(217, 107, 67, 0.12)', color: 'var(--orange)' }}>
+            <div style={{ ...styles.mvCard, borderTop: '4px solid var(--orange, #d96b43)' }}>
+              <div style={{ ...styles.mvIconWrap, background: 'rgba(217, 107, 67, 0.12)', color: 'var(--orange, #d96b43)' }}>
                 <i className="fas fa-eye" aria-hidden="true"></i>
               </div>
               <h3 style={styles.mvTitle}>Our vision</h3>
@@ -257,14 +403,14 @@ const AboutPage = () => {
             </div>
             <div style={styles.storyTimeline}>
               <div style={styles.timelineItem}>
-                <div style={{ ...styles.timelineDot, background: 'var(--teal)' }}></div>
+                <div style={{ ...styles.timelineDot, background: 'var(--teal, #509b9e)' }}></div>
                 <div>
                   <p style={styles.timelineYear}>2015</p>
                   <p style={styles.timelineText}>InspHired founded, focused on bridging candidates and clients.</p>
                 </div>
               </div>
               <div style={styles.timelineItem}>
-                <div style={{ ...styles.timelineDot, background: 'var(--orange)' }}></div>
+                <div style={{ ...styles.timelineDot, background: 'var(--orange, #d96b43)' }}></div>
                 <div>
                   <p style={styles.timelineYear}>Today</p>
                   <p style={styles.timelineText}>A multi-platform ecosystem serving candidates and employers across Africa.</p>
@@ -297,7 +443,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* ── GET JOB NOTIFICATIONS ── */}
+      {/* ── SUBSCRIBE ── */}
       <section style={styles.subscribeSection}>
         <div style={styles.container}>
           <div style={styles.subscribeCard}>
@@ -337,355 +483,62 @@ const AboutPage = () => {
 };
 
 const styles = {
-  pageWrapper: {
-    color: 'var(--navy)',
-    backgroundColor: 'var(--bg)',
-    lineHeight: 1.65,
-  },
-  container: {
-    maxWidth: '1280px',
-    margin: '0 auto',
-    padding: '0 32px',
-    width: '100%',
-  },
-  hero: {
-    background: 'var(--navy)',
-    padding: '130px 0 90px',
-    color: '#FFFFFF',
-    overflow: 'hidden',
-  },
-  heroGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1.15fr 0.85fr',
-    gap: '48px',
-    alignItems: 'center',
-  },
-  heroContent: {
-    maxWidth: '620px',
-  },
+  pageWrapper: { color: 'var(--navy, #1f3540)', backgroundColor: 'var(--bg, #faf6f0)', lineHeight: 1.65 },
+  container: { maxWidth: '1280px', margin: '0 auto', padding: '0 32px', width: '100%' },
+  hero: { background: 'var(--navy, #1f3540)', padding: '130px 0 90px', color: '#FFFFFF', overflow: 'hidden' },
+  heroGrid: { display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '48px', alignItems: 'center' },
+  heroContent: { maxWidth: '620px' },
   eyebrow: {
     display: 'inline-block',
     fontSize: '0.8rem',
     letterSpacing: '2px',
     fontWeight: 700,
     textTransform: 'uppercase',
-    color: 'var(--teal)',
+    color: 'var(--teal, #509b9e)',
     backgroundColor: 'rgba(80, 155, 158, 0.15)',
     padding: '6px 14px',
     borderRadius: '20px',
     marginBottom: '20px',
   },
-  heroTitle: {
-    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
-    fontWeight: 700,
-    margin: '0 0 20px 0',
-    letterSpacing: '-1px',
-    lineHeight: 1.2,
-  },
-  heroLead: {
-    fontSize: '1.1rem',
-    color: 'rgba(255,255,255,0.75)',
-    lineHeight: 1.75,
-    marginBottom: '40px',
-    maxWidth: '560px',
-  },
-  heroStats: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '28px',
-    flexWrap: 'wrap',
-  },
-  heroStat: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  },
-  heroStatNumber: {
-    fontSize: '1.7rem',
-    fontWeight: 700,
-    color: 'var(--yellow)',
-  },
-  heroStatLabel: {
-    fontSize: '0.8rem',
-    color: 'rgba(255,255,255,0.6)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  heroStatDivider: {
-    width: '1px',
-    height: '36px',
-    background: 'rgba(255,255,255,0.15)',
-  },
-  heroVisualWrap: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  orbitRing: {
-    position: 'relative',
-    width: '100%',
-    maxWidth: '380px',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  orbitDotWrap: {
-    position: 'absolute',
-    inset: '-14px',
-    pointerEvents: 'none',
-  },
-  orbitDot: {
-    position: 'absolute',
-    top: '-6px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    background: 'var(--yellow)',
-    boxShadow: '0 0 16px rgba(228, 175, 81, 0.6)',
-  },
-  visualCard: {
-    position: 'relative',
-    width: '100%',
-    borderRadius: 'var(--radius-card)',
-    overflow: 'hidden',
-    border: '1px dashed rgba(255, 255, 255, 0.18)',
-    boxShadow: 'var(--shadow-md)',
-    minHeight: '320px',
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  visualImg: {
-    position: 'absolute',
-    inset: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-  visualOverlay: {
-    position: 'absolute',
-    inset: 0,
-    background: 'linear-gradient(to top, rgba(31,53,64,0.9) 0%, rgba(31,53,64,0.35) 55%, rgba(31,53,64,0.05) 100%)',
-  },
-  avatarStack: {
-    position: 'relative',
-    zIndex: 2,
-    display: 'flex',
-    alignItems: 'center',
-    padding: '24px',
-  },
-  avatarCircle: {
-    width: '38px',
-    height: '38px',
-    borderRadius: '50%',
-    background: 'var(--navy)',
-    border: '2px solid',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
-  },
-  avatarStackLabel: {
-    marginLeft: '14px',
-    fontSize: '0.8rem',
-    fontWeight: 600,
-    color: '#FFFFFF',
-  },
+  heroTitle: { fontSize: 'clamp(2.2rem, 4vw, 3rem)', fontWeight: 700, margin: '0 0 20px 0', letterSpacing: '-1px', lineHeight: 1.2 },
+  heroLead: { fontSize: '1.1rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.75, marginBottom: '40px', maxWidth: '560px' },
+  heroStats: { display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap' },
+  heroStat: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  heroStatNumber: { fontSize: '1.7rem', fontWeight: 700, color: 'var(--yellow, #e4af51)' },
+  heroStatLabel: { fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' },
+  heroStatDivider: { width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' },
+  heroVisualWrap: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
   sectionWhite: { padding: '90px 0', backgroundColor: '#FFFFFF' },
-  sectionLight: { padding: '90px 0', backgroundColor: 'var(--bg)' },
-  eyebrowDark: {
-    display: 'block',
-    fontSize: '0.8rem',
-    letterSpacing: '2px',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    color: 'var(--teal)',
-    marginBottom: '10px',
-  },
-  centerHead: {
-    textAlign: 'center',
-    marginBottom: '56px',
-  },
-  sectionHeading: {
-    fontSize: 'clamp(1.8rem, 3vw, 2.3rem)',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    letterSpacing: '-0.5px',
-    margin: 0,
-  },
-  mvGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '32px',
-  },
-  mvCard: {
-    background: '#FFFFFF',
-    border: '1px solid var(--border-light)',
-    borderRadius: 'var(--radius-card)',
-    boxShadow: 'var(--shadow-sm)',
-    padding: '40px',
-  },
-  mvIconWrap: {
-    width: '52px',
-    height: '52px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '1.2rem',
-    marginBottom: '20px',
-  },
-  mvTitle: {
-    fontSize: '1.3rem',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    margin: '0 0 12px 0',
-  },
-  mvText: {
-    fontSize: '1rem',
-    color: '#5B6670',
-    lineHeight: 1.7,
-    margin: 0,
-  },
-  storyRow: {
-    display: 'grid',
-    gridTemplateColumns: '1.1fr 0.9fr',
-    gap: '60px',
-    alignItems: 'start',
-  },
+  sectionLight: { padding: '90px 0', backgroundColor: 'var(--bg, #faf6f0)' },
+  eyebrowDark: { display: 'block', fontSize: '0.8rem', letterSpacing: '2px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--teal, #509b9e)', marginBottom: '10px' },
+  centerHead: { textAlign: 'center', marginBottom: '56px' },
+  sectionHeading: { fontSize: 'clamp(1.8rem, 3vw, 2.3rem)', fontWeight: 700, color: 'var(--navy, #1f3540)', letterSpacing: '-0.5px', margin: 0 },
+  mvGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' },
+  mvCard: { background: '#FFFFFF', border: '1px solid var(--border-light, #e5dfd5)', borderRadius: '20px', boxShadow: '0 8px 24px rgba(0,0,0,0.04)', padding: '40px' },
+  mvIconWrap: { width: '52px', height: '52px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', marginBottom: '20px' },
+  mvTitle: { fontSize: '1.3rem', fontWeight: 700, color: 'var(--navy, #1f3540)', margin: '0 0 12px 0' },
+  mvText: { fontSize: '1rem', color: '#5B6670', lineHeight: 1.7, margin: 0 },
+  storyRow: { display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '60px', alignItems: 'start' },
   storyTextCol: {},
-  storyText: {
-    fontSize: '1rem',
-    color: '#5B6670',
-    lineHeight: 1.75,
-    marginBottom: '16px',
-  },
-  storyTimeline: {
-    background: '#FFFFFF',
-    border: '1px solid var(--border-light)',
-    borderRadius: 'var(--radius-card)',
-    boxShadow: 'var(--shadow-sm)',
-    padding: '36px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-  },
-  timelineItem: {
-    display: 'flex',
-    gap: '16px',
-    alignItems: 'flex-start',
-  },
-  timelineDot: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    marginTop: '6px',
-    flexShrink: 0,
-  },
-  timelineYear: {
-    fontSize: '0.85rem',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    color: 'var(--navy)',
-    margin: '0 0 4px 0',
-  },
-  timelineText: {
-    fontSize: '0.95rem',
-    color: '#5B6670',
-    lineHeight: 1.6,
-    margin: 0,
-  },
-  valuesGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-    gap: '28px',
-  },
-  valueCard: {
-    background: '#FFFFFF',
-    border: '1px solid var(--border-light)',
-    borderRadius: 'var(--radius-card)',
-    boxShadow: 'var(--shadow-sm)',
-    padding: '36px',
-  },
-  valueIconWrap: {
-    width: '56px',
-    height: '56px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '20px',
-  },
-  valueTitle: {
-    fontSize: '1.15rem',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    margin: '0 0 10px 0',
-  },
-  valueText: {
-    fontSize: '0.95rem',
-    color: '#5B6670',
-    lineHeight: 1.65,
-    margin: 0,
-  },
-  subscribeSection: {
-    padding: '80px 0 100px',
-    backgroundColor: 'var(--bg)',
-  },
-  subscribeCard: {
-    background: 'var(--navy)',
-    borderRadius: 'var(--radius-card)',
-    padding: '48px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '40px',
-    flexWrap: 'wrap',
-    boxShadow: 'var(--shadow-md)',
-  },
-  subscribeTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    color: '#FFFFFF',
-    margin: '0 0 8px 0',
-  },
-  subscribeText: {
-    fontSize: '1rem',
-    color: 'rgba(255,255,255,0.7)',
-    margin: 0,
-  },
-  subscribeRow: {
-    display: 'flex',
-    gap: '12px',
-    flexShrink: 0,
-  },
-  subscribeInput: {
-    padding: '14px 18px',
-    borderRadius: '40px',
-    border: '1px solid rgba(255,255,255,0.2)',
-    background: 'rgba(255,255,255,0.08)',
-    color: '#FFFFFF',
-    fontSize: '0.95rem',
-    minWidth: '260px',
-    fontFamily: 'inherit',
-  },
-  subscribeBtn: {
-    background: 'var(--teal)',
-    color: '#FFFFFF',
-    border: 'none',
-    padding: '14px 32px',
-    borderRadius: '40px',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    cursor: 'pointer',
-    whiteSpace: 'nowrap',
-  },
-  subscribeSuccess: {
-    color: 'var(--yellow)',
-    fontWeight: 600,
-    fontSize: '0.95rem',
-  },
+  storyText: { fontSize: '1rem', color: '#5B6670', lineHeight: 1.75, marginBottom: '16px' },
+  storyTimeline: { background: '#FFFFFF', border: '1px solid var(--border-light, #e5dfd5)', borderRadius: '20px', boxShadow: '0 8px 24px rgba(0,0,0,0.04)', padding: '36px', display: 'flex', flexDirection: 'column', gap: '28px' },
+  timelineItem: { display: 'flex', gap: '16px', alignItems: 'flex-start' },
+  timelineDot: { width: '12px', height: '12px', borderRadius: '50%', marginTop: '6px', flexShrink: 0 },
+  timelineYear: { fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--navy, #1f3540)', margin: '0 0 4px 0' },
+  timelineText: { fontSize: '0.95rem', color: '#5B6670', lineHeight: 1.6, margin: 0 },
+  valuesGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '28px' },
+  valueCard: { background: '#FFFFFF', border: '1px solid var(--border-light, #e5dfd5)', borderRadius: '20px', boxShadow: '0 8px 24px rgba(0,0,0,0.04)', padding: '36px' },
+  valueIconWrap: { width: '56px', height: '56px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' },
+  valueTitle: { fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy, #1f3540)', margin: '0 0 10px 0' },
+  valueText: { fontSize: '0.95rem', color: '#5B6670', lineHeight: 1.65, margin: 0 },
+  subscribeSection: { padding: '80px 0 100px', backgroundColor: 'var(--bg, #faf6f0)' },
+  subscribeCard: { background: 'var(--navy, #1f3540)', borderRadius: '24px', padding: '48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '40px', flexWrap: 'wrap', boxShadow: '0 16px 36px rgba(31, 53, 64, 0.15)' },
+  subscribeTitle: { fontSize: '1.5rem', fontWeight: 700, color: '#FFFFFF', margin: '0 0 8px 0' },
+  subscribeText: { fontSize: '1rem', color: 'rgba(255,255,255,0.7)', margin: 0 },
+  subscribeRow: { display: 'flex', gap: '12px', flexShrink: 0 },
+  subscribeInput: { padding: '14px 18px', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: '#FFFFFF', fontSize: '0.95rem', minWidth: '260px', fontFamily: 'inherit' },
+  subscribeBtn: { background: 'var(--teal, #509b9e)', color: '#FFFFFF', border: 'none', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', whiteSpace: 'nowrap' },
+  subscribeSuccess: { color: 'var(--yellow, #e4af51)', fontWeight: 600, fontSize: '0.95rem' },
 };
 
 export default AboutPage;

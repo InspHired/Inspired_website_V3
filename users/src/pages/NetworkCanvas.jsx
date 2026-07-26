@@ -15,26 +15,24 @@ function NetworkCanvas() {
       border: "#e5dfd5",
     };
 
-    // Simplified, stylized silhouette of the African continent (normalized 0-1 coords).
-    // Not geographically precise — decorative, to ground the network as an African talent map.
-    const africaOutline = [
-      [0.55, 0.02], [0.62, 0.1], [0.68, 0.18], [0.78, 0.3],
-      [0.95, 0.34], [0.85, 0.38], [0.68, 0.55], [0.62, 0.72],
-      [0.55, 0.88], [0.4, 0.95], [0.33, 0.75], [0.3, 0.62],
-      [0.18, 0.42], [0.05, 0.28], [0.28, 0.06], [0.55, 0.02],
-    ];
+    // 1. Image Initialization
+    const mapImage = new Image();
+    mapImage.src = "/assets/gg.png";
+    let imageLoaded = false;
+    mapImage.onload = () => {
+      imageLoaded = true;
+    };
 
     const cities = [
-      { name: "Kinshasa", x: 0.42, y: 0.58 },
-      { name: "Johannesburg", x: 0.48, y: 0.82 },
-      { name: "Cape Town", x: 0.4, y: 0.93 },
+      { name: "Kinshasa", x: 0.52, y: 0.52 },
+      { name: "Johannesburg", x: 0.57, y: 0.60 },
+      { name: "Cape Town", x: 0.57, y: 0.68 },
     ];
 
     let paths = [];
     let pulses = [];
     let mapBox = { x: 0, y: 0, w: 0, h: 0 };
-    let mapPoints = [];
-    let dotLayer = null; // cached static dot-grid only
+    let dotLayer = null;
     let animationFrame;
     let startTime = performance.now();
     const mouse = { x: null, y: null, radius: 140 };
@@ -52,19 +50,6 @@ function NetworkCanvas() {
         x: start.x + (end.x - start.x) * segmentProgress,
         y: start.y + (end.y - start.y) * segmentProgress,
       };
-    }
-
-    function drawSmoothPath(context, points, close) {
-      context.beginPath();
-      context.moveTo(points[0][0], points[0][1]);
-      for (let i = 1; i < points.length - 1; i++) {
-        const midX = (points[i][0] + points[i + 1][0]) / 2;
-        const midY = (points[i][1] + points[i + 1][1]) / 2;
-        context.quadraticCurveTo(points[i][0], points[i][1], midX, midY);
-      }
-      const last = points[points.length - 1];
-      context.lineTo(last[0], last[1]);
-      if (close) context.closePath();
     }
 
     function buildDotLayer(width, height) {
@@ -87,26 +72,22 @@ function NetworkCanvas() {
 
     function initNetwork() {
       canvas.width = window.innerWidth;
-      canvas.height = 480;
+      canvas.height = 560;
 
       const width = canvas.width;
       const height = canvas.height;
 
       dotLayer = buildDotLayer(width, height);
 
-      // Smaller footprint: was 0.88 of height, now ~0.6
-      const mapH = height * 0.6;
-      const mapW = mapH * 0.72;
+      const mapH = height * 0.92;
+      const mapW = mapH * 0.75;
+
       mapBox = {
         x: (width - mapW) / 2,
-        y: (height - mapH) / 2 + 10,
+        y: (height - mapH) / 2,
         w: mapW,
         h: mapH,
       };
-      mapPoints = africaOutline.map(([nx, ny]) => [
-        mapBox.x + nx * mapBox.w,
-        mapBox.y + ny * mapBox.h,
-      ]);
 
       paths = [
         {
@@ -172,47 +153,26 @@ function NetworkCanvas() {
     }
 
     function drawContinent(elapsed) {
-      // Distance from cursor to map center drives a vibrancy boost.
+      if (!imageLoaded && !mapImage.complete) return;
+
       const centerX = mapBox.x + mapBox.w / 2;
       const centerY = mapBox.y + mapBox.h / 2;
-      const distToCenter =
-        mouse.x === null ? Infinity : Math.hypot(mouse.x - centerX, mouse.y - centerY);
-      const hoverRange = mapBox.w; // roughly the map's own width as falloff range
-      const proximity = Math.max(0, 1 - distToCenter / hoverRange); // 0 (far) -> 1 (at center)
 
       const breathe = 1 + Math.sin(elapsed / 1400) * 0.015;
+
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.scale(breathe, breathe);
       ctx.translate(-centerX, -centerY);
 
-      drawSmoothPath(ctx, mapPoints, true);
+      ctx.globalAlpha = 1.0;
 
-      // Vibrant gradient fill, more saturated the closer the cursor gets.
-      const gradient = ctx.createLinearGradient(mapBox.x, mapBox.y, mapBox.x, mapBox.y + mapBox.h);
-      const baseAlpha = 0.1 + proximity * 0.16;
-      gradient.addColorStop(0, `rgba(80, 155, 158, ${baseAlpha})`);
-      gradient.addColorStop(0.5, `rgba(228, 175, 81, ${baseAlpha * 0.9})`);
-      gradient.addColorStop(1, `rgba(217, 107, 67, ${baseAlpha})`);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-
-      ctx.strokeStyle = `rgba(31, 53, 64, ${0.22 + proximity * 0.35})`;
-      ctx.lineWidth = 1.5 + proximity * 1;
-      ctx.setLineDash(proximity > 0.15 ? [] : [2, 5]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      if (proximity > 0.1) {
-        ctx.shadowColor = colors.teal;
-        ctx.shadowBlur = 14 * proximity;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      }
+      ctx.drawImage(mapImage, mapBox.x, mapBox.y, mapBox.w, mapBox.h);
 
       ctx.restore();
     }
 
+    // 2. Updated drawCities function with enhanced dot visibility
     function drawCities(elapsed) {
       cities.forEach((city, i) => {
         const cx = mapBox.x + city.x * mapBox.w;
@@ -224,23 +184,44 @@ function NetworkCanvas() {
         const isNear = distToMouse < 50;
         const pulseScale = (1 + Math.sin(elapsed / 700 + i) * 0.25) * (isNear ? 1.6 : 1);
 
+        // A. Outer glowing pulse ring (increased opacity for visibility)
         ctx.beginPath();
-        ctx.arc(cx, cy, 9 * pulseScale, 0, Math.PI * 2);
-        ctx.fillStyle = isNear ? `${color}44` : `${color}22`;
+        ctx.arc(cx, cy, 11 * pulseScale, 0, Math.PI * 2);
+        ctx.fillStyle = isNear ? `${color}66` : `${color}33`;
         ctx.fill();
 
+        // B. White contrast ring around the dot
+        const dotRadius = isNear ? 7 : 5.5;
         ctx.beginPath();
-        ctx.arc(cx, cy, isNear ? 6 : 4, 0, Math.PI * 2);
+        ctx.arc(cx, cy, dotRadius + 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+
+        // C. Inner solid colored dot with glow shadow
+        ctx.beginPath();
+        ctx.arc(cx, cy, dotRadius, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.shadowColor = color;
-        ctx.shadowBlur = isNear ? 14 : 8;
+        ctx.shadowBlur = isNear ? 16 : 10;
         ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 0; // Clear shadow for text rendering
 
-        ctx.font = isNear ? "600 12px sans-serif" : "500 11px sans-serif";
-        ctx.fillStyle = colors.navy;
+        // D. High-contrast text label setup
+        ctx.font = isNear ? "bold 14px sans-serif" : "bold 13px sans-serif";
         ctx.textBaseline = "middle";
-        ctx.fillText(city.name, cx + 12, cy);
+
+        const labelX = cx + 14;
+        const labelY = cy;
+
+        // White background stroke for text
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 3;
+        ctx.lineJoin = "round";
+        ctx.strokeText(city.name, labelX, labelY);
+
+        // Dark text fill
+        ctx.fillStyle = "#0f172a";
+        ctx.fillText(city.name, labelX, labelY);
       });
     }
 
@@ -266,7 +247,7 @@ function NetworkCanvas() {
         ctx.stroke();
       });
 
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.65;
       ctx.shadowBlur = 0;
 
       pulses.forEach((pulse) => {

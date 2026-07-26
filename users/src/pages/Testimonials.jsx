@@ -1,3 +1,5 @@
+import React from "react";
+
 const C = {
   teal: "#509b9e",
   orange: "#d96b43",
@@ -17,12 +19,11 @@ const s = {
     display: "inline-block",
     fontSize: 13,
     fontWeight: 600,
-    letterSpacing: "0.04em",
+    letterSpacing: "0.08em",
     textTransform: "uppercase",
     color: C.teal,
     marginBottom: 12,
   },
-  h2: { fontSize: 32, fontWeight: 700, color: C.navy, margin: "0 0 12px" },
   secSub: { fontSize: 16, lineHeight: 1.6, color: C.slateLight, margin: 0 },
 };
 
@@ -49,14 +50,18 @@ const testimonials = [
 
 function StarRow({ color }) {
   return (
-    <div style={{ display: "flex", gap: 3, marginBottom: 16 }}>
+    <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <i
+        <svg
           key={i}
-          className="fas fa-star"
-          style={{ color, fontSize: 14 }}
-          aria-hidden="true"
-        ></i>
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill={color}
+          style={{ flexShrink: 0 }}
+        >
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+        </svg>
       ))}
     </div>
   );
@@ -68,7 +73,7 @@ function Testimonials() {
       <div style={s.container}>
         <div style={s.secHead}>
           <span style={s.eyebrow}>Testimonials</span>
-          <h2 class="title-3d">What people say</h2>
+          <h2 className="title-3d">What people say</h2>
           <p style={s.secSub}>
             Real words from candidates and clients we've had the privilege to work with.
           </p>
@@ -76,19 +81,36 @@ function Testimonials() {
 
         <div className="testimonial-grid" style={styles.grid}>
           {testimonials.map((t) => (
-            <div key={t.name} style={{ ...styles.card, borderTop: `4px solid ${t.accent}` }} className="testimonial-card">
-              <i
-                className="fas fa-quote-left"
-                style={{ ...styles.quoteMark, color: `${t.accent}33` }}
-                aria-hidden="true"
-              ></i>
+            <div
+              key={t.name}
+              style={{ ...styles.card, borderTop: `4px solid ${t.accent}` }}
+              className="testimonial-card"
+            >
+              <div style={{ marginBottom: 12 }}>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill={t.accent}
+                  style={{ opacity: 0.35 }}
+                >
+                  <path d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z" />
+                </svg>
+              </div>
 
               <StarRow color={t.accent} />
 
               <p style={styles.quoteText}>"{t.quote}"</p>
 
               <div style={styles.footer}>
-                <div style={{ ...styles.avatar, background: `${t.accent}22`, color: t.accent }}>
+                <div
+                  style={{
+                    ...styles.avatar,
+                    background: `${t.accent}18`,
+                    color: t.accent,
+                    border: `1px solid ${t.accent}40`,
+                  }}
+                >
                   {t.name.charAt(0)}
                 </div>
                 <div>
@@ -102,37 +124,42 @@ function Testimonials() {
       </div>
 
       <style>{`
-        .testimonial-card {
-          transition: transform var(--transition, 0.25s ease), box-shadow var(--transition, 0.25s ease);
+        .title-3d {
+          display: block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          font-weight: 700;
+          color: #1f3540;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+          position: relative;
+          
+          text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.05),
+            0 8px 16px rgba(80, 155, 158, 0.08),
+            0 12px 32px rgba(0, 0, 0, 0.04);
+          transform: translateY(-4px);
+          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
         }
+
+        .testimonial-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
         .testimonial-card:hover {
           transform: translateY(-6px);
-          box-shadow: var(--shadow-md, 0 12px 40px rgba(0,0,0,0.07));
+          box-shadow: 0 16px 36px rgba(31, 53, 64, 0.1) !important;
         }
+
         @media (max-width: 900px) {
-          .testimonial-grid { grid-template-columns: 1fr !important; }
+          .testimonial-grid { 
+            grid-template-columns: 1fr !important; 
+          }
         }
-          .title-3d {
-  display: block;
-  font-size: clamp(2rem, 3.5vw, 2.8rem);
-  font-weight: 700;
-  color: #1f3540;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
-  position: relative;
-  
-  /* Glass 3D Effect */
-  text-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.05),
-    0 8px 16px rgba(80, 155, 158, 0.08),
-    0 12px 32px rgba(0, 0, 0, 0.04);
-  transform: translateY(-4px);
-  background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
-}
       `}</style>
     </section>
   );
@@ -148,41 +175,42 @@ const styles = {
     position: "relative",
     background: C.white,
     border: `1px solid ${C.borderLight}`,
-    borderRadius: "var(--radius-card, 24px)",
-    boxShadow: "var(--shadow-sm, 0 8px 30px rgba(0,0,0,0.05))",
+    borderRadius: "20px",
+    boxShadow: "0 8px 24px rgba(31, 53, 64, 0.04)",
     padding: "36px 32px",
     display: "flex",
     flexDirection: "column",
   },
-  quoteMark: {
-    fontSize: 28,
-    marginBottom: 8,
-  },
   quoteText: {
     fontSize: 15,
-    lineHeight: 1.7,
+    lineHeight: 1.65,
     color: C.navy,
+    fontStyle: "italic",
     marginBottom: 24,
     flexGrow: 1,
   },
   footer: {
     display: "flex",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
+    paddingTop: 18,
+    borderTop: `1px solid ${C.borderLight}`,
   },
   avatar: {
-    width: 40,
-    height: 40,
+    width: 42,
+    height: 42,
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontWeight: 700,
-    fontSize: 15,
+    fontSize: 16,
+    fontFamily: "'Playfair Display', Georgia, serif",
     flexShrink: 0,
   },
   name: {
-    fontSize: 14,
+    fontFamily: "'Playfair Display', Georgia, serif",
+    fontSize: 15,
     fontWeight: 700,
     color: C.navy,
     margin: 0,
@@ -190,10 +218,8 @@ const styles = {
   role: {
     fontSize: 12.5,
     color: C.slateLight,
-    margin: 0,
+    margin: "2px 0 0",
   },
-
-
 };
 
 export default Testimonials;
