@@ -5,6 +5,53 @@ import Footer from '../components/Footer';
 import CareerQuiz from '../pages/CareerQuiz';
 import CareerCoach from '../assets/career-coach.png';
 
+/* ── CAREER GROWTH CANVAS (mirrors About page's avatar canvas) ── */
+function CareerGrowthCanvas() {
+  return (
+    <div className="pillar-canvas-container">
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
+
+      <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-file-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> CV Strategy
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-comments" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Interview Skills
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-chart-line" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Career Growth
+          </div>
+        </div>
+
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">06</span>
+            <span className="core-label">Coaching Modules</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CareerLabPage() {
   const [activeTab, setActiveTab] = useState('entry');
 
@@ -108,36 +155,175 @@ const moduleMessages = {
         .quiz-option:hover i {
           opacity: 1 !important;
         }
+
+        /* ── CAREER GROWTH CANVAS CSS (mirrors About page avatar canvas) ── */
+        .pillar-canvas-container {
+          position: relative;
+          width: 100%;
+          min-height: 440px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 1000px;
+        }
+
+        .pillar-stage-card {
+          position: relative;
+          width: 100%;
+          max-width: 460px;
+          height: 400px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          transform-style: preserve-3d;
+          transform: rotateX(4deg) rotateY(-4deg);
+          transition: transform 0.5s ease;
+        }
+        .pillar-stage-card:hover {
+          transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+        }
+
+        .glow-sphere {
+          position: absolute;
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.35;
+          pointer-events: none;
+        }
+        .teal-glow { background: #509b9e; top: -20px; left: -20px; }
+        .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+
+        .floating-pillar-item {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
+        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .icon-frame {
+          width: 86px;
+          height: 86px;
+          border-radius: 50%;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+          overflow: hidden;
+          background: #1f3540;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.6rem;
+          color: #ffffff;
+        }
+        .teal-border { border: 2px solid #509b9e; }
+        .orange-border { border: 2px solid #d96b43; }
+        .yellow-border { border: 2px solid #e4af51; }
+
+        .pillar-badge {
+          background: rgba(15, 27, 34, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 0.72rem;
+          color: #ffffff;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          white-space: nowrap;
+        }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge-dot.teal { background: #509b9e; }
+        .badge-dot.orange { background: #d96b43; }
+        .badge-dot.yellow { background: #e4af51; }
+
+        .center-metallic-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+        .core-pulse-ring {
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 1px dashed rgba(228, 175, 81, 0.4);
+          animation: rotateCore 14s linear infinite;
+        }
+        @keyframes rotateCore {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
+        .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
+        .core-label {
+          font-size: 0.58rem;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.7);
+          letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 900px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-visual-wrap { margin-top: 30px; }
+        }
       `}</style>
-
-
 
       {/* Hero */}
       <header style={styles.hero}>
         <div style={styles.container}>
-          <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.heroTag}>Career Lab</span>
-            <h1 style={styles.heroHeading}>Structured career development & coaching for job seekers</h1>
-            <p style={styles.heroSubheading}>
-              Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today's job market.
-            </p>
+          <div className="hero-grid" style={styles.heroGrid}>
+            <div style={styles.heroContent} className="animate-fadeup">
+              <span style={styles.heroTag}>Career Lab</span>
+              <h1 style={styles.heroHeading}>Structured career development & coaching for job seekers</h1>
+              <p style={styles.heroSubheading}>
+                Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today's job market.
+              </p>
 
-            <div style={styles.journeyPath}>
-              {journeySteps.map((step, i) => (
-                <React.Fragment key={step.label}>
-                  <div style={styles.journeyStep}>
-                    <span style={styles.journeyIcon}>
-                      <i className={`fas ${step.icon}`} aria-hidden="true"></i>
-                    </span>
-                    {step.label}
-                  </div>
-                  {i < journeySteps.length - 1 && (
-                    <div style={styles.journeyArrow}>
-                      <i className="fas fa-arrow-right" aria-hidden="true"></i>
+              <div style={styles.journeyPath}>
+                {journeySteps.map((step, i) => (
+                  <React.Fragment key={step.label}>
+                    <div style={styles.journeyStep}>
+                      <span style={styles.journeyIcon}>
+                        <i className={`fas ${step.icon}`} aria-hidden="true"></i>
+                      </span>
+                      {step.label}
                     </div>
-                  )}
-                </React.Fragment>
-              ))}
+                    {i < journeySteps.length - 1 && (
+                      <div style={styles.journeyArrow}>
+                        <i className="fas fa-arrow-right" aria-hidden="true"></i>
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+            <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
+              <CareerGrowthCanvas />
             </div>
           </div>
         </div>
@@ -482,6 +668,7 @@ transition={{
                 <p style={styles.assessmentDesc}>
                   Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
                 </p>
+                
                 <a
                   href="https://insphired.jobs/dashboard"
                   target="_blank"
@@ -524,10 +711,21 @@ const styles = {
     backgroundColor: 'var(--navy)',
     overflow: 'hidden',
   },
+  heroGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.15fr 0.85fr',
+    gap: '48px',
+    alignItems: 'center',
+  },
   heroContent: {
-    maxWidth: '880px',
+    maxWidth: '620px',
     position: 'relative',
     zIndex: 2,
+  },
+  heroVisualWrap: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heroTag: {
     fontSize: '0.8rem',
@@ -542,7 +740,7 @@ const styles = {
     marginBottom: '24px'
   },
   heroHeading: {
-    fontSize: '3.5rem',
+    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
     fontWeight: 700,
     lineHeight: 1.15,
     margin: '0 0 24px 0',
@@ -550,11 +748,11 @@ const styles = {
     letterSpacing: '-1px'
   },
   heroSubheading: {
-    fontSize: '1.15rem',
+    fontSize: '1.1rem',
     lineHeight: 1.65,
     color: 'rgba(255,255,255,0.7)',
     margin: '0 0 36px 0',
-    maxWidth: '780px'
+    maxWidth: '560px'
   },
   journeyPath: {
     display: 'inline-flex',

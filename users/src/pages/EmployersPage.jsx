@@ -84,6 +84,53 @@ function StarRow({ color }) {
   );
 }
 
+/* ── EMPLOYER NETWORK CANVAS (mirrors About page's avatar canvas) ── */
+function EmployerNetworkCanvas() {
+  return (
+    <div className="pillar-canvas-container">
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
+
+      <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-handshake" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> Consultation
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-shield-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Verification
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-user-check" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Placement
+          </div>
+        </div>
+
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">07</span>
+            <span className="core-label">Step Process</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ForEmployersPage = () => {
   return (
     <div style={styles.pageWrapper}>
@@ -111,46 +158,195 @@ const ForEmployersPage = () => {
           border-color: rgba(80, 155, 158, 0.35) !important;
         }
 
-        .hero-orbit-dot { animation: heroOrbit 10s linear infinite; }
-        @keyframes heroOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* ── EMPLOYER NETWORK CANVAS CSS (mirrors About page avatar canvas) ── */
+        .pillar-canvas-container {
+          position: relative;
+          width: 100%;
+          min-height: 440px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 1000px;
+        }
+
+        .pillar-stage-card {
+          position: relative;
+          width: 100%;
+          max-width: 460px;
+          height: 400px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          transform-style: preserve-3d;
+          transform: rotateX(4deg) rotateY(-4deg);
+          transition: transform 0.5s ease;
+        }
+        .pillar-stage-card:hover {
+          transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+        }
+
+        .glow-sphere {
+          position: absolute;
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.35;
+          pointer-events: none;
+        }
+        .teal-glow { background: #509b9e; top: -20px; left: -20px; }
+        .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+
+        .floating-pillar-item {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
+        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .icon-frame {
+          width: 86px;
+          height: 86px;
+          border-radius: 50%;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+          overflow: hidden;
+          background: #1f3540;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.6rem;
+          color: #ffffff;
+        }
+        .teal-border { border: 2px solid #509b9e; }
+        .orange-border { border: 2px solid #d96b43; }
+        .yellow-border { border: 2px solid #e4af51; }
+
+        .pillar-badge {
+          background: rgba(15, 27, 34, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 0.72rem;
+          color: #ffffff;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          white-space: nowrap;
+        }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge-dot.teal { background: #509b9e; }
+        .badge-dot.orange { background: #d96b43; }
+        .badge-dot.yellow { background: #e4af51; }
+
+        .center-metallic-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+        .core-pulse-ring {
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 1px dashed rgba(228, 175, 81, 0.4);
+          animation: rotateCore 14s linear infinite;
+        }
+        @keyframes rotateCore {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
+        .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
+        .core-label {
+          font-size: 0.58rem;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.7);
+          letter-spacing: 0.5px;
+        }
 
         @media (max-width: 900px) {
           .process-grid { grid-template-columns: 1fr !important; }
           .verify-grid { grid-template-columns: 1fr !important; }
           .final-cta-row { flex-direction: column !important; align-items: stretch !important; }
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-visual-wrap { margin-top: 30px; }
         }
       `}</style>
 
       {/* ── HERO ── */}
       <header style={styles.hero}>
         <div style={styles.container}>
-          <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.eyebrow}>For employers</span>
-            <h1 style={styles.heroTitle}>Strategic recruitment solutions for modern African businesses</h1>
-            <p style={styles.heroLead}>
-              Our comprehensive recruitment services are designed to connect your
-              organisation with top-tier professionals who align with your
-              culture, vision, and long-term business goals.
-            </p>
-            <div style={styles.btnRow}>
-              <a
-                href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.btnPrimary}
-                className="btn-hover-transition"
-              >
-                Schedule consultation
-              </a>
-              <Link to="/contact" style={styles.btnSecondaryDark} className="btn-hover-transition">
-                Request callback
-              </Link>
-            </div>
-          </div>
+          <div className="hero-grid" style={styles.heroGrid}>
+            <div style={styles.heroContent} className="animate-fadeup">
+              <span style={styles.eyebrow}>For employers</span>
+              <h1 style={styles.heroTitle}>Strategic recruitment solutions for modern African businesses</h1>
+              <p style={styles.heroLead}>
+                Our comprehensive recruitment services are designed to connect your
+                organisation with top-tier professionals who align with your
+                culture, vision, and long-term business goals.
+              </p>
 
-          <div style={styles.heroVisualWrap}>
-            <div className="hero-orbit-dot" style={styles.orbitDotWrap}>
-              <div style={styles.orbitDot}></div>
+              <div style={styles.heroStats}>
+                <div style={styles.heroStat}>
+                  <span style={styles.heroStatNumber}>07</span>
+                  <span style={styles.heroStatLabel}>Process steps</span>
+                </div>
+                <div style={styles.heroStatDivider}></div>
+                <div style={styles.heroStat}>
+                  <span style={styles.heroStatNumber}>06</span>
+                  <span style={styles.heroStatLabel}>Verification checks</span>
+                </div>
+                <div style={styles.heroStatDivider}></div>
+                <div style={styles.heroStat}>
+                  <span style={styles.heroStatNumber}>
+                    <i className="fas fa-map-marker-alt" style={{ fontSize: '1.1rem' }} aria-hidden="true"></i>
+                  </span>
+                  <span style={styles.heroStatLabel}>South Africa</span>
+                </div>
+              </div>
+
+              <div style={{ ...styles.btnRow, marginTop: '36px' }}>
+                <a
+                  href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={styles.btnPrimary}
+                  className="btn-hover-transition"
+                >
+                  Schedule consultation
+                </a>
+                <Link to="/contact" style={styles.btnSecondaryDark} className="btn-hover-transition">
+                  Request callback
+                </Link>
+              </div>
+            </div>
+
+            <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
+              <EmployerNetworkCanvas />
             </div>
           </div>
         </div>
@@ -312,11 +508,32 @@ const styles = {
     color: '#FFFFFF',
     overflow: 'hidden',
   },
+  heroGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.1fr 0.9fr',
+    gap: '48px',
+    alignItems: 'center',
+  },
   heroContent: {
-    maxWidth: '720px',
+    maxWidth: '620px',
     position: 'relative',
     zIndex: 2,
   },
+  heroVisualWrap: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heroStats: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '28px',
+    flexWrap: 'wrap',
+  },
+  heroStat: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  heroStatNumber: { fontSize: '1.7rem', fontWeight: 700, color: 'var(--yellow)' },
+  heroStatLabel: { fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' },
+  heroStatDivider: { width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' },
   eyebrow: {
     display: 'inline-block',
     fontSize: '0.8rem',
@@ -330,7 +547,7 @@ const styles = {
     marginBottom: '20px',
   },
   heroTitle: {
-    fontSize: 'clamp(2.2rem, 4vw, 3.2rem)',
+    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
     fontWeight: 700,
     margin: '0 0 20px 0',
     letterSpacing: '-1px',
@@ -340,8 +557,8 @@ const styles = {
     fontSize: '1.1rem',
     color: 'rgba(255,255,255,0.75)',
     lineHeight: 1.75,
-    maxWidth: '620px',
-    marginBottom: '36px',
+    maxWidth: '560px',
+    marginBottom: '24px',
   },
   btnRow: {
     display: 'flex',
@@ -384,29 +601,6 @@ btnSecondaryLight: {
   alignItems: 'center',
   border: '1.5px solid rgba(255,255,255,0.3)',
 },
-  heroVisualWrap: {
-    position: 'absolute',
-    top: '50%',
-    right: '8%',
-    transform: 'translateY(-50%)',
-    display: 'none',
-  },
-  orbitDotWrap: {
-    position: 'relative',
-    width: '160px',
-    height: '160px',
-  },
-  orbitDot: {
-    position: 'absolute',
-    top: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '10px',
-    height: '10px',
-    borderRadius: '50%',
-    background: 'var(--yellow)',
-    boxShadow: '0 0 16px rgba(228, 175, 81, 0.6)',
-  },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
   centerHead: {
