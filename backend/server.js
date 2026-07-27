@@ -1,50 +1,80 @@
-const express = require('express');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const { createClient } = require("@supabase/supabase-js");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ============================================
 // Initialize Supabase
+// ============================================
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
 );
 
-// Middleware
+// ============================================
+// CORS CONFIGURATION
+// ============================================
+
 const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "http://192.168.1.164:3000",
-
-    // Vercel production
-    "https://inspired-website-v3-k7kc-dfissxnlr-nokulungs-projects.vercel.app",
-
-    // Main Render frontend if you have one
-    "https://inspired-website-v3.vercel.app"
+    "http://192.168.1.164:3000"
 ];
 
 app.use(cors({
-    origin(origin, callback) {
-        // allow server-to-server requests and Postman
-        if (!origin) return callback(null, true);
+    origin: (origin, callback) => {
 
-        // allow every Vercel preview deployment
-        if (
-            allowedOrigins.includes(origin) ||
-            origin.endsWith(".vercel.app")
-        ) {
+        console.log("Incoming Origin:", origin);
+
+        // Allow requests with no Origin header
+        // (Postman, Render health checks, server-to-server)
+        if (!origin) {
             return callback(null, true);
         }
 
+        // Local development
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        // Allow ALL Vercel deployments
+        if (origin.endsWith(".vercel.app")) {
+            return callback(null, true);
+        }
+
+        console.error("Blocked by CORS:", origin);
+
         return callback(new Error(`Origin ${origin} not allowed by CORS`));
     },
-    credentials: true
+
+    credentials: true,
+
+    methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
+    ],
+
+    allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "Authorization"
+    ]
 }));
 
-app.use(express.json());
+// Handle preflight requests
+app.options("*", cors());
 
+// JSON middleware
+app.use(express.json());
 // ============================================
 // ROOT ROUTE
 // ============================================
