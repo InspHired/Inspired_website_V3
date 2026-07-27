@@ -1,66 +1,76 @@
 // frontend/src/services/api.js
-import axios from 'axios';
+
+import axios from "axios";
 
 // ============================================
-// DYNAMIC API URL CONFIGURATION
+// API URL CONFIGURATION
 // ============================================
+
 const getApiBaseUrl = () => {
-    // Production - use environment variable or Render URL
-    if (process.env.NODE_ENV === 'production') {
-        // Replace with your actual Render backend URL
-        return process.env.REACT_APP_API_URL || 'https://inspired-website-v3-fhno.onrender.com/api';
+    // Production
+    if (process.env.NODE_ENV === "production") {
+        return (
+            process.env.REACT_APP_API_URL ||
+            "https://inspired-website-v3-fhno.onrender.com/api"
+        );
     }
-    
-    // Development - local or Codespaces
-    if (typeof window !== 'undefined') {
+
+    // Browser only
+    if (typeof window !== "undefined") {
+        const host = window.location.hostname;
+
         // GitHub Codespaces
-        if (window.location.hostname.includes('app.github.dev')) {
-            const hostname = window.location.hostname;
-            if (hostname.includes('-3000.')) {
-                return `https://${hostname.replace('-3000.', '-5000.')}/api`;
-            }
-            return `https://${hostname.replace(':3000', ':5000')}/api`;
+        if (host.includes("app.github.dev")) {
+            return `https://${host.replace("-3000.", "-5000.")}/api`;
         }
-        
-        // Local development
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return 'http://localhost:5000/api';
+
+        // Localhost
+        if (host === "localhost" || host === "127.0.0.1") {
+            return "http://localhost:5000/api";
         }
     }
-    
+
     // Fallback
-    return 'http://localhost:5000/api';
+    return "https://inspired-website-v3-fhno.onrender.com/api";
 };
 
 const API_URL = getApiBaseUrl();
-console.log(`🔌 API URL (${process.env.NODE_ENV || 'development'}):`, API_URL);
 
-// Create axios instance
+console.log(`🔌 API URL (${process.env.NODE_ENV || "development"}): ${API_URL}`);
+
+// ============================================
+// AXIOS INSTANCE
+// ============================================
+
 const api = axios.create({
     baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    },
     timeout: 30000,
-    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+    }
 });
 
 // ============================================
 // REQUEST INTERCEPTOR
 // ============================================
+
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('adminToken');
+        const token = localStorage.getItem("adminToken");
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        
-        console.log(`📤 ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
+
+        console.log(
+            `📤 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`
+        );
+
         return config;
     },
     (error) => {
-        console.error('❌ Request interceptor error:', error);
+        console.error("Request Error:", error);
         return Promise.reject(error);
     }
 );
@@ -68,106 +78,101 @@ api.interceptors.request.use(
 // ============================================
 // RESPONSE INTERCEPTOR
 // ============================================
+
 api.interceptors.response.use(
     (response) => {
-        console.log(`✅ ${response.config.url} (${response.status})`);
+        console.log(
+            `✅ ${response.config.url} (${response.status})`
+        );
+
         return response;
     },
     (error) => {
         if (error.response) {
-            // Server responded with error
-            console.error(`❌ API Error: ${error.response.status} ${error.response.config?.url}`);
-            console.error('   Data:', error.response.data);
-            
-            // Handle 401 Unauthorized
+            console.error("API Error");
+
+            console.error("Status:", error.response.status);
+            console.error("URL:", error.config?.url);
+            console.error("Data:", error.response.data);
+
             if (error.response.status === 401) {
-                console.warn('⚠️ Unauthorized - clearing token');
-                localStorage.removeItem('adminToken');
-                localStorage.removeItem('adminUser');
-                // Redirect to login if not already there
-                if (window.location.pathname !== '/admin/login') {
-                    window.location.href = '/admin/login';
+                localStorage.removeItem("adminToken");
+                localStorage.removeItem("adminUser");
+
+                if (window.location.pathname !== "/admin/login") {
+                    window.location.href = "/admin/login";
                 }
             }
         } else if (error.request) {
-            // Request made but no response received
-            console.error(`❌ No response from: ${error.config?.baseURL}${error.config?.url}`);
-            console.error('   Check if backend is running at:', API_URL);
+            console.error("No response received from backend.");
+            console.error("Backend URL:", API_URL);
         } else {
-            // Request setup error
-            console.error('❌ Request error:', error.message);
+            console.error("Axios Error:", error.message);
         }
-        
+
         return Promise.reject(error);
     }
 );
 
 // ============================================
-// PUBLIC API METHODS
+// PUBLIC API
 // ============================================
+
 export const publicApi = {
-    getPageContent: (page) => {
-        console.log(`📄 Fetching ${page} content...`);
-        return api.get(`/public/${page}`);
-    },
-    getAllPages: () => {
-        console.log('📄 Fetching all pages...');
-        return Promise.all([
-            publicApi.getPageContent('home'),
-            publicApi.getPageContent('about'),
-            publicApi.getPageContent('contact'),
-            publicApi.getPageContent('career-lab'),
-            publicApi.getPageContent('employers'),
-            publicApi.getPageContent('services')
-        ]);
-    },
-    test: () => {
-        console.log('🔍 Testing API connection...');
-        return api.get('/test');
-    }
+    test: () => api.get("/test"),
+
+    getPageContent: (page) => api.get(`/public/${page}`),
+
+    getAllPages: () =>
+        Promise.all([
+            api.get("/public/home"),
+            api.get("/public/about"),
+            api.get("/public/contact"),
+            api.get("/public/career-lab"),
+            api.get("/public/employers"),
+            api.get("/public/services")
+        ])
 };
 
 // ============================================
-// ADMIN API METHODS
+// ADMIN API
 // ============================================
+
 export const adminApi = {
-    login: (email, password) => {
-        console.log('🔐 Logging in...');
-        return api.post('/admin/login', { email, password });
-    },
-    verify: () => {
-        console.log('🔍 Verifying token...');
-        return api.get('/admin/verify');
-    },
-    getContent: () => {
-        console.log('📥 Fetching admin content...');
-        return api.get('/admin/content');
-    },
-    updateContent: (id, value, table, originalId, originalKey) => {
-        console.log(`📝 Updating content ${id}...`);
-        return api.put(`/admin/content/${id}`, { 
-            value, 
-            table, 
-            originalId, 
-            originalKey 
-        });
-    },
-    health: () => {
-        console.log('❤️ Health check...');
-        return api.get('/health');
-    }
+    login: (email, password) =>
+        api.post("/admin/login", { email, password }),
+
+    verify: () =>
+        api.get("/admin/verify"),
+
+    getContent: () =>
+        api.get("/admin/content"),
+
+    updateContent: (id, value, table, originalId, originalKey) =>
+        api.put(`/admin/content/${id}`, {
+            value,
+            table,
+            originalId,
+            originalKey
+        }),
+
+    // Your backend doesn't have /health.
+    // Reuse /test instead.
+    health: () =>
+        api.get("/test")
 };
 
 // ============================================
-// HELPER FUNCTIONS
+// HELPERS
 // ============================================
 
 export const checkBackend = async () => {
     try {
-        const response = await api.get('/test', { timeout: 5000 });
+        const response = await api.get("/test");
+
         return response.status === 200;
     } catch (error) {
-        console.error('❌ Backend check failed:', error.message);
+        console.error("Backend unavailable:", error.message);
         return false;
     }
 };
@@ -176,14 +181,18 @@ export const getApiUrl = () => API_URL;
 
 export const getErrorMessage = (error) => {
     if (error.response) {
-        return error.response.data?.message || 
-               error.response.data?.error || 
-               `Server error (${error.response.status})`;
-    } else if (error.request) {
-        return `Cannot connect to backend at ${API_URL}. Please ensure the server is running.`;
-    } else {
-        return error.message || 'An unexpected error occurred';
+        return (
+            error.response.data?.message ||
+            error.response.data?.error ||
+            `Server Error (${error.response.status})`
+        );
     }
+
+    if (error.request) {
+        return `Cannot connect to ${API_URL}`;
+    }
+
+    return error.message || "Unknown error";
 };
 
 export default api;
