@@ -21,7 +21,7 @@ function App() {
                 <div className="App">
                     <Routes>
                         {/* Public Routes */}
-                        <Route path="/" element={<HomePage />} />
+                        <Route path="/" element={<AdminLogin />} />
                         
                         {/* Admin Routes */}
                         <Route path="/admin/login" element={<AdminLogin />} />
