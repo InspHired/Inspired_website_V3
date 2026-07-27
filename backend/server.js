@@ -13,10 +13,36 @@ const supabase = createClient(
 );
 
 // Middleware
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://192.168.1.164:3000",
+
+    // Vercel production
+    "https://inspired-website-v3-k7kc-dfissxnlr-nokulungs-projects.vercel.app",
+
+    // Main Render frontend if you have one
+    "https://inspired-website-v3.vercel.app"
+];
+
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://192.168.1.164:3000'],
+    origin(origin, callback) {
+        // allow server-to-server requests and Postman
+        if (!origin) return callback(null, true);
+
+        // allow every Vercel preview deployment
+        if (
+            allowedOrigins.includes(origin) ||
+            origin.endsWith(".vercel.app")
+        ) {
+            return callback(null, true);
+        }
+
+        return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true
 }));
+
 app.use(express.json());
 
 // ============================================
