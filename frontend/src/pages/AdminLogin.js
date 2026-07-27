@@ -79,7 +79,7 @@ const AdminLogin = () => {
 
     const checkBackend = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/test');
+            const response = await fetch('https://inspired-website-v3-fhno.onrender.com/api/test');
             if (response.ok) {
                 setBackendStatus('online');
             } else {
