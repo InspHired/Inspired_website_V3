@@ -70,8 +70,6 @@ app.use(cors({
     ]
 }));
 
-// Handle preflight requests
-app.options("*", cors());
 
 // JSON middleware
 app.use(express.json());
