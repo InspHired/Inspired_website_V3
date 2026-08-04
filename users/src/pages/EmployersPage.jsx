@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
@@ -131,7 +131,8 @@ function EmployerNetworkCanvas() {
   );
 }
 
-const ForEmployersPage = () => {
+  const ForEmployersPage = () => {
+  const [hoveredService, setHoveredService] = useState(null);
   return (
     <div style={styles.pageWrapper}>
       <style>{`
@@ -208,14 +209,11 @@ const ForEmployersPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation}
 
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
+        
 
         .icon-frame {
           width: 86px;
@@ -353,23 +351,30 @@ const ForEmployersPage = () => {
       </header>
 
       {/* ── RECRUITMENT PROCESS ── */}
-      <section style={styles.sectionWhite}>
+     <section style={styles.sectionWhite}>
         <div style={styles.container}>
           <div style={styles.centerHead}>
             <span style={styles.sectionTag}>Our recruitment process</span>
-            <h2 style={styles.sectionHeading}>A proven hiring framework built for results</h2>
+            <h2 style={styles.sectionHeading}>A proven hiring framework built for results </h2>
             <p style={styles.sectionSub}>
-              Every step of our recruitment process is intentionally designed to
-              deliver exceptional candidates and long-term hiring success.
+              Every step of our recruitment process isnintentionally designed to deliver exceptional candidates and long-term hiring success.
             </p>
           </div>
 
           <div className="process-grid" style={styles.processGrid}>
-            {processSteps.map((step) => (
-              <div key={step.number} style={{ ...styles.processCard, borderTop: `4px solid ${step.accent}` }} className="interactive-card">
-                <span style={styles.processNumber}>{step.number}</span>
-                <h3 style={styles.processTitle}>{step.title}</h3>
-                <p style={styles.processText}>{step.text}</p>
+            {processSteps.map((s) => (
+              <div
+                key={s.number}
+                style={{ ...styles.processCard, borderTop: `4px solid ${s.accent}` }}
+                className="process-card"
+                onMouseEnter={() => setHoveredService(s.number)}
+                onMouseLeave={() => setHoveredService(null)}
+              >
+                <span style={{ ...styles.processNumber, color: hoveredService === s.number ? s.accent : 'rgba(31, 53, 64, 0.08)' }}>
+                  {s.number}
+                </span>
+                <h3 style={styles.processTitle}>{s.title}</h3>
+                <p style={styles.processText}>{s.text}</p>
               </div>
             ))}
           </div>
@@ -643,12 +648,13 @@ btnSecondaryLight: {
     boxShadow: 'var(--shadow-sm)',
   },
   processNumber: {
-    display: 'block',
-    fontSize: '1.6rem',
-    fontWeight: 700,
-    color: 'var(--teal)',
-    marginBottom: '14px',
-  },
+  display: 'block',
+  fontSize: '2.4rem',
+  fontWeight: 700,
+  lineHeight: 1,
+  marginBottom: '16px',
+  transition: 'color var(--transition)',
+},
   processTitle: {
     fontSize: '1.1rem',
     fontWeight: 700,

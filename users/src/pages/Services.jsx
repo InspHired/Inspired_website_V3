@@ -181,14 +181,11 @@ const ServicesPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation}
 
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
+       
 
         .icon-frame {
           width: 86px;
