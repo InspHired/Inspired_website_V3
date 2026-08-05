@@ -64,7 +64,7 @@ const ServicesPage = () => {
       try {
         setLoading(true);
         const response = await publicApi.getServices();
-        
+
         if (response.success && response.data) {
           setServicesData(response.data);
           setError(null);
@@ -135,21 +135,21 @@ const ServicesPage = () => {
   const hero = data.hero || {};
   const skillsTraining = data.skillsTraining || {};
 
-  const services = data.offerings && data.offerings.length > 0 
+  const services = data.offerings && data.offerings.length > 0
     ? data.offerings.map((item, index) => ({
-        number: item.service_number || `0${index + 1}`,
-        title: item.title || defaultServices[index]?.title || '',
-        text: item.description || defaultServices[index]?.text || '',
-        accent: item.accent_color || defaultServices[index]?.accent || 'var(--teal)',
-      }))
+      number: item.service_number || `0${index + 1}`,
+      title: item.title || defaultServices[index]?.title || '',
+      text: item.description || defaultServices[index]?.text || '',
+      accent: item.accent_color || defaultServices[index]?.accent || 'var(--teal)',
+    }))
     : defaultServices;
 
   const screeningItems = data.screening && data.screening.length > 0
     ? data.screening.map(item => ({
-        title: item.title || '',
-        text: item.description || '',
-        icon: item.icon_class || 'fa-check',
-      }))
+      title: item.title || '',
+      text: item.description || '',
+      icon: item.icon_class || 'fa-check',
+    }))
     : defaultScreeningItems;
 
   const handleSubscribe = (e) => {
@@ -174,8 +174,8 @@ const ServicesPage = () => {
         <div style={styles.errorIcon}>⚠️</div>
         <h3 style={styles.errorTitle}>Failed to Load Services</h3>
         <p style={styles.errorText}>{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           style={styles.retryButton}
         >
           Retry
@@ -189,7 +189,63 @@ const ServicesPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
-        /* ── 3D HEADING SYSTEM ── */
+        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+        .hero-section {
+          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+          color: #ffffff;
+          padding: 130px 0 100px;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+        }
+        /* ── SUBSCRIBE HEADING - White, No Effects ── */
+.subscribe-heading {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+}
+
+        /* ── HERO EYEBROW - Clean, No Effects ── */
+        .hero-eyebrow {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.15);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
+        /* ── HERO HEADING - Pure White, No Effects ── */
+        .hero-heading {
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(2.2rem, 4vw, 3rem);
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin: 0 0 20px 0;
+        }
+
+        /* ── HERO DESCRIPTION - Clean, No Effects ── */
+        .hero-description {
+          font-size: 1.1rem;
+          color: rgba(255, 255, 255, 0.75);
+          line-height: 1.75;
+          max-width: 560px;
+          margin-bottom: 24px;
+        }
+
+        /* ── 3D HEADING SYSTEM (For body content only) ── */
         .title-3d {
           display: block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -210,11 +266,6 @@ const ServicesPage = () => {
           filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
         }
 
-        .title-hero {
-          font-size: clamp(2.8rem, 5vw, 4.2rem);
-          line-height: 1.1;
-        }
-
         .title-section {
           font-size: clamp(2rem, 3.5vw, 2.8rem);
           line-height: 1.2;
@@ -230,6 +281,7 @@ const ServicesPage = () => {
           line-height: 1.4;
         }
 
+        /* ── BODY EYEBROW ── */
         .eyebrow-3d {
           display: inline-block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -245,6 +297,87 @@ const ServicesPage = () => {
           border: 1px solid rgba(80, 155, 158, 0.15);
         }
 
+        /* ── 3D METALLIC BUTTONS ── */
+        .btn-3d-primary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          border: 1px solid #73c8cb;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.6),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+            0 4px 0 #285759,
+            0 8px 15px rgba(31, 53, 64, 0.25);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-3d-primary:hover {
+          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+          transform: translateY(-5px);
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.7),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            0 6px 0 #285759,
+            0 12px 20px rgba(80, 155, 158, 0.35);
+        }
+
+        .btn-3d-primary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 transparent,
+            0 3px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-3d-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: transparent;
+          border: 1.5px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-3d-secondary:hover {
+          background: rgba(255, 255, 255, 0.08);
+          transform: translateY(-5px);
+          box-shadow: 0 6px 0 rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-3d-secondary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 0 2px 0 rgba(255, 255, 255, 0.05) !important;
+        }
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -258,9 +391,6 @@ const ServicesPage = () => {
           transform: translateY(-6px) !important;
           box-shadow: var(--shadow-md) !important;
         }
-
-        .btn-hover-transition { transition: all var(--transition) !important; }
-        .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
 
         .screening-item { transition: background-color var(--transition), border-color var(--transition) !important; }
         .screening-item:hover {
@@ -485,15 +615,15 @@ const ServicesPage = () => {
       `}</style>
 
       {/* ── HERO ── */}
-      <header style={styles.hero}>
+      <header className="hero-section">
         <div style={styles.container}>
           <div className="hero-grid" style={styles.heroGrid}>
             <div style={styles.heroContent} className="animate-fadeup">
-              <span className="eyebrow-3d">{hero.tag || 'What we do'}</span>
-              <h1 className="title-3d" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', lineHeight: 1.2 }}>
+              <span className="hero-eyebrow">{hero.tag || 'What we do'}</span>
+              <h1 className="hero-heading">
                 {hero.title || 'Our services'}
               </h1>
-              <p style={styles.heroLead}>
+              <p className="hero-description">
                 {hero.description || 'A full ecosystem of recruitment solutions — from executive search to volume placement, candidate development, and background verification — built to solve every part of the hiring challenge.'}
               </p>
 
@@ -570,8 +700,7 @@ const ServicesPage = () => {
                   href={skillsTraining.cta_primary_url || 'https://calendly.com/recruitment-insphired/book-a-consultation-with-a-client-relationship-manager?month=2026-05'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={styles.btnPrimary}
-                  className="btn-hover-transition"
+                  className="btn-3d-primary"
                 >
                   {skillsTraining.cta_primary_text || 'Book consultation'}
                 </a>
@@ -579,8 +708,7 @@ const ServicesPage = () => {
                   href={skillsTraining.cta_secondary_url || 'https://insphired.jobs/contact-me-form/'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={styles.btnSecondary}
-                  className="btn-hover-transition"
+                  className="btn-3d-secondary"
                 >
                   {skillsTraining.cta_secondary_text || 'Request call back'}
                 </a>
@@ -636,8 +764,12 @@ const ServicesPage = () => {
         <div style={styles.container}>
           <div style={styles.subscribeCard}>
             <div>
-              <h3 className="title-3d" style={{ fontSize: '1.5rem', color: '#FFFFFF', marginBottom: '8px' }}>Need one of these services?</h3>
-              <p style={styles.subscribeText}>Hey there 👋 Leave your email and our team will reach out to help.</p>
+              <h3 className="subscribe-heading">
+                {hero.subscribe_title || 'Need one of these services?'}
+              </h3>
+              <p style={styles.subscribeText}>
+                {hero.subscribe_text || 'Hey there 👋 Leave your email and our team will reach out to help.'}
+              </p>
             </div>
 
             {subscribed ? (
@@ -672,228 +804,190 @@ const ServicesPage = () => {
 const styles = {
   pageWrapper: { color: 'var(--navy)', backgroundColor: 'var(--bg)', lineHeight: 1.65 },
   container: { maxWidth: '1280px', margin: '0 auto', padding: '0 32px', width: '100%' },
-  hero: { 
-    position: 'relative', 
-    backgroundColor: 'var(--navy)', 
-    padding: '130px 0 90px', 
-    color: '#FFFFFF', 
-    overflow: 'hidden' 
-  },
-  heroGrid: { 
-    display: 'grid', 
-    gridTemplateColumns: '1.1fr 0.9fr', 
-    gap: '48px', 
-    alignItems: 'center' 
+  heroGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.1fr 0.9fr',
+    gap: '48px',
+    alignItems: 'center'
   },
   heroContent: { maxWidth: '620px' },
-  heroLead: { 
-    fontSize: '1.1rem', 
-    color: 'rgba(255,255,255,0.75)', 
-    lineHeight: 1.75, 
-    marginBottom: '40px', 
-    maxWidth: '560px' 
-  },
-  heroStats: { 
-    display: 'flex', 
-    alignItems: 'center', 
-    gap: '28px', 
-    flexWrap: 'wrap' 
+  heroStats: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '28px',
+    flexWrap: 'wrap'
   },
   heroStat: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  heroStatNumber: { 
-    fontSize: '1.7rem', 
-    fontWeight: 700, 
-    color: 'var(--yellow)' 
+  heroStatNumber: {
+    fontSize: '1.7rem',
+    fontWeight: 700,
+    color: 'var(--yellow)'
   },
-  heroStatLabel: { 
-    fontSize: '0.8rem', 
-    color: 'rgba(255,255,255,0.6)', 
-    textTransform: 'uppercase', 
-    letterSpacing: '0.05em' 
+  heroStatLabel: {
+    fontSize: '0.8rem',
+    color: 'rgba(255,255,255,0.6)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
   },
-  heroStatDivider: { 
-    width: '1px', 
-    height: '36px', 
-    background: 'rgba(255,255,255,0.15)' 
+  heroStatDivider: {
+    width: '1px',
+    height: '36px',
+    background: 'rgba(255,255,255,0.15)'
   },
-  heroVisualWrap: { 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  heroVisualWrap: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
-  centerHead: { 
-    textAlign: 'center', 
+  centerHead: {
+    textAlign: 'center',
     marginBottom: '56px',
     maxWidth: '640px',
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  sectionSub: { 
-    fontSize: '1.05rem', 
-    color: '#5B6670', 
-    maxWidth: '640px', 
-    margin: '0 auto', 
+  sectionSub: {
+    fontSize: '1.05rem',
+    color: '#5B6670',
+    maxWidth: '640px',
+    margin: '0 auto',
     lineHeight: 1.6,
     marginTop: '16px',
   },
-  serviceGrid: { 
-    display: 'grid', 
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-    gap: '28px' 
+  btnRow: {
+    display: 'flex',
+    gap: '16px',
+    flexWrap: 'wrap'
   },
-  serviceCard: { 
-    background: '#FFFFFF', 
-    borderRadius: 'var(--radius-card)', 
-    padding: '36px 32px', 
-    border: '1px solid var(--border-light)', 
-    boxShadow: 'var(--shadow-sm)', 
+  serviceGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: '28px'
+  },
+  serviceCard: {
+    background: '#FFFFFF',
+    borderRadius: 'var(--radius-card)',
+    padding: '36px 32px',
+    border: '1px solid var(--border-light)',
+    boxShadow: 'var(--shadow-sm)',
     position: 'relative',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   },
-  serviceNumber: { 
-    display: 'block', 
-    fontSize: '2.4rem', 
-    fontWeight: 700, 
-    lineHeight: 1, 
-    marginBottom: '16px', 
-    transition: 'color var(--transition)' 
+  serviceNumber: {
+    display: 'block',
+    fontSize: '2.4rem',
+    fontWeight: 700,
+    lineHeight: 1,
+    marginBottom: '16px',
+    transition: 'color var(--transition)'
   },
-  serviceText: { 
-    fontSize: '0.94rem', 
-    color: '#5B6670', 
-    lineHeight: 1.65, 
-    margin: 0 
+  serviceText: {
+    fontSize: '0.94rem',
+    color: '#5B6670',
+    lineHeight: 1.65,
+    margin: 0
   },
-  empowerGrid: { 
-    display: 'grid', 
-    gridTemplateColumns: '1.1fr 0.9fr', 
-    gap: '56px', 
-    alignItems: 'center' 
+  empowerGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.1fr 0.9fr',
+    gap: '56px',
+    alignItems: 'center'
   },
-  empowerText: { 
-    fontSize: '1.05rem', 
-    color: '#5B6670', 
-    lineHeight: 1.75, 
-    marginBottom: '32px', 
-    maxWidth: '520px' 
-  },
-  btnRow: { 
-    display: 'flex', 
-    gap: '16px', 
-    flexWrap: 'wrap' 
-  },
-  btnPrimary: { 
-    background: 'var(--teal)', 
-    color: '#FFFFFF', 
-    padding: '14px 28px', 
-    borderRadius: '40px', 
-    textDecoration: 'none', 
-    fontWeight: 700, 
-    fontSize: '0.95rem', 
-    display: 'inline-flex', 
-    alignItems: 'center', 
-    boxShadow: '0 4px 14px rgba(80, 155, 158, 0.3)' 
-  },
-  btnSecondary: { 
-    background: 'transparent', 
-    color: 'var(--navy)', 
-    padding: '14px 28px', 
-    borderRadius: '40px', 
-    textDecoration: 'none', 
-    fontWeight: 700, 
-    fontSize: '0.95rem', 
-    display: 'inline-flex', 
-    alignItems: 'center', 
-    border: '1.5px solid var(--border-light)' 
+  empowerText: {
+    fontSize: '1.05rem',
+    color: '#5B6670',
+    lineHeight: 1.75,
+    marginBottom: '32px',
+    maxWidth: '520px'
   },
   empowerVisual: { display: 'flex', justifyContent: 'center' },
-  empowerVisualCard: { 
-    background: '#FFFFFF', 
-    borderRadius: 'var(--radius-card)', 
-    border: '1px solid var(--border-light)', 
-    boxShadow: 'var(--shadow-md)', 
-    padding: '40px', 
-    maxWidth: '340px', 
-    textAlign: 'center' 
+  empowerVisualCard: {
+    background: '#FFFFFF',
+    borderRadius: 'var(--radius-card)',
+    border: '1px solid var(--border-light)',
+    boxShadow: 'var(--shadow-md)',
+    padding: '40px',
+    maxWidth: '340px',
+    textAlign: 'center'
   },
-  empowerIconWrap: { 
-    width: '56px', 
-    height: '56px', 
-    borderRadius: '50%', 
-    background: 'rgba(80, 155, 158, 0.12)', 
-    color: 'var(--teal)', 
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    fontSize: '1.4rem', 
-    margin: '0 auto 20px' 
+  empowerIconWrap: {
+    width: '56px',
+    height: '56px',
+    borderRadius: '50%',
+    background: 'rgba(80, 155, 158, 0.12)',
+    color: 'var(--teal)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.4rem',
+    margin: '0 auto 20px'
   },
-  empowerVisualText: { 
-    fontSize: '0.92rem', 
-    color: '#5B6670', 
-    lineHeight: 1.6, 
-    margin: 0 
+  empowerVisualText: {
+    fontSize: '0.92rem',
+    color: '#5B6670',
+    lineHeight: 1.6,
+    margin: 0
   },
-  screeningList: { 
-    maxWidth: '820px', 
-    margin: '0 auto', 
-    display: 'flex', 
-    flexDirection: 'column', 
-    gap: '16px' 
+  screeningList: {
+    maxWidth: '820px',
+    margin: '0 auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
   },
-  screeningItem: { 
-    display: 'flex', 
-    alignItems: 'flex-start', 
-    gap: '20px', 
-    background: '#FFFFFF', 
-    border: '1px solid var(--border-light)', 
-    borderRadius: '16px', 
+  screeningItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '20px',
+    background: '#FFFFFF',
+    border: '1px solid var(--border-light)',
+    borderRadius: '16px',
     padding: '24px 28px',
     transition: 'background-color 0.3s ease, border-color 0.3s ease',
   },
-  screeningIcon: { 
-    width: '48px', 
-    height: '48px', 
-    borderRadius: '50%', 
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    fontSize: '1.1rem', 
-    flexShrink: 0 
+  screeningIcon: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
+    flexShrink: 0
   },
-  screeningText: { 
-    fontSize: '0.92rem', 
-    color: '#5B6670', 
-    margin: 0, 
-    lineHeight: 1.5 
+  screeningText: {
+    fontSize: '0.92rem',
+    color: '#5B6670',
+    margin: 0,
+    lineHeight: 1.5
   },
   subscribeSection: { padding: '80px 0 100px', backgroundColor: 'var(--bg)' },
-  subscribeCard: { 
+  subscribeCard: {
     background: 'linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%)',
-    borderRadius: '24px', 
-    padding: '48px 56px', 
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    gap: '40px', 
-    flexWrap: 'wrap', 
-    boxShadow: '0 16px 48px rgba(31, 53, 64, 0.2)' 
+    borderRadius: '24px',
+    padding: '48px 56px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '40px',
+    flexWrap: 'wrap',
+    boxShadow: '0 16px 48px rgba(31, 53, 64, 0.2)'
   },
-  subscribeText: { 
-    fontSize: '1rem', 
-    color: 'rgba(255,255,255,0.7)', 
-    margin: 0 
+  subscribeText: {
+    fontSize: '1rem',
+    color: 'rgba(255,255,255,0.7)',
+    margin: 0
   },
-  subscribeSuccess: { 
-    color: 'var(--yellow)', 
-    fontWeight: 600, 
-    fontSize: '0.95rem' 
+  subscribeSuccess: {
+    color: 'var(--yellow)',
+    fontWeight: 600,
+    fontSize: '0.95rem'
   },
-  subscribeRow: { 
-    display: 'flex', 
-    gap: '12px', 
+  subscribeRow: {
+    display: 'flex',
+    gap: '12px',
     flexShrink: 0,
     flexWrap: 'wrap',
   },
@@ -945,6 +1039,7 @@ const styles = {
     transition: 'background-color 0.2s',
     boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   }
+
 };
 
 // Add keyframes for spinner animation

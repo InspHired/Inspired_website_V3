@@ -226,7 +226,53 @@ const ForEmployersPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
-        /* ── 3D HEADING SYSTEM ── */
+        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+        .hero-section {
+          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+          color: #ffffff;
+          padding: 130px 0 100px;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+        }
+
+        /* ── HERO EYEBROW - Clean, No Effects ── */
+        .hero-eyebrow {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.15);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
+        /* ── HERO HEADING - Pure White, No Effects ── */
+        .hero-heading {
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(2.2rem, 4vw, 3rem);
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin: 0 0 20px 0;
+        }
+
+        /* ── HERO DESCRIPTION - Clean, No Effects ── */
+        .hero-description {
+          font-size: 1.1rem;
+          color: rgba(255, 255, 255, 0.75);
+          line-height: 1.75;
+          max-width: 560px;
+          margin-bottom: 24px;
+        }
+
+        /* ── 3D HEADING SYSTEM (For body content only) ── */
         .title-3d {
           display: block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -257,6 +303,12 @@ const ForEmployersPage = () => {
           line-height: 1.3;
         }
 
+        .title-small {
+          font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+          line-height: 1.4;
+        }
+
+        /* ── BODY EYEBROW ── */
         .eyebrow-3d {
           display: inline-block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -272,6 +324,98 @@ const ForEmployersPage = () => {
           border: 1px solid rgba(80, 155, 158, 0.15);
         }
 
+        /* ── FINAL CTA HEADING - White, No Effects ── */
+        .final-cta-heading {
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(1.5rem, 2.5vw, 1.8rem);
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin: 0 0 10px 0;
+        }
+
+        /* ── 3D METALLIC BUTTONS ── */
+        .btn-3d-primary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          border: 1px solid #73c8cb;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.6),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+            0 4px 0 #285759,
+            0 8px 15px rgba(31, 53, 64, 0.25);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-3d-primary:hover {
+          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+          transform: translateY(-5px);
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.7),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            0 6px 0 #285759,
+            0 12px 20px rgba(80, 155, 158, 0.35);
+        }
+
+        .btn-3d-primary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 transparent,
+            0 3px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-3d-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: transparent;
+          border: 1.5px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-3d-secondary:hover {
+          background: rgba(255, 255, 255, 0.08);
+          transform: translateY(-5px);
+          box-shadow: 0 6px 0 rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-3d-secondary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 0 2px 0 rgba(255, 255, 255, 0.05) !important;
+        }
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -285,9 +429,6 @@ const ForEmployersPage = () => {
           transform: translateY(-6px) !important;
           box-shadow: var(--shadow-md) !important;
         }
-
-        .btn-hover-transition { transition: all var(--transition) !important; }
-        .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
 
         .verify-item { transition: background-color var(--transition), border-color var(--transition) !important; }
         .verify-item:hover {
@@ -444,15 +585,15 @@ const ForEmployersPage = () => {
       `}</style>
 
       {/* ── HERO ── */}
-      <header style={styles.hero}>
+      <header className="hero-section">
         <div style={styles.container}>
           <div className="hero-grid" style={styles.heroGrid}>
             <div style={styles.heroContent} className="animate-fadeup">
-              <span className="eyebrow-3d">{hero.tag || 'For employers'}</span>
-              <h1 className="title-3d" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', lineHeight: 1.2 }}>
+              <span className="hero-eyebrow">{hero.tag || 'For employers'}</span>
+              <h1 className="hero-heading">
                 {hero.title || 'Strategic recruitment solutions for modern African businesses'}
               </h1>
-              <p style={styles.heroLead}>
+              <p className="hero-description">
                 {hero.description || 'Our comprehensive recruitment services are designed to connect your organisation with top-tier professionals who align with your culture, vision, and long-term business goals.'}
               </p>
 
@@ -480,12 +621,11 @@ const ForEmployersPage = () => {
                   href={hero.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={styles.btnPrimary}
-                  className="btn-hover-transition"
+                  className="btn-3d-primary"
                 >
                   {hero.cta_primary_text || 'Schedule consultation'}
                 </a>
-                <Link to={hero.cta_secondary_url || '/contact'} style={styles.btnSecondaryDark} className="btn-hover-transition">
+                <Link to={hero.cta_secondary_url || '/contact'} className="btn-3d-secondary">
                   {hero.cta_secondary_text || 'Request callback'}
                 </Link>
               </div>
@@ -600,7 +740,7 @@ const ForEmployersPage = () => {
         <div style={styles.container}>
           <div className="final-cta-row" style={styles.finalCtaRow}>
             <div>
-              <h2 className="title-3d" style={{ fontSize: '1.7rem', color: '#FFFFFF', marginBottom: '10px' }}>
+              <h2 className="final-cta-heading">
                 {finalCta.title || 'How can we InspHire you today?'}
               </h2>
               <p style={styles.finalCtaText}>
@@ -612,20 +752,18 @@ const ForEmployersPage = () => {
                 href={finalCta.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={styles.btnPrimary}
-                className="btn-hover-transition"
+                className="btn-3d-primary"
               >
                 {finalCta.cta_primary_text || 'Schedule consultation'}
               </a>
-              <Link to={finalCta.cta_secondary_url || '/contact'} style={styles.btnSecondaryLight} className="btn-hover-transition">
+              <Link to={finalCta.cta_secondary_url || '/contact'} className="btn-3d-secondary">
                 {finalCta.cta_secondary_text || 'Request callback'}
               </Link>
               <a
                 href={finalCta.cta_tertiary_url || 'https://worx.insphired.jobs/'}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={styles.btnSecondaryLight}
-                className="btn-hover-transition"
+                className="btn-3d-secondary"
               >
                 {finalCta.cta_tertiary_text || 'Worx (temp hiring platform)'}
               </a>
@@ -650,13 +788,6 @@ const styles = {
     margin: '0 auto',
     padding: '0 32px',
     width: '100%',
-  },
-  hero: {
-    position: 'relative',
-    backgroundColor: 'var(--navy)',
-    padding: '130px 0 100px',
-    color: '#FFFFFF',
-    overflow: 'hidden',
   },
   heroGrid: {
     display: 'grid',
@@ -684,53 +815,10 @@ const styles = {
   heroStatNumber: { fontSize: '1.7rem', fontWeight: 700, color: 'var(--yellow)' },
   heroStatLabel: { fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' },
   heroStatDivider: { width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' },
-  heroLead: {
-    fontSize: '1.1rem',
-    color: 'rgba(255,255,255,0.75)',
-    lineHeight: 1.75,
-    maxWidth: '560px',
-    marginBottom: '24px',
-  },
   btnRow: {
     display: 'flex',
     gap: '16px',
     flexWrap: 'wrap',
-  },
-  btnPrimary: {
-    background: 'var(--teal)',
-    color: '#FFFFFF',
-    padding: '14px 30px',
-    borderRadius: '40px',
-    textDecoration: 'none',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    boxShadow: '0 4px 14px rgba(80, 155, 158, 0.3)',
-  },
-  btnSecondaryDark: {
-    background: 'transparent',
-    color: '#FFFFFF',
-    padding: '14px 30px',
-    borderRadius: '40px',
-    textDecoration: 'none',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    border: '1.5px solid rgba(255,255,255,0.3)',
-  },
-  btnSecondaryLight: {
-    background: 'transparent',
-    color: '#FFFFFF',
-    padding: '14px 30px',
-    borderRadius: '40px',
-    textDecoration: 'none',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    border: '1.5px solid rgba(255,255,255,0.3)',
   },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },

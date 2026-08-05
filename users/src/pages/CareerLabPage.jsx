@@ -107,8 +107,6 @@ function CareerLabPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
-    // Send to backend API for Career Lab registration
-    // Similar to contact form submission
   };
 
   // Use data from API or fallback to defaults
@@ -267,6 +265,106 @@ function CareerLabPage() {
   return (
     <div style={globalStyles.pageWrapper}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
+        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+        .hero-section {
+          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+          color: #ffffff;
+          padding: 130px 0 100px;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+        }
+
+        /* ── HERO EYEBROW - Clean, No Effects ── */
+        .hero-eyebrow {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.15);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
+        /* ── HERO HEADING - Pure White, No Effects ── */
+        .hero-heading {
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(2.2rem, 4vw, 3rem);
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin: 0 0 20px 0;
+        }
+
+        /* ── HERO DESCRIPTION - Clean, No Effects ── */
+        .hero-description {
+          font-size: 1.1rem;
+          color: rgba(255, 255, 255, 0.75);
+          line-height: 1.75;
+          max-width: 560px;
+          margin-bottom: 24px;
+        }
+
+        /* ── 3D HEADING SYSTEM (For body content only) ── */
+        .title-3d {
+          display: block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-weight: 700;
+          color: #1f3540;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+          position: relative;
+          text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.05),
+            0 8px 16px rgba(80, 155, 158, 0.08),
+            0 12px 32px rgba(0, 0, 0, 0.04);
+          transform: translateY(-4px);
+          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+        }
+
+        .title-section {
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          line-height: 1.2;
+        }
+
+        .title-sub {
+          font-size: clamp(1.4rem, 2vw, 1.8rem);
+          line-height: 1.3;
+        }
+
+        .title-small {
+          font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+          line-height: 1.4;
+        }
+
+        /* ── BODY EYEBROW ── */
+        .eyebrow-3d {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.1);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -316,36 +414,181 @@ function CareerLabPage() {
         .quiz-option:hover i {
           opacity: 1 !important;
         }
+
+        /* ── PILLAR CANVAS CSS ── */
+        .pillar-canvas-container {
+          position: relative;
+          width: 100%;
+          min-height: 440px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 1000px;
+        }
+
+        .pillar-stage-card {
+          position: relative;
+          width: 100%;
+          max-width: 460px;
+          height: 400px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(16px);
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          transform-style: preserve-3d;
+          transform: rotateX(4deg) rotateY(-4deg);
+          transition: transform 0.5s ease;
+        }
+        .pillar-stage-card:hover {
+          transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+        }
+
+        .glow-sphere {
+          position: absolute;
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.35;
+          pointer-events: none;
+        }
+        .teal-glow { background: #509b9e; top: -20px; left: -20px; }
+        .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+
+        .floating-pillar-item {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
+        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .icon-frame {
+          width: 86px;
+          height: 86px;
+          border-radius: 50%;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+          overflow: hidden;
+          background: #1f3540;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.6rem;
+          color: #ffffff;
+        }
+        .teal-border { border: 2px solid #509b9e; }
+        .orange-border { border: 2px solid #d96b43; }
+        .yellow-border { border: 2px solid #e4af51; }
+
+        .pillar-badge {
+          background: rgba(15, 27, 34, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 0.72rem;
+          color: #ffffff;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          white-space: nowrap;
+        }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge-dot.teal { background: #509b9e; }
+        .badge-dot.orange { background: #d96b43; }
+        .badge-dot.yellow { background: #e4af51; }
+
+        .center-metallic-core {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+        .core-pulse-ring {
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 1px dashed rgba(228, 175, 81, 0.4);
+          animation: rotateCore 14s linear infinite;
+        }
+        @keyframes rotateCore {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
+        .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
+        .core-label {
+          font-size: 0.58rem;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.7);
+          letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 900px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-visual-wrap { margin-top: 30px; }
+          .curriculum-grid { grid-template-columns: 1fr !important; }
+          .diff-grid { grid-template-columns: 1fr !important; }
+          .form-split-grid { grid-template-columns: 1fr !important; }
+          .journey-path { flex-wrap: wrap; justify-content: center; }
+        }
       `}</style>
 
-
-
       {/* Hero */}
-      <header style={styles.hero}>
+      <header className="hero-section">
         <div style={styles.container}>
-          <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.heroTag}>Career Lab</span>
-            <h1 style={styles.heroHeading}>Structured career development & coaching for job seekers</h1>
-            <p style={styles.heroSubheading}>
-              Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today's job market.
-            </p>
+          <div className="hero-grid" style={styles.heroGrid}>
+            <div style={styles.heroContent} className="animate-fadeup">
+              <span className="hero-eyebrow">{hero.tag || 'Career Lab'}</span>
+              <h1 className="hero-heading">
+                {hero.title || 'Structured career development & coaching for job seekers'}
+              </h1>
+              <p className="hero-description">
+                {hero.description || 'Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today\'s job market.'}
+              </p>
 
-            <div style={styles.journeyPath}>
-              {journeySteps.map((step, i) => (
-                <React.Fragment key={step.label}>
-                  <div style={styles.journeyStep}>
-                    <span style={styles.journeyIcon}>
-                      <i className={`fas ${step.icon}`} aria-hidden="true"></i>
-                    </span>
-                    {step.label}
-                  </div>
-                  {i < journeySteps.length - 1 && (
-                    <div style={styles.journeyArrow}>
-                      <i className="fas fa-arrow-right" aria-hidden="true"></i>
+              <div style={styles.journeyPath}>
+                {journeySteps.map((step, i) => (
+                  <React.Fragment key={step.label || i}>
+                    <div style={styles.journeyStep}>
+                      <span style={styles.journeyIcon}>
+                        <i className={`fas ${step.icon || 'fa-circle'}`} aria-hidden="true"></i>
+                      </span>
+                      {step.label}
                     </div>
-                  )}
-                </React.Fragment>
-              ))}
+                    {i < journeySteps.length - 1 && (
+                      <div style={styles.journeyArrow}>
+                        <i className="fas fa-arrow-right" aria-hidden="true"></i>
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+            <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
+              <CareerGrowthCanvas />
             </div>
           </div>
         </div>
@@ -355,8 +598,8 @@ function CareerLabPage() {
       <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
         <div style={styles.container}>
           <div style={styles.sectionHeader}>
-            <span style={styles.sectionTag}>Find your track</span>
-            <h2 style={styles.sectionTitle}>Which programme is right for you?</h2>
+            <span className="eyebrow-3d">Find your track</span>
+            <h2 className="title-3d title-section">Which programme is right for you?</h2>
             <p style={styles.sectionSub}>
               Answer 10 quick questions and we'll match you to the track that fits where you are right now.
             </p>
@@ -370,8 +613,8 @@ function CareerLabPage() {
       <section style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
         <div style={styles.container}>
           <div style={styles.sectionHeader}>
-            <span style={styles.sectionTag}>Targeted tracks</span>
-            <h2 style={styles.sectionTitle}>Who it's for</h2>
+            <span className="eyebrow-3d">Targeted tracks</span>
+            <h2 className="title-3d title-section">Who it's for</h2>
             <p style={styles.sectionSub}>Career Lab is tailored to two distinct career stages — choose the path that fits where you are right now.</p>
           </div>
 
@@ -396,7 +639,7 @@ function CareerLabPage() {
             {activeTab === 'entry' ? (
               <div style={styles.audiencePanel} className="animate-fadeup">
                 <div style={styles.audienceTextSide}>
-                  <h3 style={styles.audienceTitle}>{entryTrack.title}</h3>
+                  <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{entryTrack.title}</h3>
                   <p style={styles.audienceDesc}>{entryTrack.description}</p>
                 </div>
                 <div style={styles.audienceGridSide}>
@@ -414,7 +657,7 @@ function CareerLabPage() {
             ) : (
               <div style={styles.audiencePanel} className="animate-fadeup">
                 <div style={styles.audienceTextSide}>
-                  <h3 style={styles.audienceTitle}>{midTrack.title}</h3>
+                  <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{midTrack.title}</h3>
                   <p style={styles.audienceDesc}>{midTrack.description}</p>
                 </div>
                 <div style={styles.audienceGridSide}>
@@ -436,162 +679,59 @@ function CareerLabPage() {
 
       {/* Curriculum */}
       <div style={styles.curriculumLayout}>
-
-    <div style={styles.moduleGrid}>
-
         <div style={styles.moduleGrid}>
+          {modules.map((mod, index) => (
+            <div
+              key={mod.module_number}
+              style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
+              className="interactive-card"
+              onMouseEnter={() => setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`)}
+            >
+              <span style={styles.moduleNumber}>{mod.module_number}</span>
+              <h3 className="title-3d" style={{ fontSize: '1.25rem', marginBottom: '20px', paddingRight: '40px' }}>{mod.title}</h3>
+              <ul style={styles.cardList}>
+                {(mod.items || []).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-  {/* Module 1 */}
-<div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[1])}
->
-    <span style={styles.moduleNumber}>01</span>
-    <h3 style={styles.cardHeading}>Job application strategy</h3>
-    <ul style={styles.cardList}>
-      <li>Understanding how to read and interpret job specifications.</li>
-      <li>Tailoring your CV and application structure specifically to each role.</li>
-      <li>Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.</li>
-      <li>Structuring highly impactful cover letters and strong supporting documents.</li>
-    </ul>
-  </div>
+        <div style={styles.avatarPanel}>
+          <motion.img
+            src={CareerCoach}
+            alt="Career Coach"
+            style={styles.avatar}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
 
-  {/* Module 2 */}
-<div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[2])}
->
-    <span style={styles.moduleNumber}>02</span>
-    <h3 style={styles.cardHeading}>Professional communication</h3>
-    <ul style={styles.cardList}>
-      <li>Mastering secure email and communication etiquette in professional environments.</li>
-      <li>Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.</li>
-      <li>Maintaining pristine professional tone and alignment across digital platforms and social media.</li>
-    </ul>
-  </div>
-
-  {/* Module 3 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[3])}
->
-    <span style={styles.moduleNumber}>03</span>
-    <h3 style={styles.cardHeading}>Workplace readiness</h3>
-    <ul style={styles.cardList}>
-      <li>Advanced personal time management paradigms and true personal accountability frameworks.</li>
-      <li>Meeting complex deadlines cleanly and balancing competing work priorities.</li>
-      <li>Receiving, processing, and executing constructively on difficult professional performance feedback.</li>
-    </ul>
-  </div>
-
-  {/* Module 4 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[4])}
->
-    <span style={styles.moduleNumber}>04</span>
-    <h3 style={styles.cardHeading}>Career growth & navigation</h3>
-    <ul style={styles.cardList}>
-      <li>Deep-dive look into interpreting the complete end-to-end employment lifecycle.</li>
-      <li>Proactively mapping and planning long-term career milestone developments.</li>
-      <li>Spotting hidden internal opportunities and styling yourself for seamless career progression.</li>
-    </ul>
-  </div>
-
-  {/* Module 5 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[5])}
->
-    <span style={styles.moduleNumber}>05</span>
-    <h3 style={styles.cardHeading}>Professional mindset</h3>
-    <ul style={styles.cardList}>
-      <li>Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.</li>
-      <li>Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.</li>
-      <li>Cultivating a dynamic growth mindset that modern premium employers consistently look out for.</li>
-    </ul>
-  </div>
-
-  {/* Module 6 */}
- <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[6])}
->
-    <span style={styles.moduleNumber}>06</span>
-    <h3 style={styles.cardHeading}>Compliance & documentation</h3>
-    <ul style={styles.cardList}>
-      <li>Clean preparation systems for strict biometric background checks and screening protocols.</li>
-      <li>Ensuring personal data records, validation files, and identity parameters are audit-compliant.</li>
-      <li>Understanding precisely what verification elements employers check and why it protects company culture.</li>
-    </ul>
-  </div>
-
-</div>
-
-    </div>
-
-   <div style={styles.avatarPanel}>
-
-    <motion.img
-        src={CareerCoach}
-        alt="Career Coach"
-        style={styles.avatar}
-
-        animate={{
-
-    y:[0,-10,0]
-
-}}
-
-transition={{
-
-    duration:4,
-
-    repeat:Infinity
-
-}}
-    />
-
-    <div style={styles.speechBubble}>
-      <AnimatePresence mode="wait">
-
-<motion.div
-    key={coachMessage}
-
-    initial={{opacity:0,y:10}}
-
-    animate={{opacity:1,y:0}}
-
-    exit={{opacity:0,y:-10}}
-
-    transition={{duration:0.25}}
-
->
-
-{coachMessage}
-
-</motion.div>
-
-</AnimatePresence>
-    </div>
-
-</div>
-
-</div>
+          <div style={styles.speechBubble}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={coachMessage}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {coachMessage}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
 
       {/* Differentiation */}
       <section style={styles.diffSection}>
         <div style={styles.container}>
           <div style={styles.diffGrid}>
             <div style={styles.diffLeft}>
-              <span style={styles.diffTag}>Complementary ecosystems</span>
-              <h3 style={styles.diffTitle}>{differentiation.title || 'How Career Lab differs from our recruitment services'}</h3>
+              <span className="eyebrow-3d" style={{ color: 'var(--teal)', borderColor: 'rgba(80,155,158,0.3)' }}>Complementary ecosystems</span>
+              <h3 className="title-3d" style={{ fontSize: '2.2rem', color: '#FFFFFF', marginBottom: '20px' }}>
+                {differentiation.title || 'How Career Lab differs from our recruitment services'}
+              </h3>
               <p style={styles.diffDesc}>
                 {differentiation.description || 'Our core recruitment services remain completely free to candidates and are dedicated to finding, processing, and placing talent directly into active enterprise client networks.'}
               </p>
@@ -640,8 +780,8 @@ transition={{
         <div style={styles.container}>
           <div style={styles.formSplitGrid}>
             <div style={styles.formCard}>
-              <span style={styles.sectionTag}>Enrollment pathway</span>
-              <h3 style={styles.formSectionTitle}>Register your interest</h3>
+              <span className="eyebrow-3d">Enrollment pathway</span>
+              <h3 className="title-3d" style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Register your interest</h3>
               <p style={styles.formSectionSub}>Tell us a bit about yourself and we'll be in touch with full programme details.</p>
 
               <form onSubmit={handleSubmit} style={styles.actualForm}>
@@ -703,12 +843,11 @@ transition={{
             <div style={styles.assessmentCard}>
               <div style={styles.assessmentOverlay}></div>
               <div style={styles.assessmentContent}>
-                <span style={styles.assessmentTag}>Diagnostic tool</span>
-                <h3 style={styles.assessmentTitle}>Find out your career readiness score</h3>
+                <span className="eyebrow-3d" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.2)' }}>Diagnostic tool</span>
+                <h3 className="title-3d" style={{ fontSize: '1.8rem', color: '#FFFFFF', marginBottom: '16px' }}>Find out your career readiness score</h3>
                 <p style={styles.assessmentDesc}>
                   Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
                 </p>
-                
                 <a
                   href="https://insphired.jobs/dashboard"
                   target="_blank"
@@ -744,13 +883,6 @@ const styles = {
     padding: '0 32px',
     width: '100%',
   },
-  hero: {
-    position: 'relative',
-    padding: '140px 0 110px 0',
-    color: '#FFFFFF',
-    backgroundColor: 'var(--navy)',
-    overflow: 'hidden',
-  },
   heroGrid: {
     display: 'grid',
     gridTemplateColumns: '1.15fr 0.85fr',
@@ -766,33 +898,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  heroTag: {
-    fontSize: '0.8rem',
-    letterSpacing: '2px',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    color: 'var(--teal)',
-    backgroundColor: 'rgba(80, 155, 158, 0.15)',
-    padding: '6px 14px',
-    borderRadius: '20px',
-    display: 'inline-block',
-    marginBottom: '24px'
-  },
-  heroHeading: {
-    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
-    fontWeight: 700,
-    lineHeight: 1.15,
-    margin: '0 0 24px 0',
-    color: '#FFFFFF',
-    letterSpacing: '-1px'
-  },
-  heroSubheading: {
-    fontSize: '1.1rem',
-    lineHeight: 1.65,
-    color: 'rgba(255,255,255,0.7)',
-    margin: '0 0 36px 0',
-    maxWidth: '560px'
   },
   journeyPath: {
     display: 'inline-flex',
@@ -833,31 +938,12 @@ const styles = {
   section: {
     padding: '100px 0',
   },
-  sectionHeader: {
-    marginBottom: '56px',
-    textAlign: 'center',
-  },
-  sectionTag: {
-    color: 'var(--teal)',
-    textTransform: 'uppercase',
-    fontSize: '0.85rem',
-    fontWeight: 700,
-    letterSpacing: '2px',
-    display: 'block',
-    marginBottom: '10px',
-  },
-  sectionTitle: {
-    fontSize: '2.4rem',
-    fontWeight: 700,
-    marginBottom: '16px',
-    color: 'var(--navy)',
-    letterSpacing: '-0.5px'
-  },
   sectionSub: {
     color: '#5B6670',
     maxWidth: '680px',
     margin: '0 auto',
     fontSize: '1.05rem',
+    marginTop: '16px',
   },
   tabContainer: {
     display: 'flex',
@@ -898,13 +984,6 @@ const styles = {
   audienceTextSide: {
     paddingRight: '16px'
   },
-  audienceTitle: {
-    fontSize: '1.6rem',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    marginBottom: '16px',
-    lineHeight: 1.3
-  },
   audienceDesc: {
     color: '#5B6670',
     fontSize: '1rem',
@@ -922,39 +1001,35 @@ const styles = {
     color: 'var(--navy)',
     margin: '0 0 20px 0'
   },
-    curriculumLayout: {
+  curriculumLayout: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr",
     gap: "50px",
-    alignItems: "start"
-},
-
-moduleGrid: {
+    alignItems: "start",
+    padding: '80px 32px',
+    maxWidth: '1280px',
+    margin: '0 auto'
+  },
+  moduleGrid: {
     display: "grid",
     gridTemplateColumns: "1fr",
     gap: "30px"
-},
-
-avatarPanel: {
+  },
+  avatarPanel: {
     position: "sticky",
     top: "120px",
     textAlign: "center"
   },
-  modulesContainer: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: '32px'
-  },
   moduleCard: {
-  backgroundColor: '#FFFFFF',
-  borderRadius: 'var(--radius-card)',
-  padding: '28px 24px',
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'column',
-  boxShadow: 'var(--shadow-sm)',
-  border: '1px solid var(--border-light)',
-},
+    backgroundColor: '#FFFFFF',
+    borderRadius: 'var(--radius-card)',
+    padding: '28px 24px',
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: 'var(--shadow-sm)',
+    border: '1px solid var(--border-light)',
+  },
   moduleNumber: {
     fontSize: '2.8rem',
     fontWeight: 700,
@@ -963,13 +1038,6 @@ avatarPanel: {
     position: 'absolute',
     top: '32px',
     right: '36px'
-  },
-  cardHeading: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    marginBottom: '20px',
-    color: 'var(--navy)',
-    paddingRight: '40px'
   },
   cardList: {
     paddingLeft: '20px',
@@ -994,22 +1062,6 @@ avatarPanel: {
   },
   diffLeft: {
     maxWidth: '480px'
-  },
-  diffTag: {
-    fontSize: '0.8rem',
-    letterSpacing: '2px',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    color: 'var(--teal)',
-    marginBottom: '16px',
-    display: 'block'
-  },
-  diffTitle: {
-    fontSize: '2.2rem',
-    fontWeight: 700,
-    lineHeight: 1.25,
-    margin: '0 0 20px 0',
-    letterSpacing: '-0.5px'
   },
   diffDesc: {
     color: 'rgba(255,255,255,0.7)',
@@ -1056,12 +1108,6 @@ avatarPanel: {
     borderRadius: 'var(--radius-card)',
     padding: '48px',
     boxShadow: 'var(--shadow-sm)'
-  },
-  formSectionTitle: {
-    fontSize: '1.8rem',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    margin: '0 0 8px 0'
   },
   formSectionSub: {
     color: '#5B6670',
@@ -1144,25 +1190,6 @@ avatarPanel: {
     zIndex: 2,
     padding: '48px',
     color: '#FFFFFF'
-  },
-  assessmentTag: {
-    color: '#FFFFFF',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    padding: '6px 14px',
-    borderRadius: '20px',
-    textTransform: 'uppercase',
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    letterSpacing: '1px',
-    display: 'inline-block',
-    marginBottom: '16px'
-  },
-  assessmentTitle: {
-    fontSize: '1.8rem',
-    fontWeight: 700,
-    lineHeight: 1.3,
-    marginBottom: '16px',
-    letterSpacing: '-0.5px'
   },
   assessmentDesc: {
     opacity: 0.9,

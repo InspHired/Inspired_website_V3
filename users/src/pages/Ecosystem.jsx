@@ -1,3 +1,4 @@
+// users/src/pages/Ecosystem.jsx
 import React from "react";
 import "./Ecosystem.css";
 
@@ -46,7 +47,7 @@ const ecosystemPlatforms = [
     features: ["Criminal & biometric checks", "Education verification", "Employment history"],
     cta: "Learn more",
     ctaHref: "/verify-me",
-    accent: C.teal,
+    accent: C.navy,
     img: "/assets/VerifyMee.png",
   },
 ];
@@ -57,7 +58,7 @@ function Ecosystem() {
       <div className="container">
         <div className="sec-head">
           <span className="eyebrow">The InspHired Ecosystem</span>
-          <h2 className="title-3d">More than a recruitment agency</h2>
+          <h2 className="title-3d title-section">More than a recruitment agency</h2>
           <p className="subtitle">
             Four connected platforms, each solving a different part of the employment challenge — working together as one ecosystem.
           </p>

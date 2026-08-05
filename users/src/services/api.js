@@ -2,30 +2,9 @@
 import axios from 'axios';
 
 // ============================================
-// REPLACE WITH YOUR RENDER BACKEND URL
+// FORCE USE RENDER BACKEND - Local backend not running
 // ============================================
-const RENDER_BACKEND_URL = 'https://inspired-website-v3-fhno.onrender.com/api'; // CHANGE THIS!
-const LOCAL_BACKEND_URL = 'http://localhost:5000/api';
-
-// ============================================
-// DETECT ENVIRONMENT
-// ============================================
-const getApiUrl = () => {
-    // Check if we're in production (deployed) or local
-    const hostname = window.location.hostname;
-    
-    // If we're on a deployed site (not localhost)
-    if (hostname !== 'localhost' && !hostname.includes('127.0.0.1')) {
-        console.log('🔗 Running in production, using Render backend');
-        return RENDER_BACKEND_URL;
-    }
-    
-    // Local development
-    console.log('🔗 Running locally');
-    return LOCAL_BACKEND_URL;
-};
-
-const API_URL = getApiUrl();
+const API_URL = 'https://inspired-website-v3-fhno.onrender.com/api';
 
 console.log('✅ API URL set to:', API_URL);
 
@@ -37,7 +16,7 @@ const api = axios.create({
     timeout: 30000 // 30 seconds for Render (might be cold start)
 });
 
-// Add response interceptor for debugging
+// Add request interceptor for debugging
 api.interceptors.request.use(
     (config) => {
         console.log('📤 Request:', config.method.toUpperCase(), config.url);
@@ -49,6 +28,7 @@ api.interceptors.request.use(
     }
 );
 
+// Add response interceptor for debugging
 api.interceptors.response.use(
     (response) => {
         console.log('📥 Response:', response.status, response.config.url);

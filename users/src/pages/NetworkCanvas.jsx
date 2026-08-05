@@ -25,8 +25,8 @@ function NetworkCanvas() {
 
     const cities = [
       { name: "Kinshasa", x: 0.52, y: 0.55 },
-      { name: "Johannesburg", x: 0.55, y: 0.70 },
-      { name: "Cape Town", x: 0.52, y: 0.74 },
+      { name: "Johannesburg", x: 0.58, y: 0.73 },
+      { name: "Cape Town", x: 0.52, y: 0.76 },
     ];
 
     let paths = [];

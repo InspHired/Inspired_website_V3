@@ -138,6 +138,177 @@ const ContactPage = () => {
   return (
     <div style={styles.pageWrapper}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
+        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+        .hero-section {
+          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+          color: #ffffff;
+          padding: 130px 0 100px;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+        }
+
+        /* ── HERO EYEBROW - Clean, No Effects ── */
+        .hero-eyebrow {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.15);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
+        /* ── HERO HEADING - Pure White, No Effects ── */
+        .hero-heading {
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: clamp(2.2rem, 4vw, 3rem);
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          margin: 0 0 20px 0;
+        }
+
+        /* ── HERO DESCRIPTION - Clean, No Effects ── */
+        .hero-description {
+          font-size: 1.1rem;
+          color: rgba(255, 255, 255, 0.75);
+          line-height: 1.75;
+          max-width: 560px;
+          margin-bottom: 24px;
+        }
+
+        /* ── 3D HEADING SYSTEM (For body content only) ── */
+        .title-3d {
+          display: block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-weight: 700;
+          color: #1f3540;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+          position: relative;
+          text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.05),
+            0 8px 16px rgba(80, 155, 158, 0.08),
+            0 12px 32px rgba(0, 0, 0, 0.04);
+          transform: translateY(-4px);
+          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+        }
+
+        .title-section {
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          line-height: 1.2;
+        }
+
+        /* ── BODY EYEBROW ── */
+        .eyebrow-3d {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.1);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
+        /* ── 3D METALLIC BUTTONS ── */
+        .btn-3d-primary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          border: 1px solid #73c8cb;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.6),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+            0 4px 0 #285759,
+            0 8px 15px rgba(31, 53, 64, 0.25);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-3d-primary:hover {
+          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+          transform: translateY(-5px);
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.7),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            0 6px 0 #285759,
+            0 12px 20px rgba(80, 155, 158, 0.35);
+        }
+
+        .btn-3d-primary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 transparent,
+            0 3px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-3d-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 32px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          transform: translateY(-3px);
+          border: none;
+          color: #ffffff;
+          background: transparent;
+          border: 1.5px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-3d-secondary:hover {
+          background: rgba(255, 255, 255, 0.08);
+          transform: translateY(-5px);
+          box-shadow: 0 6px 0 rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-3d-secondary:active {
+          transform: translateY(1px) !important;
+          box-shadow: 0 2px 0 rgba(255, 255, 255, 0.05) !important;
+        }
+
         .Contact-input, .Contact-select, .Contact-textarea {
           transition: border-color var(--transition), box-shadow var(--transition);
         }
@@ -146,30 +317,21 @@ const ContactPage = () => {
           border-color: var(--teal) !important;
           box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
         }
-        .Contact-primary-btn { transition: transform var(--transition), opacity var(--transition); }
-        .Contact-primary-btn:hover:not(:disabled) { transform: translateY(-2px); opacity: 0.95; }
-        .Contact-primary-btn:disabled { opacity: 0.65; cursor: not-allowed; }
-        .Contact-secondary-btn { transition: all var(--transition); }
-        .Contact-secondary-btn:hover { background-color: var(--teal); color: #FFFFFF !important; }
 
         @media (max-width: 900px) {
           .Contact-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
-      {/* HERO */}
-      <header style={styles.hero}>
-        <div style={styles.heroOverlay}></div>
-
+      {/* ── HERO ── */}
+      <header className="hero-section">
         <div style={styles.container}>
           <div style={styles.heroContent}>
-            <span style={styles.heroTag}>{hero.tag || 'Request a Contact'}</span>
-
-            <h1 style={styles.heroTitle}>
+            <span className="hero-eyebrow">{hero.tag || 'Request a Contact'}</span>
+            <h1 className="hero-heading">
               {hero.title || "We'd love to learn more about your needs"}
             </h1>
-
-            <p style={styles.heroText}>
+            <p className="hero-description">
               {hero.description || "Whether you're looking for recruitment solutions, executive search, verification services, or workforce strategy support, our team is ready to assist."}
             </p>
           </div>
@@ -183,8 +345,8 @@ const ContactPage = () => {
 
             {/* FORM */}
             <div style={styles.formCard}>
-              <span style={styles.sectionTag}>Let's talk</span>
-              <h2 style={styles.formTitle}>Request your Contact</h2>
+              <span className="eyebrow-3d">Let's talk</span>
+              <h2 className="title-3d title-section">Request your Contact</h2>
 
               <form onSubmit={handleSubmit}>
                 <input
@@ -279,8 +441,8 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  style={styles.primaryBtn}
-                  className="Contact-primary-btn"
+                  className="btn-3d-primary"
+                  style={{ width: '100%', justifyContent: 'center' }}
                 >
                   {submitting ? 'Submitting...' : 'Request Contact'}
                 </button>
@@ -289,7 +451,7 @@ const ContactPage = () => {
 
             {/* INFO CARD */}
             <div style={styles.infoCard}>
-              <h3 style={styles.infoTitle}>Need immediate assistance?</h3>
+              <h3 className="title-3d" style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Need immediate assistance?</h3>
 
               <div style={styles.infoItem}>
                 <span style={styles.infoIcon}><i className="fas fa-envelope" aria-hidden="true"></i></span>
@@ -312,8 +474,8 @@ const ContactPage = () => {
                 href={info.booking_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={styles.secondaryBtn}
-                className="Contact-secondary-btn"
+                className="btn-3d-secondary"
+                style={{ width: '100%', justifyContent: 'center' }}
               >
                 {info.booking_text || 'Schedule consultation'}
               </a>
@@ -340,66 +502,14 @@ const styles = {
     padding: '0 32px'
   },
 
-  hero: {
-    background: 'var(--navy)',
-    color: '#FFFFFF',
-    padding: '140px 0 100px',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-
-  heroOverlay: {
-    position: 'absolute',
-    inset: 0,
-    background: 'linear-gradient(90deg, rgba(31,53,64,0.96), rgba(31,53,64,0.75))'
-  },
-
   heroContent: {
+    maxWidth: '750px',
     position: 'relative',
     zIndex: 2,
-    maxWidth: '750px'
-  },
-
-  heroTag: {
-    display: 'inline-block',
-    backgroundColor: 'rgba(80, 155, 158, 0.18)',
-    color: 'var(--teal)',
-    border: '1px solid rgba(80, 155, 158, 0.35)',
-    padding: '8px 18px',
-    borderRadius: '40px',
-    fontSize: '0.8rem',
-    fontWeight: 700,
-    letterSpacing: '2px',
-    textTransform: 'uppercase',
-    marginBottom: '20px'
-  },
-
-  heroTitle: {
-    fontSize: '3.4rem',
-    fontWeight: 700,
-    marginBottom: '24px',
-    letterSpacing: '-1px',
-    lineHeight: 1.15,
-  },
-
-  heroText: {
-    fontSize: '1.15rem',
-    lineHeight: 1.8,
-    color: 'rgba(255,255,255,0.75)',
   },
 
   section: {
     padding: '100px 0'
-  },
-
-  sectionTag: {
-    color: 'var(--teal)',
-    textTransform: 'uppercase',
-    fontSize: '0.8rem',
-    fontWeight: 700,
-    letterSpacing: '2px',
-    display: 'block',
-    marginBottom: '8px',
   },
 
   contactGrid: {
@@ -414,13 +524,6 @@ const styles = {
     borderRadius: 'var(--radius-card)',
     boxShadow: 'var(--shadow-sm)',
     border: '1px solid var(--border-light)',
-  },
-
-  formTitle: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    marginBottom: '30px',
-    color: 'var(--navy)'
   },
 
   input: {
@@ -458,13 +561,6 @@ const styles = {
     height: 'fit-content'
   },
 
-  infoTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '24px',
-    color: 'var(--navy)'
-  },
-
   infoItem: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -486,28 +582,6 @@ const styles = {
     flexShrink: 0,
     fontSize: '0.85rem',
     marginTop: '2px',
-  },
-
-  primaryBtn: {
-    backgroundColor: 'var(--teal)',
-    color: '#FFFFFF',
-    border: 'none',
-    padding: '16px 32px',
-    borderRadius: '40px',
-    cursor: 'pointer',
-    fontWeight: 700,
-    fontSize: '1rem',
-  },
-
-  secondaryBtn: {
-    display: 'inline-block',
-    marginTop: '20px',
-    textDecoration: 'none',
-    border: '2px solid var(--teal)',
-    color: 'var(--teal)',
-    padding: '14px 28px',
-    borderRadius: '40px',
-    fontWeight: 700,
   },
 
   loadingContainer: {
@@ -564,7 +638,7 @@ const styles = {
   }
 };
 
-// Add keyframes for spinner animation
+
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
   @keyframes spin {

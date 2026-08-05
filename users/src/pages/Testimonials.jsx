@@ -1,3 +1,4 @@
+// users/src/pages/Testimonials.jsx
 import React from "react";
 
 const C = {
@@ -15,19 +16,10 @@ const s = {
   section: { padding: "80px 0" },
   container: { maxWidth: 1200, margin: "0 auto", padding: "0 24px" },
   secHead: { textAlign: "center", maxWidth: 640, margin: "0 auto 48px" },
-  eyebrow: {
-    display: "inline-block",
-    fontSize: 13,
-    fontWeight: 600,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    color: C.teal,
-    marginBottom: 12,
-  },
   secSub: { fontSize: 16, lineHeight: 1.6, color: C.slateLight, margin: 0 },
 };
 
-const testimonials = [
+const defaultTestimonials = [
   {
     quote: "I would just like to say a massive thank you for believing in me. Your professionalism throughout the process was exceptional.",
     name: "Jermaine C.",
@@ -67,73 +59,83 @@ function StarRow({ color }) {
   );
 }
 
-function Testimonials() {
+function Testimonials({ content = [] }) {
+  const testimonials = content && content.length > 0 ? content : defaultTestimonials;
+
   return (
     <section style={{ ...s.section, background: C.bg }}>
       <div style={s.container}>
         <div style={s.secHead}>
-          <span style={s.eyebrow}>Testimonials</span>
-          <h2 className="title-3d">What people say</h2>
+          <span className="eyebrow-3d">Testimonials</span>
+          <h2 className="title-3d title-section">What people say</h2>
           <p style={s.secSub}>
             Real words from candidates and clients we've had the privilege to work with.
           </p>
         </div>
 
         <div className="testimonial-grid" style={styles.grid}>
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              style={{ ...styles.card, borderTop: `4px solid ${t.accent}` }}
-              className="testimonial-card"
-            >
-              <div style={{ marginBottom: 12 }}>
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill={t.accent}
-                  style={{ opacity: 0.35 }}
-                >
-                  <path d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z" />
-                </svg>
-              </div>
+          {testimonials.map((t, index) => {
+            const accent = t.accent_color || t.accent || C.teal;
+            const name = t.client_name || t.name || '';
+            const role = t.role || '';
+            const quote = t.quote || t.text || '';
 
-              <StarRow color={t.accent} />
-
-              <p style={styles.quoteText}>"{t.quote}"</p>
-
-              <div style={styles.footer}>
-                <div
-                  style={{
-                    ...styles.avatar,
-                    background: `${t.accent}18`,
-                    color: t.accent,
-                    border: `1px solid ${t.accent}40`,
-                  }}
-                >
-                  {t.name.charAt(0)}
+            return (
+              <div
+                key={name || index}
+                style={{ ...styles.card, borderTop: `4px solid ${accent}` }}
+                className="testimonial-card"
+              >
+                <div style={{ marginBottom: 12 }}>
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill={accent}
+                    style={{ opacity: 0.35 }}
+                  >
+                    <path d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z" />
+                  </svg>
                 </div>
-                <div>
-                  <p style={styles.name}>{t.name}</p>
-                  <p style={styles.role}>{t.role}</p>
+
+                <StarRow color={accent} />
+
+                <p style={styles.quoteText}>"{quote}"</p>
+
+                <div style={styles.footer}>
+                  <div
+                    style={{
+                      ...styles.avatar,
+                      background: `${accent}18`,
+                      color: accent,
+                      border: `1px solid ${accent}40`,
+                    }}
+                  >
+                    {name.charAt(0) || 'A'}
+                  </div>
+                  <div>
+                    <p style={styles.name}>{name}</p>
+                    <p style={styles.role}>{role}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
+        /* ── 3D HEADING SYSTEM ── */
         .title-3d {
           display: block;
           font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: clamp(2rem, 3.5vw, 2.8rem);
           font-weight: 700;
           color: #1f3540;
           margin-bottom: 12px;
           letter-spacing: -0.02em;
           position: relative;
-          
           text-shadow: 
             0 2px 4px rgba(0, 0, 0, 0.05),
             0 8px 16px rgba(80, 155, 158, 0.08),
@@ -144,6 +146,27 @@ function Testimonials() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+        }
+
+        .title-section {
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          line-height: 1.2;
+        }
+
+        /* ── EYEBROW - Matches About/Services pages ── */
+        .eyebrow-3d {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.1);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
         }
 
         .testimonial-card {
