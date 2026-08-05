@@ -14,10 +14,58 @@ function StarRow({ color }) {
   );
 }
 
+/* ── EMPLOYER NETWORK CANVAS ── */
+function EmployerNetworkCanvas() {
+  return (
+    <div className="pillar-canvas-container">
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
+
+      <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-user-tie" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> Executive Search
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-shield-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Verification
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Bulk Staffing
+          </div>
+        </div>
+
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">07</span>
+            <span className="core-label">Process Steps</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ForEmployersPage = () => {
   const [employersData, setEmployersData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hoveredService, setHoveredService] = useState(null);
 
   // Fetch employers data directly from API
   useEffect(() => {
@@ -176,6 +224,54 @@ const ForEmployersPage = () => {
   return (
     <div style={styles.pageWrapper}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
+        /* ── 3D HEADING SYSTEM ── */
+        .title-3d {
+          display: block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-weight: 700;
+          color: #1f3540;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+          position: relative;
+          text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.05),
+            0 8px 16px rgba(80, 155, 158, 0.08),
+            0 12px 32px rgba(0, 0, 0, 0.04);
+          transform: translateY(-4px);
+          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+        }
+
+        .title-section {
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          line-height: 1.2;
+        }
+
+        .title-sub {
+          font-size: clamp(1.4rem, 2vw, 1.8rem);
+          line-height: 1.3;
+        }
+
+        .eyebrow-3d {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.1);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -199,7 +295,16 @@ const ForEmployersPage = () => {
           border-color: rgba(80, 155, 158, 0.35) !important;
         }
 
-        /* ── EMPLOYER NETWORK CANVAS CSS (mirrors About page avatar canvas) ── */
+        /* ── PROCESS CARDS ── */
+        .process-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        .process-card:hover {
+          transform: translateY(-6px) !important;
+          box-shadow: var(--shadow-md) !important;
+        }
+
+        /* ── EMPLOYER NETWORK CANVAS ── */
         .pillar-canvas-container {
           position: relative;
           width: 100%;
@@ -249,11 +354,14 @@ const ForEmployersPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation}
-        .float-2 { top: 35px; right: 25px; animation}
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation}
+        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
+        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
 
-        
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
 
         .icon-frame {
           width: 86px;
@@ -338,27 +446,15 @@ const ForEmployersPage = () => {
       {/* ── HERO ── */}
       <header style={styles.hero}>
         <div style={styles.container}>
-          <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.eyebrow}>{hero.tag || 'For employers'}</span>
-            <h1 style={styles.heroTitle}>{hero.title || 'Strategic recruitment solutions for modern African businesses'}</h1>
-            <p style={styles.heroLead}>
-              {hero.description || 'Our comprehensive recruitment services are designed to connect your organisation with top-tier professionals who align with your culture, vision, and long-term business goals.'}
-            </p>
-            <div style={styles.btnRow}>
-              <a
-                href={hero.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.btnPrimary}
-                className="btn-hover-transition"
-              >
-                {hero.cta_primary_text || 'Schedule consultation'}
-              </a>
-              <Link to={hero.cta_secondary_url || '/contact'} style={styles.btnSecondaryDark} className="btn-hover-transition">
-                {hero.cta_secondary_text || 'Request callback'}
-              </Link>
-            </div>
-          </div>
+          <div className="hero-grid" style={styles.heroGrid}>
+            <div style={styles.heroContent} className="animate-fadeup">
+              <span className="eyebrow-3d">{hero.tag || 'For employers'}</span>
+              <h1 className="title-3d" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', lineHeight: 1.2 }}>
+                {hero.title || 'Strategic recruitment solutions for modern African businesses'}
+              </h1>
+              <p style={styles.heroLead}>
+                {hero.description || 'Our comprehensive recruitment services are designed to connect your organisation with top-tier professionals who align with your culture, vision, and long-term business goals.'}
+              </p>
 
               <div style={styles.heroStats}>
                 <div style={styles.heroStat}>
@@ -381,16 +477,16 @@ const ForEmployersPage = () => {
 
               <div style={{ ...styles.btnRow, marginTop: '36px' }}>
                 <a
-                  href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
+                  href={hero.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={styles.btnPrimary}
                   className="btn-hover-transition"
                 >
-                  Schedule consultation
+                  {hero.cta_primary_text || 'Schedule consultation'}
                 </a>
-                <Link to="/contact" style={styles.btnSecondaryDark} className="btn-hover-transition">
-                  Request callback
+                <Link to={hero.cta_secondary_url || '/contact'} style={styles.btnSecondaryDark} className="btn-hover-transition">
+                  {hero.cta_secondary_text || 'Request callback'}
                 </Link>
               </div>
             </div>
@@ -403,13 +499,13 @@ const ForEmployersPage = () => {
       </header>
 
       {/* ── RECRUITMENT PROCESS ── */}
-     <section style={styles.sectionWhite}>
+      <section style={styles.sectionWhite}>
         <div style={styles.container}>
           <div style={styles.centerHead}>
-            <span style={styles.sectionTag}>Our recruitment process</span>
-            <h2 style={styles.sectionHeading}>A proven hiring framework built for results </h2>
+            <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Our recruitment process</span>
+            <h2 className="title-3d title-section">A proven hiring framework built for results</h2>
             <p style={styles.sectionSub}>
-              Every step of our recruitment process isnintentionally designed to deliver exceptional candidates and long-term hiring success.
+              Every step of our recruitment process is intentionally designed to deliver exceptional candidates and long-term hiring success.
             </p>
           </div>
 
@@ -425,7 +521,7 @@ const ForEmployersPage = () => {
                 <span style={{ ...styles.processNumber, color: hoveredService === s.number ? s.accent : 'rgba(31, 53, 64, 0.08)' }}>
                   {s.number}
                 </span>
-                <h3 style={styles.processTitle}>{s.title}</h3>
+                <h3 className="title-3d" style={{ fontSize: '1.1rem', marginBottom: '10px' }}>{s.title}</h3>
                 <p style={styles.processText}>{s.text}</p>
               </div>
             ))}
@@ -450,11 +546,10 @@ const ForEmployersPage = () => {
       <section style={styles.sectionLight}>
         <div style={styles.container}>
           <div style={styles.centerHead}>
-            <span style={styles.sectionTag}>Verification services</span>
-            <h2 style={styles.sectionHeading}>Recruitment backed by trusted verification</h2>
+            <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Verification services</span>
+            <h2 className="title-3d title-section">Recruitment backed by trusted verification</h2>
             <p style={styles.sectionSub}>
-              We ensure every candidate is thoroughly verified to protect your
-              business and strengthen hiring confidence.
+              We ensure every candidate is thoroughly verified to protect your business and strengthen hiring confidence.
             </p>
           </div>
 
@@ -470,7 +565,7 @@ const ForEmployersPage = () => {
                 >
                   <i className={`fas ${item.icon || 'fa-check'}`} aria-hidden="true"></i>
                 </div>
-                <h4 style={styles.verifyTitle}>{item.title}</h4>
+                <h4 className="title-3d" style={{ fontSize: '0.98rem', marginBottom: 0 }}>{item.title}</h4>
               </div>
             ))}
           </div>
@@ -481,11 +576,10 @@ const ForEmployersPage = () => {
       <section style={styles.sectionWhite}>
         <div style={styles.container}>
           <div style={styles.centerHead}>
-            <span style={styles.sectionTag}>Client testimonials</span>
-            <h2 style={styles.sectionHeading}>Trusted by growing organisations</h2>
+            <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Client testimonials</span>
+            <h2 className="title-3d title-section">Trusted by growing organisations</h2>
             <p style={styles.sectionSub}>
-              Discover how InspHired has transformed recruitment experiences for
-              businesses across Africa.
+              Discover how InspHired has transformed recruitment experiences for businesses across Africa.
             </p>
           </div>
 
@@ -506,7 +600,9 @@ const ForEmployersPage = () => {
         <div style={styles.container}>
           <div className="final-cta-row" style={styles.finalCtaRow}>
             <div>
-              <h2 style={styles.finalCtaTitle}>{finalCta.title || 'How can we InspHire you today?'}</h2>
+              <h2 className="title-3d" style={{ fontSize: '1.7rem', color: '#FFFFFF', marginBottom: '10px' }}>
+                {finalCta.title || 'How can we InspHire you today?'}
+              </h2>
               <p style={styles.finalCtaText}>
                 {finalCta.description || 'Let\'s discuss your business needs and build a workforce designed for growth.'}
               </p>
@@ -588,25 +684,6 @@ const styles = {
   heroStatNumber: { fontSize: '1.7rem', fontWeight: 700, color: 'var(--yellow)' },
   heroStatLabel: { fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' },
   heroStatDivider: { width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' },
-  eyebrow: {
-    display: 'inline-block',
-    fontSize: '0.8rem',
-    letterSpacing: '2px',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    color: 'var(--teal)',
-    backgroundColor: 'rgba(80, 155, 158, 0.15)',
-    padding: '6px 14px',
-    borderRadius: '20px',
-    marginBottom: '20px',
-  },
-  heroTitle: {
-    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
-    fontWeight: 700,
-    margin: '0 0 20px 0',
-    letterSpacing: '-1px',
-    lineHeight: 1.2,
-  },
   heroLead: {
     fontSize: '1.1rem',
     color: 'rgba(255,255,255,0.75)',
@@ -643,39 +720,26 @@ const styles = {
     alignItems: 'center',
     border: '1.5px solid rgba(255,255,255,0.3)',
   },
-btnSecondaryLight: {
-  background: 'transparent',
-  color: '#FFFFFF',
-  padding: '14px 30px',
-  borderRadius: '40px',
-  textDecoration: 'none',
-  fontWeight: 700,
-  fontSize: '0.95rem',
-  display: 'inline-flex',
-  alignItems: 'center',
-  border: '1.5px solid rgba(255,255,255,0.3)',
-},
+  btnSecondaryLight: {
+    background: 'transparent',
+    color: '#FFFFFF',
+    padding: '14px 30px',
+    borderRadius: '40px',
+    textDecoration: 'none',
+    fontWeight: 700,
+    fontSize: '0.95rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    border: '1.5px solid rgba(255,255,255,0.3)',
+  },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
   centerHead: {
     textAlign: 'center',
     marginBottom: '56px',
-  },
-  sectionTag: {
-    color: 'var(--teal)',
-    textTransform: 'uppercase',
-    fontSize: '0.85rem',
-    fontWeight: 700,
-    letterSpacing: '2px',
-    display: 'block',
-    marginBottom: '10px',
-  },
-  sectionHeading: {
-    fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    marginBottom: '16px',
-    letterSpacing: '-0.5px',
+    maxWidth: '640px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   sectionSub: {
     fontSize: '1.05rem',
@@ -683,6 +747,7 @@ btnSecondaryLight: {
     maxWidth: '640px',
     margin: '0 auto',
     lineHeight: 1.6,
+    marginTop: '16px',
   },
   processGrid: {
     display: 'grid',
@@ -695,20 +760,15 @@ btnSecondaryLight: {
     padding: '32px 28px',
     border: '1px solid var(--border-light)',
     boxShadow: 'var(--shadow-sm)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   },
   processNumber: {
-  display: 'block',
-  fontSize: '2.4rem',
-  fontWeight: 700,
-  lineHeight: 1,
-  marginBottom: '16px',
-  transition: 'color var(--transition)',
-},
-  processTitle: {
-    fontSize: '1.1rem',
+    display: 'block',
+    fontSize: '2.4rem',
     fontWeight: 700,
-    color: 'var(--navy)',
-    marginBottom: '10px',
+    lineHeight: 1,
+    marginBottom: '16px',
+    transition: 'color var(--transition)',
   },
   processText: {
     fontSize: '0.92rem',
@@ -767,12 +827,6 @@ btnSecondaryLight: {
     fontSize: '1.05rem',
     flexShrink: 0,
   },
-  verifyTitle: {
-    fontSize: '0.98rem',
-    fontWeight: 700,
-    color: 'var(--navy)',
-    margin: 0,
-  },
   testimonialGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -783,6 +837,7 @@ btnSecondaryLight: {
     borderRadius: 'var(--radius-card)',
     padding: '32px 28px',
     border: '1px solid var(--border-light)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   },
   testimonialQuote: {
     fontSize: '0.98rem',
@@ -809,13 +864,6 @@ btnSecondaryLight: {
     borderRadius: 'var(--radius-card)',
     padding: '48px',
     boxShadow: 'var(--shadow-md)',
-  },
-  finalCtaTitle: {
-    fontSize: '1.7rem',
-    fontWeight: 700,
-    color: '#FFFFFF',
-    margin: '0 0 10px 0',
-    letterSpacing: '-0.5px',
   },
   finalCtaText: {
     fontSize: '1rem',
