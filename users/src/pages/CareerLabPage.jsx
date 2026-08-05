@@ -7,11 +7,59 @@ import Footer from '../components/Footer';
 import CareerQuiz from '../pages/CareerQuiz';
 import CareerCoach from '../assets/career-coach.png';
 
+/* ── CAREER GROWTH CANVAS (mirrors About page's avatar canvas) ── */
+function CareerGrowthCanvas() {
+  return (
+    <div className="pillar-canvas-container">
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
+
+      <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-file-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> CV Strategy
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-comments" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Interview Skills
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-chart-line" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Career Growth
+          </div>
+        </div>
+
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">06</span>
+            <span className="core-label">Coaching Modules</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CareerLabPage() {
   const [careerLabData, setCareerLabData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('entry');
+  const [hoveredModule, setHoveredModule] = useState(null);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -270,22 +318,24 @@ function CareerLabPage() {
         }
       `}</style>
 
+
+
       {/* Hero */}
       <header style={styles.hero}>
         <div style={styles.container}>
           <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.heroTag}>{hero.tag || 'Career Lab'}</span>
-            <h1 style={styles.heroHeading}>{hero.title || 'Structured career development & coaching for job seekers'}</h1>
+            <span style={styles.heroTag}>Career Lab</span>
+            <h1 style={styles.heroHeading}>Structured career development & coaching for job seekers</h1>
             <p style={styles.heroSubheading}>
-              {hero.description || 'Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today\'s job market.'}
+              Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today's job market.
             </p>
 
             <div style={styles.journeyPath}>
               {journeySteps.map((step, i) => (
-                <React.Fragment key={step.label || i}>
+                <React.Fragment key={step.label}>
                   <div style={styles.journeyStep}>
                     <span style={styles.journeyIcon}>
-                      <i className={`fas ${step.icon || 'fa-circle'}`} aria-hidden="true"></i>
+                      <i className={`fas ${step.icon}`} aria-hidden="true"></i>
                     </span>
                     {step.label}
                   </div>
@@ -386,49 +436,154 @@ function CareerLabPage() {
 
       {/* Curriculum */}
       <div style={styles.curriculumLayout}>
+
+    <div style={styles.moduleGrid}>
+
         <div style={styles.moduleGrid}>
-          {modules.map((mod, index) => (
-            <div
-              key={mod.module_number}
-              style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
-              className="interactive-card"
-              onMouseEnter={() => setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`)}
-            >
-              <span style={styles.moduleNumber}>{mod.module_number}</span>
-              <h3 style={styles.cardHeading}>{mod.title}</h3>
-              <ul style={styles.cardList}>
-                {(mod.items || []).map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
 
-        <div style={styles.avatarPanel}>
-          <motion.img
-            src={CareerCoach}
-            alt="Career Coach"
-            style={styles.avatar}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          />
+  {/* Module 1 */}
+<div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[1])}
+>
+    <span style={styles.moduleNumber}>01</span>
+    <h3 style={styles.cardHeading}>Job application strategy</h3>
+    <ul style={styles.cardList}>
+      <li>Understanding how to read and interpret job specifications.</li>
+      <li>Tailoring your CV and application structure specifically to each role.</li>
+      <li>Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.</li>
+      <li>Structuring highly impactful cover letters and strong supporting documents.</li>
+    </ul>
+  </div>
 
-          <div style={styles.speechBubble}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={coachMessage}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                {coachMessage}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
+  {/* Module 2 */}
+<div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[2])}
+>
+    <span style={styles.moduleNumber}>02</span>
+    <h3 style={styles.cardHeading}>Professional communication</h3>
+    <ul style={styles.cardList}>
+      <li>Mastering secure email and communication etiquette in professional environments.</li>
+      <li>Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.</li>
+      <li>Maintaining pristine professional tone and alignment across digital platforms and social media.</li>
+    </ul>
+  </div>
+
+  {/* Module 3 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[3])}
+>
+    <span style={styles.moduleNumber}>03</span>
+    <h3 style={styles.cardHeading}>Workplace readiness</h3>
+    <ul style={styles.cardList}>
+      <li>Advanced personal time management paradigms and true personal accountability frameworks.</li>
+      <li>Meeting complex deadlines cleanly and balancing competing work priorities.</li>
+      <li>Receiving, processing, and executing constructively on difficult professional performance feedback.</li>
+    </ul>
+  </div>
+
+  {/* Module 4 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[4])}
+>
+    <span style={styles.moduleNumber}>04</span>
+    <h3 style={styles.cardHeading}>Career growth & navigation</h3>
+    <ul style={styles.cardList}>
+      <li>Deep-dive look into interpreting the complete end-to-end employment lifecycle.</li>
+      <li>Proactively mapping and planning long-term career milestone developments.</li>
+      <li>Spotting hidden internal opportunities and styling yourself for seamless career progression.</li>
+    </ul>
+  </div>
+
+  {/* Module 5 */}
+  <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[5])}
+>
+    <span style={styles.moduleNumber}>05</span>
+    <h3 style={styles.cardHeading}>Professional mindset</h3>
+    <ul style={styles.cardList}>
+      <li>Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.</li>
+      <li>Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.</li>
+      <li>Cultivating a dynamic growth mindset that modern premium employers consistently look out for.</li>
+    </ul>
+  </div>
+
+  {/* Module 6 */}
+ <div
+    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
+    className="interactive-card"
+    onMouseEnter={() => setCoachMessage(moduleMessages[6])}
+>
+    <span style={styles.moduleNumber}>06</span>
+    <h3 style={styles.cardHeading}>Compliance & documentation</h3>
+    <ul style={styles.cardList}>
+      <li>Clean preparation systems for strict biometric background checks and screening protocols.</li>
+      <li>Ensuring personal data records, validation files, and identity parameters are audit-compliant.</li>
+      <li>Understanding precisely what verification elements employers check and why it protects company culture.</li>
+    </ul>
+  </div>
+
+</div>
+
+    </div>
+
+   <div style={styles.avatarPanel}>
+
+    <motion.img
+        src={CareerCoach}
+        alt="Career Coach"
+        style={styles.avatar}
+
+        animate={{
+
+    y:[0,-10,0]
+
+}}
+
+transition={{
+
+    duration:4,
+
+    repeat:Infinity
+
+}}
+    />
+
+    <div style={styles.speechBubble}>
+      <AnimatePresence mode="wait">
+
+<motion.div
+    key={coachMessage}
+
+    initial={{opacity:0,y:10}}
+
+    animate={{opacity:1,y:0}}
+
+    exit={{opacity:0,y:-10}}
+
+    transition={{duration:0.25}}
+
+>
+
+{coachMessage}
+
+</motion.div>
+
+</AnimatePresence>
+    </div>
+
+</div>
+
+</div>
 
       {/* Differentiation */}
       <section style={styles.diffSection}>
@@ -553,6 +708,7 @@ function CareerLabPage() {
                 <p style={styles.assessmentDesc}>
                   Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
                 </p>
+                
                 <a
                   href="https://insphired.jobs/dashboard"
                   target="_blank"
@@ -595,10 +751,21 @@ const styles = {
     backgroundColor: 'var(--navy)',
     overflow: 'hidden',
   },
+  heroGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1.15fr 0.85fr',
+    gap: '48px',
+    alignItems: 'center',
+  },
   heroContent: {
-    maxWidth: '880px',
+    maxWidth: '620px',
     position: 'relative',
     zIndex: 2,
+  },
+  heroVisualWrap: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heroTag: {
     fontSize: '0.8rem',
@@ -613,7 +780,7 @@ const styles = {
     marginBottom: '24px'
   },
   heroHeading: {
-    fontSize: '3.5rem',
+    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
     fontWeight: 700,
     lineHeight: 1.15,
     margin: '0 0 24px 0',
@@ -621,11 +788,11 @@ const styles = {
     letterSpacing: '-1px'
   },
   heroSubheading: {
-    fontSize: '1.15rem',
+    fontSize: '1.1rem',
     lineHeight: 1.65,
     color: 'rgba(255,255,255,0.7)',
     margin: '0 0 36px 0',
-    maxWidth: '780px'
+    maxWidth: '560px'
   },
   journeyPath: {
     display: 'inline-flex',
@@ -755,21 +922,20 @@ const styles = {
     color: 'var(--navy)',
     margin: '0 0 20px 0'
   },
-  curriculumLayout: {
+    curriculumLayout: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr",
     gap: "50px",
-    alignItems: "start",
-    padding: '80px 32px',
-    maxWidth: '1280px',
-    margin: '0 auto'
-  },
-  moduleGrid: {
+    alignItems: "start"
+},
+
+moduleGrid: {
     display: "grid",
     gridTemplateColumns: "1fr",
     gap: "30px"
-  },
-  avatarPanel: {
+},
+
+avatarPanel: {
     position: "sticky",
     top: "120px",
     textAlign: "center"
@@ -780,15 +946,15 @@ const styles = {
     gap: '32px'
   },
   moduleCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 'var(--radius-card)',
-    padding: '40px 36px',
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: 'var(--shadow-sm)',
-    border: '1px solid var(--border-light)',
-  },
+  backgroundColor: '#FFFFFF',
+  borderRadius: 'var(--radius-card)',
+  padding: '28px 24px',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  boxShadow: 'var(--shadow-sm)',
+  border: '1px solid var(--border-light)',
+},
   moduleNumber: {
     fontSize: '2.8rem',
     fontWeight: 700,

@@ -50,6 +50,53 @@ function ServicePillarsCanvas() {
   );
 }
 
+/* ── SERVICES VISUAL STAGE (mirrors About page's avatar canvas) ── */
+function ServicePillarsCanvas() {
+  return (
+    <div className="pillar-canvas-container">
+      <div className="glow-sphere teal-glow"></div>
+      <div className="glow-sphere orange-glow"></div>
+
+      <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-user-tie" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> Executive Search
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-shield-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Verification
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Bulk Staffing
+          </div>
+        </div>
+
+        <div className="center-metallic-core">
+          <div className="core-pulse-ring"></div>
+          <div className="core-brand-tag">
+            <span className="core-number">06</span>
+            <span className="core-label">Core Solutions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ServicesPage = () => {
   const [servicesData, setServicesData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -210,6 +257,7 @@ const ServicesPage = () => {
           border-color: rgba(80, 155, 158, 0.35) !important;
         }
 
+        /* ── SERVICE PILLARS CANVAS CSS (mirrors About page avatar canvas) ── */
         .pillar-canvas-container {
           position: relative;
           width: 100%;
@@ -229,7 +277,9 @@ const ServicesPage = () => {
           backdrop-filter: blur(16px);
           border-radius: 28px;
           border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+          box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
           transform-style: preserve-3d;
           transform: rotateX(4deg) rotateY(-4deg);
           transition: transform 0.5s ease;
@@ -257,14 +307,11 @@ const ServicesPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation}
 
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
+       
 
         .icon-frame {
           width: 86px;
@@ -592,54 +639,6 @@ const styles = {
   subscribeInput: { padding: '14px 18px', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: '#FFFFFF', fontSize: '0.95rem', minWidth: '260px', fontFamily: 'inherit' },
   subscribeBtn: { background: 'var(--teal)', color: '#FFFFFF', border: 'none', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', whiteSpace: 'nowrap' },
   subscribeSuccess: { color: 'var(--yellow)', fontWeight: 600, fontSize: '0.95rem' },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#faf6f0',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-  },
-  spinner: {
-    width: '40px',
-    height: '40px',
-    border: '3px solid #e5dfd5',
-    borderTop: '3px solid #509b9e',
-    borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite'
-  },
-  loadingText: {
-    marginTop: '16px',
-    color: '#7a8790',
-    fontSize: '14px'
-  },
-  errorContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#faf6f0',
-    padding: '40px 20px',
-    textAlign: 'center',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-  },
-  errorIcon: { fontSize: '48px', marginBottom: '16px' },
-  errorTitle: { fontSize: '22px', fontWeight: 700, color: '#1f3540', margin: '0 0 8px 0' },
-  errorText: { color: '#d96b43', fontSize: '16px', marginBottom: '24px' },
-  retryButton: {
-    padding: '14px 40px',
-    backgroundColor: '#509b9e',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '15px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
-  }
 };
 
 // Add keyframes for spinner animation

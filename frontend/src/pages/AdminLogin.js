@@ -108,14 +108,7 @@ const AdminLogin = () => {
 
     const checkBackend = async () => {
         try {
-            console.log('🔍 Checking backend at:', `${API_BASE_URL}/api/test`);
-            const response = await fetch(`${API_BASE_URL}/api/test`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
-            });
-            
+            const response = await fetch('https://inspired-website-v3-fhno.onrender.com/api/test');
             if (response.ok) {
                 const data = await response.json();
                 console.log('✅ Backend is online:', data);

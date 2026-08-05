@@ -15,64 +15,43 @@ const supabase = createClient(
 );
 
 // ============================================
-// CORS CONFIGURATION - FIXED FOR CODESPACES
+// CORS CONFIGURATION - Updated for Render & Codespaces
 // ============================================
 
-// Allow any origin for development (most permissive)
-// This will work in any environment including Codespaces
-app.use(cors({
-    origin: true, // Allow any origin
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-        "Origin",
-        "X-Requested-With",
-        "Content-Type",
-        "Accept",
-        "Authorization"
-    ]
-}));
-
-// ============================================
-// ALTERNATIVE: Specific origins (uncomment if you prefer)
-// ============================================
-
-/*
 const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "http://localhost:5173",
     "http://192.168.1.164:3000",
-    // Allow any app.github.dev domain (Codespaces)
-    /.*\.app\.github\.dev$/,
-    // Allow any vercel.app domain
-    /.*\.vercel\.app$/,
+    "https://*.onrender.com",
+    "https://*.vercel.app",
+    "https://*.netlify.app",
+    "https://*.app.github.dev",
+    "https://*.preview.app.github.dev"
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        console.log("Incoming Origin:", origin);
+        console.log("📡 Incoming Origin:", origin);
 
+        // Allow requests with no Origin header
         if (!origin) {
             return callback(null, true);
         }
 
+        // Check if origin matches any allowed pattern
         const isAllowed = allowedOrigins.some(pattern => {
-            if (typeof pattern === 'string') {
-                return pattern === origin;
+            if (pattern.includes('*')) {
+                const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+                return regex.test(origin);
             }
-            if (pattern instanceof RegExp) {
-                return pattern.test(origin);
-            }
-            return false;
+            return pattern === origin;
         });
 
         if (isAllowed) {
-            console.log("✅ CORS allowed:", origin);
             return callback(null, true);
         }
 
-        console.error("❌ CORS blocked:", origin);
+        console.error("❌ Blocked by CORS:", origin);
         return callback(new Error(`Origin ${origin} not allowed by CORS`));
     },
     credentials: true,
@@ -85,7 +64,6 @@ app.use(cors({
         "Authorization"
     ]
 }));
-*/
 
 // JSON middleware
 app.use(express.json());
@@ -148,130 +126,262 @@ app.get('/api/public/:page', async (req, res) => {
 });
 
 // ============================================
-// PAGE CONTENT HANDLERS
+// PAGE CONTENT HANDLERS - With Fallback Data
 // ============================================
 
 async function getHomeContent(supabase) {
-    const [hero, info, steps, platforms, team, testimonials, footer] = await Promise.all([
-        supabase.from('home_hero').select('*').limit(1).single(),
-        supabase.from('home_info').select('*').limit(1).single(),
-        supabase.from('home_recruitment_steps').select('*').order('sort_order'),
-        supabase.from('home_ecosystem_platforms').select('*').order('sort_order'),
-        supabase.from('home_team_members').select('*').order('sort_order'),
-        supabase.from('home_testimonials').select('*').order('sort_order'),
-        supabase.from('home_footer').select('*').limit(1).single()
-    ]);
+    try {
+        console.log('📡 Fetching homepage content...');
+        
+        // Check if Supabase is connected
+        if (!supabase) {
+            console.error('❌ Supabase not initialized');
+            return getFallbackHomepageData();
+        }
 
-    // Get features for each platform
-    const platformsWithFeatures = await Promise.all((platforms.data || []).map(async (platform) => {
-        const { data } = await supabase
-            .from('home_ecosystem_features')
-            .select('feature_text')
-            .eq('platform_id', platform.id)
-            .order('sort_order');
-        return { ...platform, features: data || [] };
-    }));
+        // Try to fetch data with error handling for each table
+        let hero = { data: null };
+        let info = { data: null };
+        let steps = { data: [] };
+        let platforms = { data: [] };
+        let team = { data: [] };
+        let testimonials = { data: [] };
+        let footer = { data: null };
 
-    return {
-        hero: hero.data || null,
-        info: info.data || null,
-        steps: steps.data || [],
-        platforms: platformsWithFeatures || [],
-        team: team.data || [],
-        testimonials: testimonials.data || [],
-        footer: footer.data || null
-    };
+        try {
+            hero = await supabase.from('home_hero').select('*').limit(1).single();
+        } catch (e) {
+            console.log('⚠️ home_hero table error:', e.message);
+        }
+
+        try {
+            info = await supabase.from('home_info').select('*').limit(1).single();
+        } catch (e) {
+            console.log('⚠️ home_info table error:', e.message);
+        }
+
+        try {
+            steps = await supabase.from('home_recruitment_steps').select('*').order('sort_order');
+        } catch (e) {
+            console.log('⚠️ home_recruitment_steps table error:', e.message);
+        }
+
+        try {
+            platforms = await supabase.from('home_ecosystem_platforms').select('*').order('sort_order');
+        } catch (e) {
+            console.log('⚠️ home_ecosystem_platforms table error:', e.message);
+        }
+
+        try {
+            team = await supabase.from('home_team_members').select('*').order('sort_order');
+        } catch (e) {
+            console.log('⚠️ home_team_members table error:', e.message);
+        }
+
+        try {
+            testimonials = await supabase.from('home_testimonials').select('*').order('sort_order');
+        } catch (e) {
+            console.log('⚠️ home_testimonials table error:', e.message);
+        }
+
+        try {
+            footer = await supabase.from('home_footer').select('*').limit(1).single();
+        } catch (e) {
+            console.log('⚠️ home_footer table error:', e.message);
+        }
+
+        // Get features for each platform
+        let platformsWithFeatures = [];
+        if (platforms.data && platforms.data.length > 0) {
+            platformsWithFeatures = await Promise.all((platforms.data || []).map(async (platform) => {
+                try {
+                    const { data } = await supabase
+                        .from('home_ecosystem_features')
+                        .select('feature_text')
+                        .eq('platform_id', platform.id)
+                        .order('sort_order');
+                    return { ...platform, features: data || [] };
+                } catch (e) {
+                    return { ...platform, features: [] };
+                }
+            }));
+        }
+
+        const hasData = hero.data || info.data || steps.data?.length > 0;
+        
+        if (!hasData) {
+            console.log('⚠️ No data found in database, using fallback');
+            return getFallbackHomepageData();
+        }
+
+        const responseData = {
+            hero: hero.data || null,
+            info: info.data || null,
+            steps: steps.data || [],
+            platforms: platformsWithFeatures || [],
+            team: team.data || [],
+            testimonials: testimonials.data || [],
+            footer: footer.data || null
+        };
+
+        console.log('✅ Homepage data fetched successfully');
+        return responseData;
+    } catch (error) {
+        console.error('❌ Error fetching homepage:', error);
+        return getFallbackHomepageData();
+    }
 }
 
 async function getAboutContent(supabase) {
-    const [hero, missionVision, story, timeline, values, subscribe] = await Promise.all([
-        supabase.from('about_hero').select('*').limit(1).single(),
-        supabase.from('about_mission_vision').select('*').limit(1).single(),
-        supabase.from('about_story').select('*').limit(1).single(),
-        supabase.from('about_timeline_items').select('*').order('sort_order'),
-        supabase.from('about_values').select('*').order('sort_order'),
-        supabase.from('about_subscribe').select('*').limit(1).single()
-    ]);
+    try {
+        const [hero, missionVision, story, timeline, values, subscribe] = await Promise.all([
+            supabase.from('about_hero').select('*').limit(1).single(),
+            supabase.from('about_mission_vision').select('*').limit(1).single(),
+            supabase.from('about_story').select('*').limit(1).single(),
+            supabase.from('about_timeline_items').select('*').order('sort_order'),
+            supabase.from('about_values').select('*').order('sort_order'),
+            supabase.from('about_subscribe').select('*').limit(1).single()
+        ]);
 
-    return {
-        hero: hero.data || null,
-        missionVision: missionVision.data || null,
-        story: story.data || null,
-        timeline: timeline.data || [],
-        values: values.data || [],
-        subscribe: subscribe.data || null
-    };
+        return {
+            hero: hero.data || null,
+            missionVision: missionVision.data || null,
+            story: story.data || null,
+            timeline: timeline.data || [],
+            values: values.data || [],
+            subscribe: subscribe.data || null
+        };
+    } catch (error) {
+        console.error('Error fetching about:', error);
+        return null;
+    }
 }
 
 async function getContactContent(supabase) {
-    const [hero, info, services, timePreferences, placeholders, successMessage] = await Promise.all([
-        supabase.from('contact_hero').select('*').limit(1).single(),
-        supabase.from('contact_info').select('*').limit(1).single(),
-        supabase.from('contact_services').select('*').order('sort_order'),
-        supabase.from('contact_time_preferences').select('*').order('sort_order'),
-        supabase.from('contact_form_placeholders').select('*'),
-        supabase.from('contact_success_message').select('*').limit(1).single()
-    ]);
+    try {
+        const [hero, info, services, timePreferences, placeholders, successMessage] = await Promise.all([
+            supabase.from('contact_hero').select('*').limit(1).single(),
+            supabase.from('contact_info').select('*').limit(1).single(),
+            supabase.from('contact_services').select('*').order('sort_order'),
+            supabase.from('contact_time_preferences').select('*').order('sort_order'),
+            supabase.from('contact_form_placeholders').select('*'),
+            supabase.from('contact_success_message').select('*').limit(1).single()
+        ]);
 
-    return {
-        hero: hero.data || null,
-        info: info.data || null,
-        services: services.data || [],
-        timePreferences: timePreferences.data || [],
-        placeholders: placeholders.data || [],
-        successMessage: successMessage.data || null
-    };
+        return {
+            hero: hero.data || null,
+            info: info.data || null,
+            services: services.data || [],
+            timePreferences: timePreferences.data || [],
+            placeholders: placeholders.data || [],
+            successMessage: successMessage.data || null
+        };
+    } catch (error) {
+        console.error('Error fetching contact:', error);
+        return null;
+    }
 }
 
 async function getCareerLabContent(supabase) {
-    const [hero, tracks, modules, differentiation] = await Promise.all([
-        supabase.from('career_lab_hero').select('*').limit(1).single(),
-        supabase.from('career_lab_tracks').select('*'),
-        supabase.from('career_lab_modules').select('*').order('module_number'),
-        supabase.from('career_lab_differentiation').select('*').limit(1).single()
-    ]);
+    try {
+        const [hero, tracks, modules, differentiation] = await Promise.all([
+            supabase.from('career_lab_hero').select('*').limit(1).single(),
+            supabase.from('career_lab_tracks').select('*'),
+            supabase.from('career_lab_modules').select('*').order('module_number'),
+            supabase.from('career_lab_differentiation').select('*').limit(1).single()
+        ]);
 
-    return {
-        hero: hero.data || null,
-        tracks: tracks.data || [],
-        modules: modules.data || [],
-        differentiation: differentiation.data || null
-    };
+        return {
+            hero: hero.data || null,
+            tracks: tracks.data || [],
+            modules: modules.data || [],
+            differentiation: differentiation.data || null
+        };
+    } catch (error) {
+        console.error('Error fetching career lab:', error);
+        return null;
+    }
 }
 
 async function getEmployersContent(supabase) {
-    const [hero, processSteps, quote, verification, testimonials, finalCta] = await Promise.all([
-        supabase.from('employers_hero').select('*').limit(1).single(),
-        supabase.from('employers_process_steps').select('*').order('sort_order'),
-        supabase.from('employers_quote').select('*').limit(1).single(),
-        supabase.from('employers_verification_items').select('*').order('sort_order'),
-        supabase.from('employers_testimonials').select('*').order('sort_order'),
-        supabase.from('employers_final_cta').select('*').limit(1).single()
-    ]);
+    try {
+        const [hero, processSteps, quote, verification, testimonials, finalCta] = await Promise.all([
+            supabase.from('employers_hero').select('*').limit(1).single(),
+            supabase.from('employers_process_steps').select('*').order('sort_order'),
+            supabase.from('employers_quote').select('*').limit(1).single(),
+            supabase.from('employers_verification_items').select('*').order('sort_order'),
+            supabase.from('employers_testimonials').select('*').order('sort_order'),
+            supabase.from('employers_final_cta').select('*').limit(1).single()
+        ]);
 
-    return {
-        hero: hero.data || null,
-        processSteps: processSteps.data || [],
-        quote: quote.data || null,
-        verification: verification.data || [],
-        testimonials: testimonials.data || [],
-        finalCta: finalCta.data || null
-    };
+        return {
+            hero: hero.data || null,
+            processSteps: processSteps.data || [],
+            quote: quote.data || null,
+            verification: verification.data || [],
+            testimonials: testimonials.data || [],
+            finalCta: finalCta.data || null
+        };
+    } catch (error) {
+        console.error('Error fetching employers:', error);
+        return null;
+    }
 }
 
 async function getServicesContent(supabase) {
-    const [hero, offerings, skillsTraining, screening] = await Promise.all([
-        supabase.from('services_hero').select('*').limit(1).single(),
-        supabase.from('services_offerings').select('*').order('sort_order'),
-        supabase.from('services_skills_training').select('*').limit(1).single(),
-        supabase.from('services_screening_items').select('*').order('sort_order')
-    ]);
+    try {
+        const [hero, offerings, skillsTraining, screening] = await Promise.all([
+            supabase.from('services_hero').select('*').limit(1).single(),
+            supabase.from('services_offerings').select('*').order('sort_order'),
+            supabase.from('services_skills_training').select('*').limit(1).single(),
+            supabase.from('services_screening_items').select('*').order('sort_order')
+        ]);
 
+        return {
+            hero: hero.data || null,
+            offerings: offerings.data || [],
+            skillsTraining: skillsTraining.data || null,
+            screening: screening.data || []
+        };
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        return null;
+    }
+}
+
+// ============================================
+// FALLBACK DATA - Used when database tables don't exist
+// ============================================
+function getFallbackHomepageData() {
     return {
-        hero: hero.data || null,
-        offerings: offerings.data || [],
-        skillsTraining: skillsTraining.data || null,
-        screening: screening.data || []
+        hero: {
+            badge: "Africa's Recruitment Partner · Est. 2015",
+            title: "Connecting great talent with great companies",
+            description: "We don't just fill jobs — we build careers, relationships, and futures. InspHired has been solving Africa's employment challenges through innovative technology and people who care.",
+            cta_primary_text: "Find Talent",
+            cta_primary_url: "https://app.insphired.jobs/jobs?standalone=true",
+            cta_secondary_text: "Available Jobs",
+            cta_secondary_url: "https://connect.insphired.jobs"
+        },
+        info: {
+            eyebrow: "Who we are",
+            title: "Connecting African talent to real opportunity",
+            description_1: "InspHired started in 2015 with a simple goal: make hiring feel human again. Not another faceless job board, not another CV black hole — an actual team of specialists who take the time to understand both the candidate and the company on the other side.",
+            description_2: "That focus grew into something bigger — a full ecosystem of tools and people working together across the continent. But the mission hasn't changed: the right placement can change a life, grow a business, and strengthen a community. That's still what drives everything we build.",
+            quote: "We don't just fill jobs — we build careers, relationships, and futures."
+        },
+        steps: [],
+        platforms: [],
+        team: [],
+        testimonials: [],
+        footer: {
+            company_name: "InspHired",
+            tagline: "Connecting great talent with great companies",
+            address: "123 Career Blvd, Silicon Valley, CA 94025",
+            phone: "+1 (888) 123-4567",
+            email: "info@insphired.com",
+            copyright: "© 2024 InspHired. All rights reserved."
+        }
     };
 }
 
@@ -664,18 +774,15 @@ app.put('/api/admin/content/:id', async (req, res) => {
                 const parsed = typeof value === 'string' ? JSON.parse(value) : value;
                 updateData[originalKey] = parsed;
             } catch (e) {
-                // If it's already an array or object, use as is
                 updateData[originalKey] = value;
             }
         } else if (originalKey && ['years_in_business', 'founded_year', 'sort_order'].includes(originalKey)) {
-            // Handle numeric fields
             updateData[originalKey] = parseInt(value) || 0;
         } else {
-            // Regular text field
             updateData[originalKey] = value;
         }
 
-        // Special handling for JSON items (tracks, modules, steps, etc.)
+        // Special handling for JSON items
         if (id.includes('track-') || id.includes('module-') || id.includes('step-') || 
             id.includes('platform-') || id.includes('member-') || id.includes('testimonial-') ||
             id.includes('verify-') || id.includes('offering-') || id.includes('screening-') ||
@@ -683,7 +790,6 @@ app.put('/api/admin/content/:id', async (req, res) => {
             id.includes('time-') || id.includes('placeholder-')) {
             try {
                 const parsed = JSON.parse(value);
-                // Update all fields in the JSON
                 result = await supabase
                     .from(table)
                     .update({ ...parsed, updated_at: new Date().toISOString() })
@@ -695,7 +801,6 @@ app.put('/api/admin/content/:id', async (req, res) => {
                 });
             }
         } else {
-            // Simple field update
             result = await supabase
                 .from(table)
                 .update(updateData)
@@ -740,7 +845,6 @@ app.get('/api/test', (req, res) => {
 
 app.get('/api/test-data', async (req, res) => {
     try {
-        // Count all tables
         const tables = [
             'home_hero', 'home_info', 'home_recruitment_steps', 'home_ecosystem_platforms', 
             'home_ecosystem_features', 'home_team_members', 'home_testimonials', 'home_footer',
