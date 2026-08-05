@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+// users/src/pages/CareerLabPage.jsx
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import { publicApi } from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CareerQuiz from '../pages/CareerQuiz';
 import CareerCoach from '../assets/career-coach.png';
 
 function CareerLabPage() {
+  const [careerLabData, setCareerLabData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('entry');
 
   const [formData, setFormData] = useState({
@@ -19,6 +24,30 @@ function CareerLabPage() {
     consent: false
   });
 
+  // Fetch career lab content from API
+  useEffect(() => {
+    const fetchCareerLab = async () => {
+      try {
+        setLoading(true);
+        const response = await publicApi.getCareerLab();
+        
+        if (response.success && response.data) {
+          setCareerLabData(response.data);
+          setError(null);
+        } else {
+          setError(response.error || 'Failed to load career lab content');
+        }
+      } catch (err) {
+        console.error('Error fetching career lab:', err);
+        setError(err.message || 'Error loading career lab content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCareerLab();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -30,31 +59,162 @@ function CareerLabPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
+    // Send to backend API for Career Lab registration
+    // Similar to contact form submission
   };
 
-  const [coachMessage, setCoachMessage] = useState(
-    "Hi! Hover over a module and I'll explain it."
-);
+  // Use data from API or fallback to defaults
+  const data = careerLabData || {};
+  const hero = data.hero || {};
+  const differentiation = data.differentiation || {};
 
-const moduleMessages = {
-  1: "A strong CV isn't enough on its own. I'll show you how recruiters read job adverts and how to tailor every application for better results.",
+  // Tracks from backend or fallback
+  const defaultEntryTrack = {
+    title: "Graduates & early-career professionals",
+    description: "Perfect for candidates entering the formal job market for the first time or looking to fast-track their initial corporate visibility breakthrough.",
+    bullet_points: [
+      "Graduates or early in their careers.",
+      "Entering the formal job market for the first time.",
+      "Struggling to secure interviews despite applying frequently.",
+      "Looking to strengthen their professional profile and personal brand."
+    ]
+  };
 
-  2: "Communication can be the deciding factor in an interview. We'll practise professional emails, interviews and workplace etiquette.",
+  const defaultMidTrack = {
+    title: "Experienced professionals seeking growth",
+    description: "Designed for professionals aiming to deliberately re-architect their current alignment, master pivot logistics, or climb higher into senior leadership roles.",
+    bullet_points: [
+      "Want to position themselves more competitively in the job market.",
+      "Need critical guidance navigating career transitions or industry changes.",
+      "Are systematically preparing for new executive opportunities or more senior roles.",
+      "Want to outline a clear, highly structured long-term career roadmap."
+    ]
+  };
 
-  3: "Employers expect more than technical skills. We'll help you build confidence, accountability and workplace habits that set you apart.",
+  // Get tracks from backend
+  const tracks = data.tracks || [];
+  const entryTrack = tracks.find(t => t.track_id === 'entry') || defaultEntryTrack;
+  const midTrack = tracks.find(t => t.track_id === 'mid') || defaultMidTrack;
 
-  4: "Your first role is only the beginning. Let's create a roadmap for long-term career growth and progression.",
+  // Modules from backend or fallback
+  const defaultModules = [
+    {
+      module_number: '01',
+      title: 'Job application strategy',
+      items: [
+        'Understanding how to read and interpret job specifications.',
+        'Tailoring your CV and application structure specifically to each role.',
+        'Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.',
+        'Structuring highly impactful cover letters and strong supporting documents.'
+      ],
+      accent_color: 'var(--teal)'
+    },
+    {
+      module_number: '02',
+      title: 'Professional communication',
+      items: [
+        'Mastering secure email and communication etiquette in professional environments.',
+        'Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.',
+        'Maintaining pristine professional tone and alignment across digital platforms and social media.'
+      ],
+      accent_color: 'var(--orange)'
+    },
+    {
+      module_number: '03',
+      title: 'Workplace readiness',
+      items: [
+        'Advanced personal time management paradigms and true personal accountability frameworks.',
+        'Meeting complex deadlines cleanly and balancing competing work priorities.',
+        'Receiving, processing, and executing constructively on difficult professional performance feedback.'
+      ],
+      accent_color: 'var(--navy)'
+    },
+    {
+      module_number: '04',
+      title: 'Career growth & navigation',
+      items: [
+        'Deep-dive look into interpreting the complete end-to-end employment lifecycle.',
+        'Proactively mapping and planning long-term career milestone developments.',
+        'Spotting hidden internal opportunities and styling yourself for seamless career progression.'
+      ],
+      accent_color: 'var(--yellow)'
+    },
+    {
+      module_number: '05',
+      title: 'Professional mindset',
+      items: [
+        'Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.',
+        'Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.',
+        'Cultivating a dynamic growth mindset that modern premium employers consistently look out for.'
+      ],
+      accent_color: 'var(--teal)'
+    },
+    {
+      module_number: '06',
+      title: 'Compliance & documentation',
+      items: [
+        'Clean preparation systems for strict biometric background checks and screening protocols.',
+        'Ensuring personal data records, validation files, and identity parameters are audit-compliant.',
+        'Understanding precisely what verification elements employers check and why it protects company culture.'
+      ],
+      accent_color: 'var(--orange)'
+    }
+  ];
 
-  5: "Mindset influences performance. We'll develop resilience, adaptability and the confidence to thrive in professional environments.",
+  const modules = data.modules && data.modules.length > 0 
+    ? data.modules.map((item, index) => ({
+        module_number: item.module_number || `0${index + 1}`,
+        title: item.title || defaultModules[index]?.title || '',
+        items: item.items || defaultModules[index]?.items || [],
+        accent_color: item.accent_color || defaultModules[index]?.accent_color || 'var(--teal)'
+      }))
+    : defaultModules;
 
-  6: "Many candidates overlook documentation requirements. We'll make sure you're prepared for compliance checks and employer verification."
-};
+  // Module messages for coach
+  const moduleMessages = {};
+  modules.forEach((mod, index) => {
+    moduleMessages[index + 1] = mod.items && mod.items.length > 0 
+      ? `Module ${mod.module_number}: ${mod.title}. Key skills: ${mod.items.slice(0, 2).join(', ')}...`
+      : `Module ${mod.module_number}: ${mod.title}. Hover for more details.`;
+  });
 
-  const journeySteps = [
+  // Hero journey steps
+  const journeySteps = hero.journey_steps || [
     { label: 'Job searching', icon: 'fa-search' },
     { label: 'Workplace readiness', icon: 'fa-briefcase' },
     { label: 'Long-term career growth', icon: 'fa-seedling' },
   ];
+
+  const [coachMessage, setCoachMessage] = useState(
+    moduleMessages[1] || "Hi! Hover over a module and I'll explain it."
+  );
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
+        <p style={styles.loadingText}>Loading Career Lab content...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div style={styles.errorContainer}>
+        <div style={styles.errorIcon}>⚠️</div>
+        <h3 style={styles.errorTitle}>Failed to Load Career Lab Page</h3>
+        <p style={styles.errorText}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={styles.retryButton}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={globalStyles.pageWrapper}>
@@ -110,24 +270,22 @@ const moduleMessages = {
         }
       `}</style>
 
-
-
       {/* Hero */}
       <header style={styles.hero}>
         <div style={styles.container}>
           <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.heroTag}>Career Lab</span>
-            <h1 style={styles.heroHeading}>Structured career development & coaching for job seekers</h1>
+            <span style={styles.heroTag}>{hero.tag || 'Career Lab'}</span>
+            <h1 style={styles.heroHeading}>{hero.title || 'Structured career development & coaching for job seekers'}</h1>
             <p style={styles.heroSubheading}>
-              Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today's job market.
+              {hero.description || 'Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today\'s job market.'}
             </p>
 
             <div style={styles.journeyPath}>
               {journeySteps.map((step, i) => (
-                <React.Fragment key={step.label}>
+                <React.Fragment key={step.label || i}>
                   <div style={styles.journeyStep}>
                     <span style={styles.journeyIcon}>
-                      <i className={`fas ${step.icon}`} aria-hidden="true"></i>
+                      <i className={`fas ${step.icon || 'fa-circle'}`} aria-hidden="true"></i>
                     </span>
                     {step.label}
                   </div>
@@ -188,32 +346,36 @@ const moduleMessages = {
             {activeTab === 'entry' ? (
               <div style={styles.audiencePanel} className="animate-fadeup">
                 <div style={styles.audienceTextSide}>
-                  <h3 style={styles.audienceTitle}>Graduates & early-career professionals</h3>
-                  <p style={styles.audienceDesc}>Perfect for candidates entering the formal job market for the first time or looking to fast-track their initial corporate visibility breakthrough.</p>
+                  <h3 style={styles.audienceTitle}>{entryTrack.title}</h3>
+                  <p style={styles.audienceDesc}>{entryTrack.description}</p>
                 </div>
                 <div style={styles.audienceGridSide}>
                   <h4 style={styles.listHeader}>Ideal for candidates who are:</h4>
                   <ul style={styles.vList}>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Graduates or early in their careers.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Entering the formal job market for the first time.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Struggling to secure interviews despite applying frequently.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Looking to strengthen their professional profile and personal brand.</span></li>
+                    {(entryTrack.bullet_points || []).map((point, idx) => (
+                      <li key={idx} style={styles.vItem}>
+                        <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
+                        <span>{point}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
             ) : (
               <div style={styles.audiencePanel} className="animate-fadeup">
                 <div style={styles.audienceTextSide}>
-                  <h3 style={styles.audienceTitle}>Experienced professionals seeking growth</h3>
-                  <p style={styles.audienceDesc}>Designed for professionals aiming to deliberately re-architect their current alignment, master pivot logistics, or climb higher into senior leadership roles.</p>
+                  <h3 style={styles.audienceTitle}>{midTrack.title}</h3>
+                  <p style={styles.audienceDesc}>{midTrack.description}</p>
                 </div>
                 <div style={styles.audienceGridSide}>
                   <h4 style={styles.listHeader}>Designed for professionals who:</h4>
                   <ul style={styles.vList}>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Want to position themselves more competitively in the job market.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Need critical guidance navigating career transitions or industry changes.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Are systematically preparing for new executive opportunities or more senior roles.</span></li>
-                    <li style={styles.vItem}><div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> <span>Want to outline a clear, highly structured long-term career roadmap.</span></li>
+                    {(midTrack.bullet_points || []).map((point, idx) => (
+                      <li key={idx} style={styles.vItem}>
+                        <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
+                        <span>{point}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -224,154 +386,49 @@ const moduleMessages = {
 
       {/* Curriculum */}
       <div style={styles.curriculumLayout}>
-
-    <div style={styles.moduleGrid}>
-
         <div style={styles.moduleGrid}>
+          {modules.map((mod, index) => (
+            <div
+              key={mod.module_number}
+              style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
+              className="interactive-card"
+              onMouseEnter={() => setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`)}
+            >
+              <span style={styles.moduleNumber}>{mod.module_number}</span>
+              <h3 style={styles.cardHeading}>{mod.title}</h3>
+              <ul style={styles.cardList}>
+                {(mod.items || []).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-  {/* Module 1 */}
-<div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[1])}
->
-    <span style={styles.moduleNumber}>01</span>
-    <h3 style={styles.cardHeading}>Job application strategy</h3>
-    <ul style={styles.cardList}>
-      <li>Understanding how to read and interpret job specifications.</li>
-      <li>Tailoring your CV and application structure specifically to each role.</li>
-      <li>Preparing optimized ATS-friendly CVs to reliably clear automated screening layers.</li>
-      <li>Structuring highly impactful cover letters and strong supporting documents.</li>
-    </ul>
-  </div>
+        <div style={styles.avatarPanel}>
+          <motion.img
+            src={CareerCoach}
+            alt="Career Coach"
+            style={styles.avatar}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
 
-  {/* Module 2 */}
-<div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[2])}
->
-    <span style={styles.moduleNumber}>02</span>
-    <h3 style={styles.cardHeading}>Professional communication</h3>
-    <ul style={styles.cardList}>
-      <li>Mastering secure email and communication etiquette in professional environments.</li>
-      <li>Live interview dynamics — how to consistently speak with absolute clarity and calm confidence.</li>
-      <li>Maintaining pristine professional tone and alignment across digital platforms and social media.</li>
-    </ul>
-  </div>
-
-  {/* Module 3 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[3])}
->
-    <span style={styles.moduleNumber}>03</span>
-    <h3 style={styles.cardHeading}>Workplace readiness</h3>
-    <ul style={styles.cardList}>
-      <li>Advanced personal time management paradigms and true personal accountability frameworks.</li>
-      <li>Meeting complex deadlines cleanly and balancing competing work priorities.</li>
-      <li>Receiving, processing, and executing constructively on difficult professional performance feedback.</li>
-    </ul>
-  </div>
-
-  {/* Module 4 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[4])}
->
-    <span style={styles.moduleNumber}>04</span>
-    <h3 style={styles.cardHeading}>Career growth & navigation</h3>
-    <ul style={styles.cardList}>
-      <li>Deep-dive look into interpreting the complete end-to-end employment lifecycle.</li>
-      <li>Proactively mapping and planning long-term career milestone developments.</li>
-      <li>Spotting hidden internal opportunities and styling yourself for seamless career progression.</li>
-    </ul>
-  </div>
-
-  {/* Module 5 */}
-  <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[5])}
->
-    <span style={styles.moduleNumber}>05</span>
-    <h3 style={styles.cardHeading}>Professional mindset</h3>
-    <ul style={styles.cardList}>
-      <li>Building corporate workspace resilience, critical emotional IQ, and systemic adaptability.</li>
-      <li>Polishing reliable everyday behavior protocols, high work ethic, and absolute integrity parameters.</li>
-      <li>Cultivating a dynamic growth mindset that modern premium employers consistently look out for.</li>
-    </ul>
-  </div>
-
-  {/* Module 6 */}
- <div
-    style={{ ...styles.moduleCard, borderTop: '5px solid var(--teal)' }}
-    className="interactive-card"
-    onMouseEnter={() => setCoachMessage(moduleMessages[6])}
->
-    <span style={styles.moduleNumber}>06</span>
-    <h3 style={styles.cardHeading}>Compliance & documentation</h3>
-    <ul style={styles.cardList}>
-      <li>Clean preparation systems for strict biometric background checks and screening protocols.</li>
-      <li>Ensuring personal data records, validation files, and identity parameters are audit-compliant.</li>
-      <li>Understanding precisely what verification elements employers check and why it protects company culture.</li>
-    </ul>
-  </div>
-
-</div>
-
-    </div>
-
-   <div style={styles.avatarPanel}>
-
-    <motion.img
-        src={CareerCoach}
-        alt="Career Coach"
-        style={styles.avatar}
-
-        animate={{
-
-    y:[0,-10,0]
-
-}}
-
-transition={{
-
-    duration:4,
-
-    repeat:Infinity
-
-}}
-    />
-
-    <div style={styles.speechBubble}>
-      <AnimatePresence mode="wait">
-
-<motion.div
-    key={coachMessage}
-
-    initial={{opacity:0,y:10}}
-
-    animate={{opacity:1,y:0}}
-
-    exit={{opacity:0,y:-10}}
-
-    transition={{duration:0.25}}
-
->
-
-{coachMessage}
-
-</motion.div>
-
-</AnimatePresence>
-    </div>
-
-</div>
-
-</div>
+          <div style={styles.speechBubble}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={coachMessage}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {coachMessage}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
 
       {/* Differentiation */}
       <section style={styles.diffSection}>
@@ -379,29 +436,43 @@ transition={{
           <div style={styles.diffGrid}>
             <div style={styles.diffLeft}>
               <span style={styles.diffTag}>Complementary ecosystems</span>
-              <h3 style={styles.diffTitle}>How Career Lab differs from our recruitment services</h3>
+              <h3 style={styles.diffTitle}>{differentiation.title || 'How Career Lab differs from our recruitment services'}</h3>
               <p style={styles.diffDesc}>
-                Our core recruitment services remain completely free to candidates and are dedicated to finding, processing, and placing talent directly into active enterprise client networks.
+                {differentiation.description || 'Our core recruitment services remain completely free to candidates and are dedicated to finding, processing, and placing talent directly into active enterprise client networks.'}
               </p>
             </div>
             <div style={styles.diffRight}>
               <div style={styles.diffBox}>
-                <h4 style={styles.diffBoxTitle}>Free recruitment track</h4>
+                <h4 style={styles.diffBoxTitle}>{differentiation.free_track_title || 'Free recruitment track'}</h4>
                 <ul style={styles.diffBoxList}>
-                  <li><i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> Matching candidates to active partner company opportunities</li>
-                  <li><i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> Processing and routing your applications</li>
-                  <li><i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> Facilitating final client interviews and contract placements</li>
+                  {(differentiation.free_track_items || [
+                    'Matching candidates to active partner company opportunities',
+                    'Processing and routing your applications',
+                    'Facilitating final client interviews and contract placements'
+                  ]).map((item, idx) => (
+                    <li key={idx}>
+                      <i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> 
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div style={{ ...styles.diffBox, backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
-                <h4 style={{ ...styles.diffBoxTitle, color: '#FFFFFF' }}>Career Lab coaching</h4>
+                <h4 style={{ ...styles.diffBoxTitle, color: '#FFFFFF' }}>{differentiation.coaching_title || 'Career Lab coaching'}</h4>
                 <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.92rem', margin: '0 0 16px 0', lineHeight: 1.5 }}>
                   A separate, highly structured professional enhancement program for candidates who want hands-on guided coaching to maximize baseline employability parameters.
                 </p>
                 <ul style={{ ...styles.diffBoxList, color: 'rgba(255,255,255,0.85)' }}>
-                  <li><i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> Build missing professional business skills</li>
-                  <li><i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> Clarify long-term direction</li>
-                  <li><i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> Optimize profile conversion tracking</li>
+                  {(differentiation.coaching_items || [
+                    'Build missing professional business skills',
+                    'Clarify long-term direction',
+                    'Optimize profile conversion tracking'
+                  ]).map((item, idx) => (
+                    <li key={idx}>
+                      <i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> 
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -684,24 +755,25 @@ const styles = {
     color: 'var(--navy)',
     margin: '0 0 20px 0'
   },
-    curriculumLayout: {
+  curriculumLayout: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr",
     gap: "50px",
-    alignItems: "start"
-},
-
-moduleGrid: {
+    alignItems: "start",
+    padding: '80px 32px',
+    maxWidth: '1280px',
+    margin: '0 auto'
+  },
+  moduleGrid: {
     display: "grid",
     gridTemplateColumns: "1fr",
     gap: "30px"
-},
-
-avatarPanel: {
+  },
+  avatarPanel: {
     position: "sticky",
     top: "120px",
     textAlign: "center"
-},
+  },
   modulesContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
@@ -974,9 +1046,8 @@ avatarPanel: {
     width: "280px",
     borderRadius: "50%",
     boxShadow: "0 25px 60px rgba(0,0,0,.15)"
-},
-
-speechBubble: {
+  },
+  speechBubble: {
     marginTop: "25px",
     padding: "20px",
     background: "#fff",
@@ -984,7 +1055,64 @@ speechBubble: {
     boxShadow: "0 10px 30px rgba(0,0,0,.12)",
     fontSize: ".95rem",
     lineHeight: 1.6
+  },
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid #e5dfd5',
+    borderTop: '3px solid #509b9e',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite'
+  },
+  loadingText: {
+    marginTop: '16px',
+    color: '#7a8790',
+    fontSize: '14px'
+  },
+  errorContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    padding: '40px 20px',
+    textAlign: 'center',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  errorIcon: { fontSize: '48px', marginBottom: '16px' },
+  errorTitle: { fontSize: '22px', fontWeight: 700, color: '#1f3540', margin: '0 0 8px 0' },
+  errorText: { color: '#d96b43', fontSize: '16px', marginBottom: '24px' },
+  retryButton: {
+    padding: '14px 40px',
+    backgroundColor: '#509b9e',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   }
 };
+
+// Add keyframes for spinner animation
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default CareerLabPage;

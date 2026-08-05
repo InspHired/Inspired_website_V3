@@ -1,78 +1,8 @@
-import React from 'react';
+// users/src/pages/EmployersPage.jsx
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { publicApi } from '../services/api';
 import Footer from '../components/Footer';
-
-const processSteps = [
-  {
-    number: '01',
-    title: 'Client Consultation',
-    text: 'We start by diving deep into your business goals, culture, and hiring requirements to align our recruitment strategy with your vision.',
-    accent: 'var(--teal)',
-  },
-  {
-    number: '02',
-    title: 'Position Profile Development',
-    text: 'We collaborate with you to create a compelling position profile outlining responsibilities, qualifications, and ideal candidate traits.',
-    accent: 'var(--orange)',
-  },
-  {
-    number: '03',
-    title: 'Targeted Search Strategy',
-    text: 'Using our extensive network and modern sourcing tools, we identify professionals who match your business needs and culture.',
-    accent: 'var(--yellow)',
-  },
-  {
-    number: '04',
-    title: 'Candidate Screening & Assessment',
-    text: 'We conduct interviews, skills assessments, and background checks to ensure only the highest-quality candidates are shortlisted.',
-    accent: 'var(--navy)',
-  },
-  {
-    number: '05',
-    title: 'Presentation of Shortlist',
-    text: 'Receive a curated shortlist of candidates complete with detailed profiles and recommendations.',
-    accent: 'var(--teal)',
-  },
-  {
-    number: '06',
-    title: 'Final Candidate Selection',
-    text: 'We guide you through final interviews and hiring decisions with strategic insights and support.',
-    accent: 'var(--orange)',
-  },
-  {
-    number: '07',
-    title: 'Post-Placement Support',
-    text: 'Our partnership continues after placement with ongoing support to ensure long-term success and smooth onboarding.',
-    accent: 'var(--yellow)',
-  },
-];
-
-const verificationItems = [
-  { title: 'Employment verification', icon: 'fa-briefcase' },
-  { title: 'Biometric criminal checks', icon: 'fa-fingerprint' },
-  { title: 'ID, work permits & driver\u2019s license', icon: 'fa-id-card' },
-  { title: 'Education qualifications', icon: 'fa-graduation-cap' },
-  { title: 'Employment references', icon: 'fa-history' },
-  { title: 'Interview assistance', icon: 'fa-users' },
-];
-
-const testimonials = [
-  {
-    quote: 'InspHired completely transformed our hiring process. Their team consistently delivers exceptional candidates aligned with our company culture.',
-    name: 'Global Logistics Group',
-    accent: 'var(--teal)',
-  },
-  {
-    quote: 'The professionalism, speed, and verification standards were outstanding. We found top-tier talent faster than ever before.',
-    name: 'Fintech Africa',
-    accent: 'var(--orange)',
-  },
-  {
-    quote: 'From consultation to onboarding support, the entire recruitment journey felt seamless and highly strategic.',
-    name: 'Healthcare Solutions SA',
-    accent: 'var(--yellow)',
-  },
-];
 
 function StarRow({ color }) {
   return (
@@ -85,6 +15,164 @@ function StarRow({ color }) {
 }
 
 const ForEmployersPage = () => {
+  const [employersData, setEmployersData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch employers data directly from API
+  useEffect(() => {
+    const fetchEmployers = async () => {
+      try {
+        setLoading(true);
+        const response = await publicApi.getEmployers();
+        
+        if (response.success && response.data) {
+          setEmployersData(response.data);
+          setError(null);
+        } else {
+          setError(response.error || 'Failed to load employers content');
+        }
+      } catch (err) {
+        console.error('Error fetching employers:', err);
+        setError(err.message || 'Error loading employers content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployers();
+  }, []);
+
+  // Default process steps (fallback)
+  const defaultProcessSteps = [
+    {
+      number: '01',
+      title: 'Client Consultation',
+      text: 'We start by diving deep into your business goals, culture, and hiring requirements to align our recruitment strategy with your vision.',
+      accent: 'var(--teal)',
+    },
+    {
+      number: '02',
+      title: 'Position Profile Development',
+      text: 'We collaborate with you to create a compelling position profile outlining responsibilities, qualifications, and ideal candidate traits.',
+      accent: 'var(--orange)',
+    },
+    {
+      number: '03',
+      title: 'Targeted Search Strategy',
+      text: 'Using our extensive network and modern sourcing tools, we identify professionals who match your business needs and culture.',
+      accent: 'var(--yellow)',
+    },
+    {
+      number: '04',
+      title: 'Candidate Screening & Assessment',
+      text: 'We conduct interviews, skills assessments, and background checks to ensure only the highest-quality candidates are shortlisted.',
+      accent: 'var(--navy)',
+    },
+    {
+      number: '05',
+      title: 'Presentation of Shortlist',
+      text: 'Receive a curated shortlist of candidates complete with detailed profiles and recommendations.',
+      accent: 'var(--teal)',
+    },
+    {
+      number: '06',
+      title: 'Final Candidate Selection',
+      text: 'We guide you through final interviews and hiring decisions with strategic insights and support.',
+      accent: 'var(--orange)',
+    },
+    {
+      number: '07',
+      title: 'Post-Placement Support',
+      text: 'Our partnership continues after placement with ongoing support to ensure long-term success and smooth onboarding.',
+      accent: 'var(--yellow)',
+    },
+  ];
+
+  const defaultVerificationItems = [
+    { title: 'Employment verification', icon: 'fa-briefcase' },
+    { title: 'Biometric criminal checks', icon: 'fa-fingerprint' },
+    { title: 'ID, work permits & driver\'s license', icon: 'fa-id-card' },
+    { title: 'Education qualifications', icon: 'fa-graduation-cap' },
+    { title: 'Employment references', icon: 'fa-history' },
+    { title: 'Interview assistance', icon: 'fa-users' },
+  ];
+
+  const defaultTestimonials = [
+    {
+      quote: 'InspHired completely transformed our hiring process. Their team consistently delivers exceptional candidates aligned with our company culture.',
+      name: 'Global Logistics Group',
+      accent: 'var(--teal)',
+    },
+    {
+      quote: 'The professionalism, speed, and verification standards were outstanding. We found top-tier talent faster than ever before.',
+      name: 'Fintech Africa',
+      accent: 'var(--orange)',
+    },
+    {
+      quote: 'From consultation to onboarding support, the entire recruitment journey felt seamless and highly strategic.',
+      name: 'Healthcare Solutions SA',
+      accent: 'var(--yellow)',
+    },
+  ];
+
+  // Use data from API or fallback to defaults
+  const data = employersData || {};
+  const hero = data.hero || {};
+  const quote = data.quote || {};
+  const finalCta = data.finalCta || {};
+
+  const processSteps = data.processSteps && data.processSteps.length > 0
+    ? data.processSteps.map((item, index) => ({
+        number: item.step_number || `0${index + 1}`,
+        title: item.title || defaultProcessSteps[index]?.title || '',
+        text: item.description || defaultProcessSteps[index]?.text || '',
+        accent: item.accent_color || defaultProcessSteps[index]?.accent || 'var(--teal)',
+      }))
+    : defaultProcessSteps;
+
+  const verificationItems = data.verification && data.verification.length > 0
+    ? data.verification.map(item => ({
+        title: item.title || '',
+        icon: item.icon_class || 'fa-check',
+      }))
+    : defaultVerificationItems;
+
+  const testimonials = data.testimonials && data.testimonials.length > 0
+    ? data.testimonials.map(item => ({
+        quote: item.quote || '',
+        name: item.client_name || '',
+        accent: item.accent_color || 'var(--teal)',
+      }))
+    : defaultTestimonials;
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
+        <p style={styles.loadingText}>Loading employers content...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div style={styles.errorContainer}>
+        <div style={styles.errorIcon}>⚠️</div>
+        <h3 style={styles.errorTitle}>Failed to Load Employers Page</h3>
+        <p style={styles.errorText}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={styles.retryButton}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.pageWrapper}>
       <style>{`
@@ -125,25 +213,23 @@ const ForEmployersPage = () => {
       <header style={styles.hero}>
         <div style={styles.container}>
           <div style={styles.heroContent} className="animate-fadeup">
-            <span style={styles.eyebrow}>For employers</span>
-            <h1 style={styles.heroTitle}>Strategic recruitment solutions for modern African businesses</h1>
+            <span style={styles.eyebrow}>{hero.tag || 'For employers'}</span>
+            <h1 style={styles.heroTitle}>{hero.title || 'Strategic recruitment solutions for modern African businesses'}</h1>
             <p style={styles.heroLead}>
-              Our comprehensive recruitment services are designed to connect your
-              organisation with top-tier professionals who align with your
-              culture, vision, and long-term business goals.
+              {hero.description || 'Our comprehensive recruitment services are designed to connect your organisation with top-tier professionals who align with your culture, vision, and long-term business goals.'}
             </p>
             <div style={styles.btnRow}>
               <a
-                href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
+                href={hero.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.btnPrimary}
                 className="btn-hover-transition"
               >
-                Schedule consultation
+                {hero.cta_primary_text || 'Schedule consultation'}
               </a>
-              <Link to="/contact" style={styles.btnSecondaryDark} className="btn-hover-transition">
-                Request callback
+              <Link to={hero.cta_secondary_url || '/contact'} style={styles.btnSecondaryDark} className="btn-hover-transition">
+                {hero.cta_secondary_text || 'Request callback'}
               </Link>
             </div>
           </div>
@@ -186,12 +272,9 @@ const ForEmployersPage = () => {
           <div style={styles.quoteWrap}>
             <i className="fas fa-quote-left" style={styles.quoteMark} aria-hidden="true"></i>
             <p style={styles.quoteText}>
-              Hiring is the most important people function you have, and most of
-              us aren't as good at it as we think. Refocusing your resources on
-              hiring better will have a higher return than almost any training
-              program you can develop.
+              {quote.quote || 'Hiring is the most important people function you have, and most of us aren\'t as good at it as we think. Refocusing your resources on hiring better will have a higher return than almost any training program you can develop.'}
             </p>
-            <p style={styles.quoteAttribution}>— Laszlo Bock</p>
+            <p style={styles.quoteAttribution}>{quote.attribution || '— Laszlo Bock'}</p>
           </div>
         </div>
       </section>
@@ -210,7 +293,7 @@ const ForEmployersPage = () => {
 
           <div className="verify-grid" style={styles.verifyGrid}>
             {verificationItems.map((item, i) => (
-              <div key={item.title} style={styles.verifyItem} className="verify-item">
+              <div key={item.title || i} style={styles.verifyItem} className="verify-item">
                 <div
                   style={{
                     ...styles.verifyIcon,
@@ -218,7 +301,7 @@ const ForEmployersPage = () => {
                     color: [`var(--teal)`, `var(--orange)`, `var(--yellow)`, `var(--navy)`, `var(--teal)`, `var(--orange)`][i % 6],
                   }}
                 >
-                  <i className={`fas ${item.icon}`} aria-hidden="true"></i>
+                  <i className={`fas ${item.icon || 'fa-check'}`} aria-hidden="true"></i>
                 </div>
                 <h4 style={styles.verifyTitle}>{item.title}</h4>
               </div>
@@ -240,8 +323,8 @@ const ForEmployersPage = () => {
           </div>
 
           <div style={styles.testimonialGrid}>
-            {testimonials.map((t) => (
-              <div key={t.name} style={{ ...styles.testimonialCard, borderTop: `4px solid ${t.accent}` }} className="interactive-card">
+            {testimonials.map((t, index) => (
+              <div key={t.name || index} style={{ ...styles.testimonialCard, borderTop: `4px solid ${t.accent}` }} className="interactive-card">
                 <StarRow color={t.accent} />
                 <p style={styles.testimonialQuote}>"{t.quote}"</p>
                 <p style={styles.testimonialName}>{t.name}</p>
@@ -256,32 +339,32 @@ const ForEmployersPage = () => {
         <div style={styles.container}>
           <div className="final-cta-row" style={styles.finalCtaRow}>
             <div>
-              <h2 style={styles.finalCtaTitle}>How can we InspHire you today?</h2>
+              <h2 style={styles.finalCtaTitle}>{finalCta.title || 'How can we InspHire you today?'}</h2>
               <p style={styles.finalCtaText}>
-                Let's discuss your business needs and build a workforce designed for growth.
+                {finalCta.description || 'Let\'s discuss your business needs and build a workforce designed for growth.'}
               </p>
             </div>
             <div style={styles.finalCtaBtns}>
               <a
-                href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
+                href={finalCta.cta_primary_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.btnPrimary}
                 className="btn-hover-transition"
               >
-                Schedule consultation
+                {finalCta.cta_primary_text || 'Schedule consultation'}
               </a>
-              <Link to="/contact" style={styles.btnSecondaryLight} className="btn-hover-transition">
-                Request callback
+              <Link to={finalCta.cta_secondary_url || '/contact'} style={styles.btnSecondaryLight} className="btn-hover-transition">
+                {finalCta.cta_secondary_text || 'Request callback'}
               </Link>
               <a
-                href="https://worx.insphired.jobs/"
+                href={finalCta.cta_tertiary_url || 'https://worx.insphired.jobs/'}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.btnSecondaryLight}
                 className="btn-hover-transition"
               >
-                Worx (temp hiring platform)
+                {finalCta.cta_tertiary_text || 'Worx (temp hiring platform)'}
               </a>
             </div>
           </div>
@@ -372,18 +455,18 @@ const styles = {
     alignItems: 'center',
     border: '1.5px solid rgba(255,255,255,0.3)',
   },
-btnSecondaryLight: {
-  background: 'transparent',
-  color: '#FFFFFF',
-  padding: '14px 30px',
-  borderRadius: '40px',
-  textDecoration: 'none',
-  fontWeight: 700,
-  fontSize: '0.95rem',
-  display: 'inline-flex',
-  alignItems: 'center',
-  border: '1.5px solid rgba(255,255,255,0.3)',
-},
+  btnSecondaryLight: {
+    background: 'transparent',
+    color: '#FFFFFF',
+    padding: '14px 30px',
+    borderRadius: '40px',
+    textDecoration: 'none',
+    fontWeight: 700,
+    fontSize: '0.95rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    border: '1.5px solid rgba(255,255,255,0.3)',
+  },
   heroVisualWrap: {
     position: 'absolute',
     top: '50%',
@@ -579,6 +662,63 @@ btnSecondaryLight: {
     flexWrap: 'wrap',
     flexShrink: 0,
   },
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid #e5dfd5',
+    borderTop: '3px solid #509b9e',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite'
+  },
+  loadingText: {
+    marginTop: '16px',
+    color: '#7a8790',
+    fontSize: '14px'
+  },
+  errorContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    padding: '40px 20px',
+    textAlign: 'center',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  errorIcon: { fontSize: '48px', marginBottom: '16px' },
+  errorTitle: { fontSize: '22px', fontWeight: 700, color: '#1f3540', margin: '0 0 8px 0' },
+  errorText: { color: '#d96b43', fontSize: '16px', marginBottom: '24px' },
+  retryButton: {
+    padding: '14px 40px',
+    backgroundColor: '#509b9e',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
+  }
 };
+
+// Add keyframes for spinner animation
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default ForEmployersPage;

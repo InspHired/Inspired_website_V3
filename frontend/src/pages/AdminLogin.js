@@ -5,6 +5,28 @@ import { useAuth } from '../contexts/AuthContext';
 import './AdminLogin.css';
 
 // ============================================
+// API BASE URL CONFIGURATION
+// ============================================
+const getApiBaseUrl = () => {
+    // Check if we're in GitHub Codespaces
+    if (window.location.hostname.includes('app.github.dev')) {
+        // Get the current hostname and replace port 3000 with 5000
+        const hostname = window.location.hostname;
+        // If the hostname contains the port (e.g., legendary-space-train-...-3000.app.github.dev)
+        if (hostname.includes('-3000.')) {
+            return `https://${hostname.replace('-3000.', '-5000.')}`;
+        }
+        // Fallback: use the environment variable or construct from window.location
+        return process.env.REACT_APP_API_URL || `https://${hostname.replace(':3000', ':5000')}`;
+    }
+    
+    // Local development
+    return process.env.REACT_APP_API_URL || 'http://localhost:5000';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// ============================================
 // PROFESSIONAL SVG ICONS
 // ============================================
 const Icons = {
@@ -61,6 +83,11 @@ const Icons = {
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
         </svg>
+    ),
+    Spinner: () => (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="spinner-icon">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
     )
 };
 
@@ -70,23 +97,38 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [backendStatus, setBackendStatus] = useState('checking');
+    const [backendUrl, setBackendUrl] = useState(API_BASE_URL);
     const { login } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
         checkBackend();
+        console.log('🔌 API Base URL:', API_BASE_URL);
     }, []);
 
     const checkBackend = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/test');
+            console.log('🔍 Checking backend at:', `${API_BASE_URL}/api/test`);
+            const response = await fetch(`${API_BASE_URL}/api/test`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            
             if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Backend is online:', data);
                 setBackendStatus('online');
             } else {
+                console.error('❌ Backend responded with status:', response.status);
                 setBackendStatus('offline');
+                setError(`Server returned status ${response.status}. Please check if the backend is running.`);
             }
         } catch (err) {
+            console.error('❌ Backend connection error:', err);
             setBackendStatus('offline');
+            setError(`Cannot connect to backend at ${API_BASE_URL}. Please ensure the server is running.`);
         }
     };
 
@@ -95,13 +137,39 @@ const AdminLogin = () => {
         setError('');
         setLoading(true);
 
-        const result = await login(email, password);
-        if (result.success) {
-            navigate('/admin/dashboard');
-        } else {
-            setError(result.error || 'Login failed. Please check your credentials.');
+        try {
+            console.log('🔐 Attempting login to:', `${API_BASE_URL}/api/admin/login`);
+            const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Store token and user data
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminUser', JSON.stringify(data.user));
+                
+                // Call the login function from auth context
+                const result = await login(email, password);
+                if (result.success) {
+                    navigate('/admin/dashboard');
+                } else {
+                    setError(result.error || 'Login failed. Please check your credentials.');
+                }
+            } else {
+                setError(data.message || 'Login failed. Please check your credentials.');
+            }
+        } catch (err) {
+            console.error('❌ Login error:', err);
+            setError(`Network error: ${err.message}. Please check if the backend is running at ${API_BASE_URL}`);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
@@ -123,18 +191,27 @@ const AdminLogin = () => {
                         <p className="login-subtitle">Content Management System</p>
                     </div>
 
+                    {backendStatus === 'checking' && (
+                        <div className="backend-status checking">
+                            <span className="status-dot checking"></span>
+                            <span>Connecting to server...</span>
+                        </div>
+                    )}
+
                     {backendStatus === 'offline' && (
                         <div className="backend-warning">
                             <span className="warning-icon">
                                 <Icons.Warning />
                             </span>
-                            <span>Backend not running. Please start the server.</span>
+                            <span>Backend not running at {API_BASE_URL}. Please start the server.</span>
                         </div>
                     )}
+                    
                     {backendStatus === 'online' && (
-                        <div className="backend-status">
-                            <span className="status-dot"></span>
+                        <div className="backend-status online">
+                            <span className="status-dot online"></span>
                             <span>Connected to server</span>
+                            <span className="backend-url">{API_BASE_URL}</span>
                         </div>
                     )}
 
@@ -150,9 +227,9 @@ const AdminLogin = () => {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter Username"
+                                placeholder="Enter your email"
                                 required
-                                disabled={loading || backendStatus === 'offline'}
+                                disabled={loading || backendStatus === 'offline' || backendStatus === 'checking'}
                                 className="login-input"
                             />
                         </div>
@@ -170,7 +247,7 @@ const AdminLogin = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Enter your password"
                                 required
-                                disabled={loading || backendStatus === 'offline'}
+                                disabled={loading || backendStatus === 'offline' || backendStatus === 'checking'}
                                 className="login-input"
                             />
                         </div>
@@ -180,11 +257,11 @@ const AdminLogin = () => {
                         <button 
                             type="submit" 
                             className="login-btn" 
-                            disabled={loading || backendStatus === 'offline'}
+                            disabled={loading || backendStatus === 'offline' || backendStatus === 'checking'}
                         >
                             {loading ? (
                                 <span className="btn-loading">
-                                    <span className="spinner"></span>
+                                    <Icons.Spinner />
                                     Signing in...
                                 </span>
                             ) : (
@@ -198,6 +275,11 @@ const AdminLogin = () => {
                             <span>Secure Admin Access</span>
                         </div>
                         <div className="login-credentials">
+                            <small>
+                                {process.env.NODE_ENV === 'development' && (
+                                    <span>Backend: {API_BASE_URL}</span>
+                                )}
+                            </small>
                         </div>
                     </div>
                 </div>

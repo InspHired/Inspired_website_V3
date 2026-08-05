@@ -1,22 +1,93 @@
-const express = require('express');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const { createClient } = require("@supabase/supabase-js");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ============================================
 // Initialize Supabase
+// ============================================
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
 );
 
-// Middleware
+// ============================================
+// CORS CONFIGURATION - FIXED FOR CODESPACES
+// ============================================
+
+// Allow any origin for development (most permissive)
+// This will work in any environment including Codespaces
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://192.168.1.164:3000'],
-    credentials: true
+    origin: true, // Allow any origin
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "Authorization"
+    ]
 }));
+
+// ============================================
+// ALTERNATIVE: Specific origins (uncomment if you prefer)
+// ============================================
+
+/*
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:5173",
+    "http://192.168.1.164:3000",
+    // Allow any app.github.dev domain (Codespaces)
+    /.*\.app\.github\.dev$/,
+    // Allow any vercel.app domain
+    /.*\.vercel\.app$/,
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        console.log("Incoming Origin:", origin);
+
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        const isAllowed = allowedOrigins.some(pattern => {
+            if (typeof pattern === 'string') {
+                return pattern === origin;
+            }
+            if (pattern instanceof RegExp) {
+                return pattern.test(origin);
+            }
+            return false;
+        });
+
+        if (isAllowed) {
+            console.log("✅ CORS allowed:", origin);
+            return callback(null, true);
+        }
+
+        console.error("❌ CORS blocked:", origin);
+        return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "Authorization"
+    ]
+}));
+*/
+
+// JSON middleware
 app.use(express.json());
 
 // ============================================

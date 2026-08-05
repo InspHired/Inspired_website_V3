@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+// users/src/pages/ContactPage.jsx
+import React, { useState, useEffect } from 'react';
+import { publicApi } from '../services/api';
 import Footer from '../components/Footer';
 
 const ContactPage = () => {
-  const [loading, setLoading] = useState(false);
+  const [contactData, setContactData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -15,6 +20,30 @@ const ContactPage = () => {
     message: ''
   });
 
+  // Fetch contact page content from API
+  useEffect(() => {
+    const fetchContact = async () => {
+      try {
+        setLoading(true);
+        const response = await publicApi.getContact();
+        
+        if (response.success && response.data) {
+          setContactData(response.data);
+          setError(null);
+        } else {
+          setError(response.error || 'Failed to load contact content');
+        }
+      } catch (err) {
+        console.error('Error fetching contact:', err);
+        setError(err.message || 'Error loading contact content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContact();
+  }, []);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,49 +53,87 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
 
-    setLoading(true);
     try {
-      const { error } = await supabase
-        .from('Contact_requests')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            company: formData.company,
-            position: formData.position,
-            service: formData.service,
-            Contact_time: formData.ContactTime,
-            message: formData.message
-          }
-        ]);
-
-      if (error) {
-        console.error(error);
-        alert('Failed to submit request.');
-        return;
-      }
-
-      alert('Thank you! Our team will contact you shortly.');
-
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        position: '',
-        service: '',
-        ContactTime: '',
-        message: ''
+      // Send form data to your backend API
+      const response = await fetch('https://inspired-website-v3-fhno.onrender.com/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('Thank you! Our team will contact you shortly.');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          position: '',
+          service: '',
+          ContactTime: '',
+          message: ''
+        });
+      } else {
+        alert(result.message || 'Failed to submit request. Please try again.');
+      }
     } catch (err) {
-      console.error(err);
-      alert('Something went wrong.');
+      console.error('Submission error:', err);
+      alert('Something went wrong. Please try again.');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
+
+  // Use data from API or fallback to defaults
+  const data = contactData || {};
+  const hero = data.hero || {};
+  const info = data.info || {};
+
+  // Service options from backend or fallback
+  const serviceOptions = data.services && data.services.length > 0
+    ? data.services.map(item => item.service_name || item)
+    : ['Recruitment Services', 'Executive Search', 'Verification Services', 'Career Lab Services', 'General Enquiry'];
+
+  // Time preferences from backend or fallback
+  const timeOptions = data.timePreferences && data.timePreferences.length > 0
+    ? data.timePreferences.map(item => item.preference || item)
+    : ['Morning (08:00 - 12:00)', 'Afternoon (12:00 - 17:00)', 'Any time'];
+
+  // Placeholders from backend or fallback
+  const placeholders = data.placeholders || {};
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
+        <p style={styles.loadingText}>Loading contact page...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div style={styles.errorContainer}>
+        <div style={styles.errorIcon}>⚠️</div>
+        <h3 style={styles.errorTitle}>Failed to Load Contact Page</h3>
+        <p style={styles.errorText}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={styles.retryButton}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.pageWrapper}>
@@ -96,16 +163,14 @@ const ContactPage = () => {
 
         <div style={styles.container}>
           <div style={styles.heroContent}>
-            <span style={styles.heroTag}>Request a Contact</span>
+            <span style={styles.heroTag}>{hero.tag || 'Request a Contact'}</span>
 
             <h1 style={styles.heroTitle}>
-              We'd love to learn more about your needs
+              {hero.title || "We'd love to learn more about your needs"}
             </h1>
 
             <p style={styles.heroText}>
-              Whether you're looking for recruitment solutions,
-              executive search, verification services, or workforce
-              strategy support, our team is ready to assist.
+              {hero.description || "Whether you're looking for recruitment solutions, executive search, verification services, or workforce strategy support, our team is ready to assist."}
             </p>
           </div>
         </div>
@@ -125,7 +190,7 @@ const ContactPage = () => {
                 <input
                   type="text"
                   name="name"
-                  placeholder="Full name *"
+                  placeholder={placeholders.name || 'Full name *'}
                   value={formData.name}
                   onChange={handleChange}
                   required
@@ -136,7 +201,7 @@ const ContactPage = () => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email address *"
+                  placeholder={placeholders.email || 'Email address *'}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -147,7 +212,7 @@ const ContactPage = () => {
                 <input
                   type="tel"
                   name="phone"
-                  placeholder="Phone number *"
+                  placeholder={placeholders.phone || 'Phone number *'}
                   value={formData.phone}
                   onChange={handleChange}
                   required
@@ -158,7 +223,7 @@ const ContactPage = () => {
                 <input
                   type="text"
                   name="company"
-                  placeholder="Company name"
+                  placeholder={placeholders.company || 'Company name'}
                   value={formData.company}
                   onChange={handleChange}
                   style={styles.input}
@@ -168,7 +233,7 @@ const ContactPage = () => {
                 <input
                   type="text"
                   name="position"
-                  placeholder="Job title"
+                  placeholder={placeholders.position || 'Job title'}
                   value={formData.position}
                   onChange={handleChange}
                   style={styles.input}
@@ -183,12 +248,10 @@ const ContactPage = () => {
                   className="Contact-select"
                   required
                 >
-                  <option value="">Select service</option>
-                  <option>Recruitment Services</option>
-                  <option>Executive Search</option>
-                  <option>Verification Services</option>
-                  <option>Career Lab Services</option>
-                  <option>General Enquiry</option>
+                  <option value="">{placeholders.service || 'Select service'}</option>
+                  {serviceOptions.map((option, index) => (
+                    <option key={index} value={option}>{option}</option>
+                  ))}
                 </select>
 
                 <select
@@ -198,15 +261,15 @@ const ContactPage = () => {
                   style={styles.input}
                   className="Contact-select"
                 >
-                  <option value="">Preferred Contact time</option>
-                  <option>Morning (08:00 - 12:00)</option>
-                  <option>Afternoon (12:00 - 17:00)</option>
-                  <option>Any time</option>
+                  <option value="">{placeholders.ContactTime || 'Preferred Contact time'}</option>
+                  {timeOptions.map((option, index) => (
+                    <option key={index} value={option}>{option}</option>
+                  ))}
                 </select>
 
                 <textarea
                   name="message"
-                  placeholder="Tell us more about your needs..."
+                  placeholder={placeholders.message || 'Tell us more about your needs...'}
                   value={formData.message}
                   onChange={handleChange}
                   style={styles.textarea}
@@ -215,11 +278,11 @@ const ContactPage = () => {
 
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={submitting}
                   style={styles.primaryBtn}
                   className="Contact-primary-btn"
                 >
-                  {loading ? 'Submitting...' : 'Request Contact'}
+                  {submitting ? 'Submitting...' : 'Request Contact'}
                 </button>
               </form>
             </div>
@@ -230,29 +293,29 @@ const ContactPage = () => {
 
               <div style={styles.infoItem}>
                 <span style={styles.infoIcon}><i className="fas fa-envelope" aria-hidden="true"></i></span>
-                info@insphired.co.za
+                {info.email || 'info@insphired.co.za'}
               </div>
 
               <div style={styles.infoItem}>
                 <span style={styles.infoIcon}><i className="fas fa-phone" aria-hidden="true"></i></span>
-                +27 XX XXX XXXX
+                {info.phone || '+27 XX XXX XXXX'}
               </div>
 
               <div style={styles.infoItem}>
                 <span style={styles.infoIcon}><i className="fas fa-clock" aria-hidden="true"></i></span>
-                Monday - Friday
+                {info.hours_title || 'Monday - Friday'}
                 <br />
-                08:00 - 17:00
+                {info.hours_time || '08:00 - 17:00'}
               </div>
 
               <a
-                href="https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true"
+                href={info.booking_url || 'https://bookings.cloud.microsoft/book/LandrysDiary@insphired.co.za/?ismsaljsauthenabled=true'}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.secondaryBtn}
                 className="Contact-secondary-btn"
               >
-                Schedule consultation
+                {info.booking_text || 'Schedule consultation'}
               </a>
             </div>
 
@@ -445,7 +508,69 @@ const styles = {
     padding: '14px 28px',
     borderRadius: '40px',
     fontWeight: 700,
+  },
+
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid #e5dfd5',
+    borderTop: '3px solid #509b9e',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite'
+  },
+
+  loadingText: {
+    marginTop: '16px',
+    color: '#7a8790',
+    fontSize: '14px'
+  },
+
+  errorContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    padding: '40px 20px',
+    textAlign: 'center',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+
+  errorIcon: { fontSize: '48px', marginBottom: '16px' },
+  errorTitle: { fontSize: '22px', fontWeight: 700, color: '#1f3540', margin: '0 0 8px 0' },
+  errorText: { color: '#d96b43', fontSize: '16px', marginBottom: '24px' },
+  retryButton: {
+    padding: '14px 40px',
+    backgroundColor: '#509b9e',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   }
 };
+
+// Add keyframes for spinner animation
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default ContactPage;

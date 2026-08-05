@@ -19,7 +19,6 @@ function Navbar() {
   return (
     <header className="navbar">
       <style>{`
-        /* ===== 3D METALLIC BRAND LOGO ===== */
         .brand-logo-container {
           display: inline-flex;
           flex-direction: column;
@@ -41,8 +40,6 @@ function Navbar() {
           display: flex;
           align-items: baseline;
         }
-
-        /* 3D Teal "Insp" */
         .logo-insp {
           font-weight: 500;
           background: linear-gradient(180deg, #6ecad0 0%, #509b9e 50%, #306c6e 100%);
@@ -51,8 +48,6 @@ function Navbar() {
           background-clip: text;
           filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
         }
-
-        /* 3D Dark Navy "Hired" */
         .logo-hired {
           font-weight: 800;
           background: linear-gradient(180deg, #324e5d 0%, #1f3540 50%, #0d1920 100%);
@@ -61,8 +56,6 @@ function Navbar() {
           background-clip: text;
           filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
         }
-
-        /* Metallic Red Sub-Tagline Bar */
         .logo-tagline-bar {
           margin-top: 2px;
           padding: 2px 8px;
@@ -86,9 +79,6 @@ function Navbar() {
           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
           white-space: nowrap;
         }
-
-
-        /* ===== 3D METALLIC NAVBAR BUTTON ===== */
         .btn-consult {
           display: inline-flex;
           align-items: center;
@@ -133,9 +123,23 @@ function Navbar() {
             0 0 0 transparent,
             0 2px 4px rgba(0, 0, 0, 0.2) !important;
         }
+            .nav-links {
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+.nav-links a {
+          text-decoration: none;
+          font-size: 1rem;
+          font-weight: 700; 
+          color: #1f3540;     
+          letter-spacing: -0.01em;
+          transition: color 0.2s ease, opacity 0.2s ease;
+        }
       `}</style>
-
-      {/* RECREATED BRAND LOGO */}
       <Link to="/" className="brand-logo-container" aria-label="InspHired Recruitment Solutions Home">
         <div className="brand-logo-text">
           <span className="logo-insp">Insp</span>

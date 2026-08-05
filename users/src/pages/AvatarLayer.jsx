@@ -3,18 +3,20 @@ import "./AvatarLayer.css";
 const avatars = [
   {
     id: 1,
-    src:"https://raw.githubusercontent.com/InspHired/Inspired_website_V3/main/Avatars/Business_women.png",
-    alt: "Construction Worker",
+    src: "https://raw.githubusercontent.com/InspHired/Inspired_website_V3/main/Avatars/Business_women.png",
+    alt: "Business Woman",
     x: "10%",
     y: "40%",
+    theme: "teal",
     delay: "0s",
   },
   {
     id: 2,
     src: "https://raw.githubusercontent.com/InspHired/Inspired_website_V3/main/Avatars/Const_worker.png",
-    alt: "Business Woman",
+    alt: "Construction Worker",
     x: "22%",
     y: "14%",
+    theme: "yellow",
     delay: ".7s",
   },
   {
@@ -22,7 +24,8 @@ const avatars = [
     src: "https://raw.githubusercontent.com/InspHired/Inspired_website_V3/main/Avatars/Engineer.png",
     alt: "Engineer",
     x: "47%",
-    y: "30%",
+    y: "28%",
+    theme: "teal",
     delay: "1.4s",
   },
   {
@@ -31,6 +34,7 @@ const avatars = [
     alt: "Doctor",
     x: "66%",
     y: "55%",
+    theme: "teal",
     delay: ".5s",
   },
   {
@@ -39,6 +43,7 @@ const avatars = [
     alt: "Developer",
     x: "72%",
     y: "10%",
+    theme: "teal",
     delay: "1s",
   },
   {
@@ -47,6 +52,7 @@ const avatars = [
     alt: "Teacher",
     x: "82%",
     y: "45%",
+    theme: "orange",
     delay: "2s",
   },
 ];
@@ -57,7 +63,7 @@ export default function AvatarLayer() {
       {avatars.map((avatar) => (
         <div
           key={avatar.id}
-          className="avatar-node"
+          className={`avatar-node theme-${avatar.theme}`}
           style={{
             left: avatar.x,
             top: avatar.y,
