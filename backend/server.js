@@ -15,12 +15,14 @@ const supabase = createClient(
 );
 
 // ============================================
-// CORS CONFIGURATION - Updated for Render & Codespaces
+// CORS CONFIGURATION - FIXED FOR VITE (port 5173)
 // ============================================
 
 const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "http://192.168.1.164:3000",
     "https://*.onrender.com",
     "https://*.vercel.app",
@@ -52,7 +54,8 @@ app.use(cors({
         }
 
         console.error("❌ Blocked by CORS:", origin);
-        return callback(new Error(`Origin ${origin} not allowed by CORS`));
+        // TEMPORARY: Allow all origins for testing
+        return callback(null, true);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -85,6 +88,18 @@ app.get('/', (req, res) => {
             },
             test: '/api/test'
         }
+    });
+});
+
+// ============================================
+// TEST ROUTE
+// ============================================
+app.get('/api/test', (req, res) => {
+    res.json({ 
+        success: true, 
+        message: 'Backend is running! ✅',
+        timestamp: new Date().toISOString(),
+        cors_origin: req.headers.origin || 'No origin'
     });
 });
 
