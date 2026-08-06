@@ -1,135 +1,240 @@
 // users/src/services/api.js
-import axios from 'axios';
+import axios from "axios";
 
 // ============================================
-// FORCE USE RENDER BACKEND - Local backend not running
+// API URL CONFIGURATION
 // ============================================
-const API_URL = 'https://inspired-website-v3-fhno.onrender.com/api';
 
-console.log('✅ API URL set to:', API_URL);
+const getApiBaseUrl = () => {
+    // Production
+    if (process.env.NODE_ENV === "production") {
+        return (
+            process.env.REACT_APP_API_URL ||
+            "https://inspired-website-v3-fhno.onrender.com/api"
+        );
+    }
+
+    // Browser only
+    if (typeof window !== "undefined") {
+        const host = window.location.hostname;
+
+        // GitHub Codespaces
+        if (host.includes("app.github.dev")) {
+            return `https://${host.replace("-3000.", "-5000.")}/api`;
+        }
+
+        // Localhost
+        if (host === "localhost" || host === "127.0.0.1") {
+            return "http://localhost:5000/api";
+        }
+    }
+
+    // Fallback
+    return "https://inspired-website-v3-fhno.onrender.com/api";
+};
+
+const API_URL = getApiBaseUrl();
+
+console.log(`🔌 API URL (${process.env.NODE_ENV || "development"}): ${API_URL}`);
+
+// ============================================
+// AXIOS INSTANCE
+// ============================================
 
 const api = axios.create({
     baseURL: API_URL,
+    timeout: 30000,
     headers: {
-        'Content-Type': 'application/json'
-    },
-    timeout: 30000 // 30 seconds for Render (might be cold start)
+        "Content-Type": "application/json",
+        Accept: "application/json"
+    }
 });
 
-// Add request interceptor for debugging
+// ============================================
+// REQUEST INTERCEPTOR
+// ============================================
+
 api.interceptors.request.use(
     (config) => {
-        console.log('📤 Request:', config.method.toUpperCase(), config.url);
+        const token = localStorage.getItem("adminToken");
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        console.log(
+            `📤 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`
+        );
+
         return config;
     },
     (error) => {
-        console.error('❌ Request Error:', error);
+        console.error("Request Error:", error);
         return Promise.reject(error);
     }
 );
 
-// Add response interceptor for debugging
+// ============================================
+// RESPONSE INTERCEPTOR
+// ============================================
+
 api.interceptors.response.use(
     (response) => {
-        console.log('📥 Response:', response.status, response.config.url);
+        console.log(
+            `✅ ${response.config.url} (${response.status})`
+        );
+
         return response;
     },
     (error) => {
-        if (error.code === 'ERR_NETWORK') {
-            console.error('❌ Network Error - Cannot reach backend');
-            console.error('   API URL:', API_URL);
-            console.error('   Make sure:');
-            console.error('   1. Backend is running on Render');
-            console.error('   2. The URL is correct');
-        } else if (error.response) {
-            console.error(`❌ API Error: ${error.response.status}`, error.response.data);
+        if (error.response) {
+            console.error("❌ API Error");
+            console.error("Status:", error.response.status);
+            console.error("URL:", error.config?.url);
+            console.error("Data:", error.response.data);
+
+            if (error.response.status === 401) {
+                localStorage.removeItem("adminToken");
+                localStorage.removeItem("adminUser");
+
+                if (window.location.pathname !== "/admin/login") {
+                    window.location.href = "/admin/login";
+                }
+            }
+        } else if (error.request) {
+            console.error("❌ No response received from backend.");
+            console.error("Backend URL:", API_URL);
         } else {
-            console.error('❌ API Error:', error.message);
+            console.error("❌ Axios Error:", error.message);
         }
+
         return Promise.reject(error);
     }
 );
 
 // ============================================
-// PUBLIC API METHODS
+// PUBLIC API
 // ============================================
+
 export const publicApi = {
-    getHomepage: async () => {
-        try {
-            console.log('📡 Fetching homepage from Render...');
-            const response = await api.get('/public/home');
-            console.log('✅ Homepage fetched:', response.data.success ? 'Success' : 'Failed');
-            return response.data;
-        } catch (error) {
-            console.error('❌ Error fetching homepage:', error.message);
-            return { 
-                success: false, 
-                error: error.message,
-                code: error.code,
-                apiUrl: API_URL
-            };
-        }
+    test: () => api.get("/test"),
+
+    getHomepage: () => {
+        console.log("📡 Fetching homepage from Render...");
+        return api.get("/public/home");
     },
 
-    getAbout: async () => {
-        try {
-            const response = await api.get('/public/about');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching about:', error.message);
-            return { success: false, error: error.message };
-        }
+    getAbout: () => {
+        console.log("📡 Fetching about page...");
+        return api.get("/public/about");
     },
 
-    getContact: async () => {
-        try {
-            const response = await api.get('/public/contact');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching contact:', error.message);
-            return { success: false, error: error.message };
-        }
+    getContact: () => {
+        console.log("📡 Fetching contact page...");
+        return api.get("/public/contact");
     },
 
-    getCareerLab: async () => {
-        try {
-            const response = await api.get('/public/career-lab');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching career lab:', error.message);
-            return { success: false, error: error.message };
-        }
+    getCareerLab: () => {
+        console.log("📡 Fetching career lab page...");
+        return api.get("/public/career-lab");
     },
 
-    getEmployers: async () => {
-        try {
-            const response = await api.get('/public/employers');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching employers:', error.message);
-            return { success: false, error: error.message };
-        }
+    getEmployers: () => {
+        console.log("📡 Fetching employers page...");
+        return api.get("/public/employers");
     },
 
-    getServices: async () => {
-        try {
-            const response = await api.get('/public/services');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching services:', error.message);
-            return { success: false, error: error.message };
-        }
+    getServices: () => {
+        console.log("📡 Fetching services page...");
+        return api.get("/public/services");
     },
 
-    getPageContent: async (page) => {
-        try {
-            const response = await api.get(`/public/${page}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching ${page}:`, error.message);
-            return { success: false, error: error.message };
-        }
+    getPageContent: (page) => {
+        console.log(`📡 Fetching ${page} page...`);
+        return api.get(`/public/${page}`);
+    },
+
+    getAllPages: () =>
+        Promise.all([
+            api.get("/public/home"),
+            api.get("/public/about"),
+            api.get("/public/contact"),
+            api.get("/public/career-lab"),
+            api.get("/public/employers"),
+            api.get("/public/services")
+        ])
+};
+
+// ============================================
+// ADMIN API
+// ============================================
+
+export const adminApi = {
+    login: (email, password) => {
+        console.log("🔐 Logging in...");
+        return api.post("/admin/login", { email, password });
+    },
+
+    verify: () => {
+        console.log("🔍 Verifying token...");
+        return api.get("/admin/verify");
+    },
+
+    getContent: () => {
+        console.log("📥 Fetching admin content...");
+        return api.get("/admin/content");
+    },
+
+    updateContent: (id, value, table, originalId, originalKey, field) => {
+        console.log(`📝 Updating content ${id}...`);
+        console.log("   Table:", table);
+        console.log("   Original ID:", originalId);
+        console.log("   Original Key:", originalKey);
+        console.log("   Field:", field);
+
+        return api.put(`/admin/content/${id}`, {
+            value,
+            table,
+            originalId,
+            originalKey: originalKey || field,
+            field
+        });
+    },
+
+    health: () =>
+        api.get("/test")
+};
+
+// ============================================
+// HELPERS
+// ============================================
+
+export const checkBackend = async () => {
+    try {
+        const response = await api.get("/test");
+        return response.status === 200;
+    } catch (error) {
+        console.error("Backend unavailable:", error.message);
+        return false;
     }
+};
+
+export const getApiUrl = () => API_URL;
+
+export const getErrorMessage = (error) => {
+    if (error.response) {
+        return (
+            error.response.data?.message ||
+            error.response.data?.error ||
+            `Server Error (${error.response.status})`
+        );
+    }
+
+    if (error.request) {
+        return `Cannot connect to ${API_URL}`;
+    }
+
+    return error.message || "Unknown error";
 };
 
 export default api;
