@@ -195,7 +195,6 @@ function HomePage() {
       <Ecosystem content={content.platforms || []} />
       <Team content={content.team || []} />
       <Testimonials content={content.testimonials || []} />
-      <Footer content={content.footer || {}} />
     </main>
   );
 }

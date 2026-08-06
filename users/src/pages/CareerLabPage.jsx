@@ -904,7 +904,7 @@ function CareerLabPage() {
         </div>
       </section>
 
-      <Footer />
+      
     </div>
   );
 }
