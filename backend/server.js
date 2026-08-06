@@ -35,12 +35,10 @@ app.use(cors({
     origin: (origin, callback) => {
         console.log("📡 Incoming Origin:", origin);
 
-        // Allow requests with no Origin header
         if (!origin) {
             return callback(null, true);
         }
 
-        // Check if origin matches any allowed pattern
         const isAllowed = allowedOrigins.some(pattern => {
             if (pattern.includes('*')) {
                 const regex = new RegExp(pattern.replace(/\*/g, '.*'));
@@ -54,7 +52,6 @@ app.use(cors({
         }
 
         console.error("❌ Blocked by CORS:", origin);
-        // TEMPORARY: Allow all origins for testing
         return callback(null, true);
     },
     credentials: true,
@@ -107,7 +104,6 @@ app.get('/api/test', (req, res) => {
 // PUBLIC ROUTES - For Users App
 // ============================================
 
-// Get public content for any page
 app.get('/api/public/:page', async (req, res) => {
     try {
         const { page } = req.params;
@@ -148,13 +144,11 @@ async function getHomeContent(supabase) {
     try {
         console.log('📡 Fetching homepage content...');
         
-        // Check if Supabase is connected
         if (!supabase) {
             console.error('❌ Supabase not initialized');
             return getFallbackHomepageData();
         }
 
-        // Try to fetch data with error handling for each table
         let hero = { data: null };
         let info = { data: null };
         let steps = { data: [] };
@@ -205,7 +199,6 @@ async function getHomeContent(supabase) {
             console.log('⚠️ home_footer table error:', e.message);
         }
 
-        // Get features for each platform
         let platformsWithFeatures = [];
         if (platforms.data && platforms.data.length > 0) {
             platformsWithFeatures = await Promise.all((platforms.data || []).map(async (platform) => {
@@ -365,7 +358,7 @@ async function getServicesContent(supabase) {
 }
 
 // ============================================
-// FALLBACK DATA - Used when database tables don't exist
+// FALLBACK DATA
 // ============================================
 function getFallbackHomepageData() {
     return {
@@ -534,9 +527,7 @@ app.get('/api/admin/content', async (req, res) => {
             });
         }
 
-        // Fetch ALL content from all tables across all pages
         const [
-            // Home
             homeHero,
             homeInfo,
             homeSteps,
@@ -545,39 +536,33 @@ app.get('/api/admin/content', async (req, res) => {
             homeTeam,
             homeTestimonials,
             homeFooter,
-            // About
             aboutHero,
             aboutMissionVision,
             aboutStory,
             aboutTimeline,
             aboutValues,
             aboutSubscribe,
-            // Contact
             contactHero,
             contactInfo,
             contactServices,
             contactTimePreferences,
             contactPlaceholders,
             contactSuccessMessage,
-            // Career Lab
             careerLabHero,
             careerLabTracks,
             careerLabModules,
             careerLabDifferentiation,
-            // Employers
             employersHero,
             employersProcessSteps,
             employersQuote,
             employersVerification,
             employersTestimonials,
             employersFinalCta,
-            // Services
             servicesHero,
             servicesOfferings,
             servicesScreening,
             servicesSkillsTraining
         ] = await Promise.all([
-            // Home
             supabase.from('home_hero').select('*'),
             supabase.from('home_info').select('*'),
             supabase.from('home_recruitment_steps').select('*').order('sort_order'),
@@ -586,43 +571,36 @@ app.get('/api/admin/content', async (req, res) => {
             supabase.from('home_team_members').select('*').order('sort_order'),
             supabase.from('home_testimonials').select('*').order('sort_order'),
             supabase.from('home_footer').select('*'),
-            // About
             supabase.from('about_hero').select('*'),
             supabase.from('about_mission_vision').select('*'),
             supabase.from('about_story').select('*'),
             supabase.from('about_timeline_items').select('*').order('sort_order'),
             supabase.from('about_values').select('*').order('sort_order'),
             supabase.from('about_subscribe').select('*'),
-            // Contact
             supabase.from('contact_hero').select('*'),
             supabase.from('contact_info').select('*'),
             supabase.from('contact_services').select('*').order('sort_order'),
             supabase.from('contact_time_preferences').select('*').order('sort_order'),
             supabase.from('contact_form_placeholders').select('*'),
             supabase.from('contact_success_message').select('*'),
-            // Career Lab
             supabase.from('career_lab_hero').select('*'),
             supabase.from('career_lab_tracks').select('*'),
             supabase.from('career_lab_modules').select('*').order('module_number'),
             supabase.from('career_lab_differentiation').select('*'),
-            // Employers
             supabase.from('employers_hero').select('*'),
             supabase.from('employers_process_steps').select('*').order('sort_order'),
             supabase.from('employers_quote').select('*'),
             supabase.from('employers_verification_items').select('*').order('sort_order'),
             supabase.from('employers_testimonials').select('*').order('sort_order'),
             supabase.from('employers_final_cta').select('*'),
-            // Services
             supabase.from('services_hero').select('*'),
             supabase.from('services_offerings').select('*').order('sort_order'),
             supabase.from('services_screening_items').select('*').order('sort_order'),
             supabase.from('services_skills_training').select('*')
         ]);
 
-        // Transform all data for admin dashboard
         const transformedData = [];
 
-        // Helper to add simple table fields
         const addTableFields = (data, page, section, table, fields, type = 'text') => {
             (data || []).forEach(item => {
                 fields.forEach(field => {
@@ -645,7 +623,6 @@ app.get('/api/admin/content', async (req, res) => {
             });
         };
 
-        // Helper to add JSON items
         const addJsonItems = (data, page, section, table, fieldPrefix, jsonFields) => {
             (data || []).forEach((item, index) => {
                 const jsonData = {};
@@ -702,7 +679,6 @@ app.get('/api/admin/content', async (req, res) => {
 
         // ============ CAREER LAB ============
         addTableFields(careerLabHero.data, 'career-lab', 'hero', 'career_lab_hero', ['tag', 'title', 'description']);
-        // Journey steps are stored as JSON in the hero table - handle separately
         (careerLabHero.data || []).forEach(item => {
             if (item.journey_steps) {
                 transformedData.push({
@@ -758,11 +734,15 @@ app.get('/api/admin/content', async (req, res) => {
     }
 });
 
-// PUT /api/admin/content/:id - Update content
+// ============================================
+// UPDATED PUT /api/admin/content/:id - Fix for JSON updates
+// ============================================
 app.put('/api/admin/content/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { value, table, originalId, originalKey } = req.body;
+        const { value, table, originalId, originalKey, field } = req.body;
+        
+        console.log('📝 Update request:', { id, table, originalId, originalKey, field });
         
         const token = req.headers.authorization?.replace('Bearer ', '');
         if (!token) {
@@ -781,45 +761,82 @@ app.put('/api/admin/content/:id', async (req, res) => {
         }
 
         let result;
-        let updateData = { updated_at: new Date().toISOString() };
 
-        // Handle JSON fields that need parsing
-        if (originalKey && ['journey_steps', 'free_track_items', 'coaching_items', 'items', 'bullet_points'].includes(originalKey)) {
-            try {
-                const parsed = typeof value === 'string' ? JSON.parse(value) : value;
-                updateData[originalKey] = parsed;
-            } catch (e) {
-                updateData[originalKey] = value;
-            }
-        } else if (originalKey && ['years_in_business', 'founded_year', 'sort_order'].includes(originalKey)) {
-            updateData[originalKey] = parseInt(value) || 0;
-        } else {
-            updateData[originalKey] = value;
-        }
-
-        // Special handling for JSON items
+        // ============================================
+        // HANDLE JSON ITEMS (tracks, modules, steps, platforms, etc.)
+        // ============================================
         if (id.includes('track-') || id.includes('module-') || id.includes('step-') || 
             id.includes('platform-') || id.includes('member-') || id.includes('testimonial-') ||
             id.includes('verify-') || id.includes('offering-') || id.includes('screening-') ||
             id.includes('timeline-') || id.includes('value-') || id.includes('service-') ||
             id.includes('time-') || id.includes('placeholder-')) {
+            
             try {
-                const parsed = JSON.parse(value);
+                // Parse the JSON value
+                const parsedData = typeof value === 'string' ? JSON.parse(value) : value;
+                console.log('📦 Parsed JSON data:', parsedData);
+                
+                // Update all fields in the JSON object
+                const updateData = {
+                    ...parsedData,
+                    updated_at: new Date().toISOString()
+                };
+                
+                // Remove any fields that shouldn't be updated directly
+                delete updateData.id;
+                delete updateData.created_at;
+                delete updateData.updated_at;
+                
                 result = await supabase
                     .from(table)
-                    .update({ ...parsed, updated_at: new Date().toISOString() })
+                    .update(updateData)
                     .eq('id', originalId);
+                    
+                if (result.error) {
+                    console.error('❌ Supabase update error:', result.error);
+                    throw result.error;
+                }
+                
             } catch (e) {
+                console.error('❌ JSON parse/update error:', e);
                 return res.status(400).json({ 
                     success: false, 
-                    message: 'Invalid JSON format' 
+                    message: 'Invalid JSON format or update error',
+                    error: e.message 
                 });
             }
-        } else {
+        } 
+        // ============================================
+        // HANDLE SIMPLE TEXT FIELDS
+        // ============================================
+        else {
+            // Use originalKey or fallback to field
+            const key = originalKey || field;
+            
+            if (!key) {
+                console.error('❌ No key provided for update:', { originalKey, field });
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Missing field name for update' 
+                });
+            }
+            
+            console.log('📝 Updating field:', key, 'with value:', value);
+            
+            const updateData = { 
+                [key]: value,
+                updated_at: new Date().toISOString()
+            };
+            
             result = await supabase
                 .from(table)
                 .update(updateData)
                 .eq('id', originalId);
+                
+            if (result.error) {
+                console.error('❌ Supabase update error:', result.error);
+                throw result.error;
+            }
         }
 
         if (result?.error) throw result.error;
@@ -829,7 +846,7 @@ app.put('/api/admin/content/:id', async (req, res) => {
             message: 'Content updated successfully' 
         });
     } catch (error) {
-        console.error('Update error:', error);
+        console.error('❌ Update error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Server error',
