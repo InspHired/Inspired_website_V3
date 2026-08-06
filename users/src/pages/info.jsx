@@ -1,43 +1,6 @@
-import { useMemo, useState } from "react";
-
-const flowSteps = [
-  {
-    id: "candidate",
-    label: "Candidate",
-    color: "var(--teal)",
-    detail: "Every journey starts here — a candidate joins the InspHired network, ready to be discovered.",
-  },
-  {
-    id: "screening",
-    label: "Screening",
-    color: "var(--orange)",
-    detail: "Our specialists verify credentials, experience, and fit before any candidate moves forward.",
-  },
-  {
-    id: "matching",
-    label: "Matching",
-    color: "var(--yellow)",
-    detail: "AI-powered matching pairs the right candidate with the right opportunity — no guesswork.",
-  },
-  {
-    id: "interview",
-    label: "Interview",
-    color: "var(--navy)",
-    detail: "Candidates and employers connect directly, with our team supporting every step.",
-  },
-  {
-    id: "placement",
-    label: "Placement",
-    color: "var(--teal)",
-    detail: "The offer is made, accepted, and a new chapter begins — for candidate and employer alike.",
-  },
-  {
-    id: "growth",
-    label: "Growth",
-    color: "var(--orange)",
-    detail: "Placement isn't the finish line. We stay invested in long-term career and business growth.",
-  },
-];
+// users/src/pages/info.jsx
+import React, { useState, useEffect, useMemo } from "react";
+import { useContent } from "../contexts/ContentContext";
 
 // Abstract, shape-based animated icon per stage — no literal imagery, no emoji.
 function StageIcon({ type, color }) {
@@ -90,11 +53,101 @@ function StageIcon({ type, color }) {
   }
 }
 
-function About() {
+// Default flow steps (fallback)
+const defaultFlowSteps = [
+  {
+    id: "candidate",
+    label: "Candidate",
+    color: "var(--teal)",
+    detail: "Every journey starts here — a candidate joins the InspHired network, ready to be discovered.",
+  },
+  {
+    id: "screening",
+    label: "Screening",
+    color: "var(--orange)",
+    detail: "Our specialists verify credentials, experience, and fit before any candidate moves forward.",
+  },
+  {
+    id: "matching",
+    label: "Matching",
+    color: "var(--yellow)",
+    detail: "AI-powered matching pairs the right candidate with the right opportunity — no guesswork.",
+  },
+  {
+    id: "interview",
+    label: "Interview",
+    color: "var(--navy)",
+    detail: "Candidates and employers connect directly, with our team supporting every step.",
+  },
+  {
+    id: "placement",
+    label: "Placement",
+    color: "var(--teal)",
+    detail: "The offer is made, accepted, and a new chapter begins — for candidate and employer alike.",
+  },
+  {
+    id: "growth",
+    label: "Growth",
+    color: "var(--orange)",
+    detail: "Placement isn't the finish line. We stay invested in long-term career and business growth.",
+  },
+];
+
+function Info({ content: propContent }) {
+  const { content: contextContent, loading } = useContent();
+  const [infoData, setInfoData] = useState(null);
+  const [flowSteps, setFlowSteps] = useState(defaultFlowSteps);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeNode, setActiveNode] = useState(null);
   const [completedSteps, setCompletedSteps] = useState([]);
   const [shakeId, setShakeId] = useState(null);
 
+  // Fetch and map info data
+  useEffect(() => {
+    try {
+      // Get info data from props or context
+      let infoContent = null;
+      
+      if (propContent && Object.keys(propContent).length > 0) {
+        console.log("📦 Using info from props:", propContent);
+        infoContent = propContent;
+      } else if (contextContent && contextContent.home && contextContent.home.info) {
+        console.log("📦 Using info from context:", contextContent.home.info);
+        infoContent = contextContent.home.info;
+      }
+
+      if (infoContent) {
+        setInfoData(infoContent);
+      }
+
+      // Get steps from context or use default
+      let stepsData = defaultFlowSteps;
+      if (contextContent && contextContent.home && contextContent.home.steps) {
+        const dbSteps = contextContent.home.steps;
+        if (dbSteps && dbSteps.length > 0) {
+          // Map database steps to the expected format
+          stepsData = dbSteps.map((step) => ({
+            id: step.step_id || step.id || '',
+            label: step.label || '',
+            color: step.color || 'var(--teal)',
+            detail: step.detail || '',
+          }));
+          console.log("📦 Using steps from context:", stepsData);
+        }
+      }
+
+      setFlowSteps(stepsData);
+      setError(null);
+    } catch (err) {
+      console.error("❌ Error fetching info data:", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [propContent, contextContent]);
+
+  // Compute node positions
   const nodePositions = useMemo(() => {
     const radius = 44;
     return flowSteps.map((step, i) => {
@@ -106,7 +159,7 @@ function About() {
         top: 50 + radius * Math.sin(rad),
       };
     });
-  }, []);
+  }, [flowSteps]);
 
   const nextUnlockedIndex = completedSteps.length;
   const allComplete = completedSteps.length === flowSteps.length;
@@ -132,35 +185,67 @@ function About() {
 
   const active = flowSteps.find((s) => s.id === activeNode);
 
+  // Show loading state
+  if (isLoading || loading) {
+    return (
+      <section className="about-section">
+        <div className="container">
+          <div className="sec-head">
+            <span className="eyebrow">Who we are</span>
+            <h2 className="title-3d">Connecting African talent to real opportunity</h2>
+          </div>
+          <div className="info-loading">
+            <div className="loading-spinner"></div>
+            <p>Loading content...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section className="about-section">
+        <div className="container">
+          <div className="sec-head">
+            <span className="eyebrow">Who we are</span>
+            <h2 className="title-3d">Connecting African talent to real opportunity</h2>
+          </div>
+          <div className="info-error">
+            <p>⚠️ {error}</p>
+            <button onClick={() => window.location.reload()}>Retry</button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Use data from database or fallback to defaults
+  const info = infoData || {};
+
   return (
     <section className="about-section">
       <div className="container">
         {/* ===== STYLED HEADER ===== */}
         <div className="sec-head">
-          <span className="eyebrow">Who we are</span>
-          <h2 className="title-3d">Connecting African talent to real opportunity</h2>
+          <span className="eyebrow">{info.eyebrow || 'Who we are'}</span>
+          <h2 className="title-3d">{info.title || 'Connecting African talent to real opportunity'}</h2>
         </div>
 
         {/* ===== ABOUT CONTENT ===== */}
         <div className="about-grid">
           <div className="about-text-col">
             <p className="section-text">
-              InspHired started in 2015 with a simple goal: make hiring feel human again.
-              Not another faceless job board, not another CV black hole — an actual team
-              of specialists who take the time to understand both the candidate and the
-              company on the other side.
+              {info.description_1 || "InspHired started in 2015 with a simple goal: make hiring feel human again. Not another faceless job board, not another CV black hole — an actual team of specialists who take the time to understand both the candidate and the company on the other side."}
             </p>
 
             <p className="section-text">
-              That focus grew into something bigger — a full ecosystem of tools
-              and people working together across the continent. But the mission
-              hasn't changed: the right placement can change a life, grow a
-              business, and strengthen a community. That's still what drives
-              everything we build.
+              {info.description_2 || "That focus grew into something bigger — a full ecosystem of tools and people working together across the continent. But the mission hasn't changed: the right placement can change a life, grow a business, and strengthen a community. That's still what drives everything we build."}
             </p>
 
             <div className="quote-block">
-              We don't just fill jobs — we build careers, relationships, and futures.
+              {info.quote || "We don't just fill jobs — we build careers, relationships, and futures."}
             </div>
           </div>
 
@@ -319,9 +404,294 @@ function About() {
           background-clip: text;
           filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
         }
+        .eyebrow {
+          display: inline-block;
+          font-family: 'Playfair Display', Georgia, serif !important;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: var(--teal, #509b9e);
+          background: rgba(80, 155, 158, 0.1);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 16px;
+          border: 1px solid rgba(80, 155, 158, 0.15);
+        }
+        .about-section {
+          padding: 80px 0;
+          background: #faf6f0;
+        }
+        .container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 32px;
+        }
+        .sec-head {
+          text-align: center;
+          margin-bottom: 56px;
+          max-width: 640px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .about-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 60px;
+          align-items: start;
+        }
+        .about-text-col {
+          padding-top: 8px;
+        }
+        .section-text {
+          font-size: 17px;
+          color: #3d3d3d;
+          line-height: 1.7;
+          margin-bottom: 16px;
+        }
+        .quote-block {
+          background: #f5f0e9;
+          padding: 32px 40px;
+          border-radius: var(--radius-card);
+          font-size: 22px;
+          font-weight: 500;
+          line-height: 1.5;
+          color: var(--navy);
+          margin-top: 32px;
+          border-left: 6px solid var(--teal);
+        }
+        .recruitment-circle {
+          position: relative;
+          width: 380px;
+          height: 380px;
+          margin: auto;
+          border: 2px dashed rgba(80, 155, 158, 0.3);
+          border-radius: 50%;
+        }
+        .flow-connectors {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+        .flow-node {
+          position: absolute;
+          width: 96px;
+          text-align: center;
+          transform: translate(-50%, -50%);
+          transition: transform var(--transition);
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          font-family: inherit;
+        }
+        .flow-node:hover,
+        .flow-node-active {
+          transform: translate(-50%, -50%) scale(1.1);
+          z-index: 3;
+        }
+        .flow-node-avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          border: 1.5px solid;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: auto;
+          box-shadow: var(--shadow-sm);
+          transition: box-shadow var(--transition);
+          position: relative;
+        }
+        .flow-node:hover .flow-node-avatar,
+        .flow-node-active .flow-node-avatar {
+          box-shadow: var(--shadow-md);
+        }
+        .flow-node p {
+          margin-top: 10px;
+          font-size: 14px;
+          color: var(--navy);
+          font-weight: 500;
+        }
+        .stage-icon {
+          width: 30px;
+          height: 30px;
+        }
+        .flow-tooltip {
+          position: absolute;
+          bottom: calc(100% + 8px);
+          left: 50%;
+          transform: translateX(-50%) translateY(4px);
+          width: 170px;
+          background: var(--navy);
+          color: #fff;
+          font-size: 12px;
+          line-height: 1.5;
+          font-weight: 400;
+          padding: 10px 12px;
+          border-radius: 10px;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity var(--transition), transform var(--transition);
+          z-index: 4;
+        }
+        .flow-node:hover .flow-tooltip {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+        .circle-center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: var(--bg);
+          border: 1px solid var(--border-light);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--navy);
+          text-align: center;
+          box-shadow: var(--shadow-sm);
+          padding: 12px;
+        }
+        .center-label {
+          font-size: 13px;
+          font-weight: 700;
+          margin: 0 0 4px;
+        }
+        .center-detail {
+          font-size: 10.5px;
+          font-weight: 400;
+          color: var(--navy);
+          opacity: 0.85;
+          line-height: 1.4;
+          margin: 0;
+        }
+        .orbit {
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          top: 50%;
+          left: 50%;
+          margin-left: -150px;
+          margin-top: -150px;
+          animation: orbit 8s linear infinite;
+          pointer-events: none;
+        }
+        .orbit-dot {
+          width: 16px;
+          height: 16px;
+          background: var(--orange);
+          border-radius: 50%;
+          position: absolute;
+          top: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          box-shadow: 0 0 20px rgba(217, 107, 67, 0.5);
+        }
+        @keyframes orbit {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .info-loading {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 20px;
+          min-height: 200px;
+        }
+        .info-loading .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid #e5dfd5;
+          border-top: 3px solid #509b9e;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        .info-loading p {
+          margin-top: 16px;
+          color: #7a8790;
+          font-size: 14px;
+        }
+        .info-error {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 20px;
+          min-height: 200px;
+          text-align: center;
+        }
+        .info-error p {
+          color: #d96b43;
+          font-size: 16px;
+          margin-bottom: 16px;
+        }
+        .info-error button {
+          padding: 10px 24px;
+          background: #509b9e;
+          color: #ffffff;
+          border: none;
+          border-radius: 8px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .info-error button:hover {
+          background: #3d7a7d;
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        @media (max-width: 900px) {
+          .about-grid {
+            grid-template-columns: 1fr;
+          }
+          .recruitment-circle {
+            margin-top: 40px;
+          }
+        }
+        @media (max-width: 480px) {
+          .recruitment-circle {
+            width: 300px;
+            height: 300px;
+          }
+          .flow-node {
+            width: 78px;
+          }
+          .flow-node-avatar {
+            width: 48px;
+            height: 48px;
+          }
+          .stage-icon {
+            width: 24px;
+            height: 24px;
+          }
+          .circle-center {
+            width: 100px;
+            height: 100px;
+            padding: 8px;
+          }
+          .center-detail {
+            display: none;
+          }
+          .quote-block {
+            padding: 20px;
+            font-size: 18px;
+          }
+        }
       `}</style>
     </section>
   );
 }
 
-export default About;
+export default Info;

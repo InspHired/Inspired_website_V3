@@ -538,6 +538,11 @@ function CareerLabPage() {
           border: 1px dashed rgba(228, 175, 81, 0.4);
           animation: rotateCore 14s linear infinite;
         }
+        .titleL{
+        font-family: 'Playfair Display', Georgia, serif !important;
+        font-weight: 700;
+        color:white;
+        }
         @keyframes rotateCore {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
@@ -765,7 +770,7 @@ function CareerLabPage() {
           <div style={styles.diffGrid}>
             <div style={styles.diffLeft}>
               <span className="eyebrow-3d" style={{ color: 'var(--teal)', borderColor: 'rgba(80,155,158,0.3)' }}>Complementary ecosystems</span>
-              <h3 className="title-3d" style={{ fontSize: '2.2rem', color: '#FFFFFF', marginBottom: '20px' }}>
+              <h3 className="titleL" style={{ fontSize: '2.2rem', color: '#FFFFFF', marginBottom: '20px' }}>
                 {differentiation.title || 'How Career Lab differs from our recruitment services'}
               </h3>
               <p style={styles.diffDesc}>
@@ -872,7 +877,7 @@ function CareerLabPage() {
                   </label>
                 </div>
 
-                <button type="submit" style={styles.submitBtn} className="btn-hover-transition">Submit my interest</button>
+                <button type="submit" style={styles.submitBtn} className="btn-3d-primary">Submit my interest</button>
               </form>
             </div>
 

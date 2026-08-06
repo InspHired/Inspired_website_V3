@@ -1,5 +1,4 @@
 // frontend/src/services/api.js
-
 import axios from "axios";
 
 // ============================================
@@ -89,8 +88,7 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response) {
-            console.error("API Error");
-
+            console.error("❌ API Error");
             console.error("Status:", error.response.status);
             console.error("URL:", error.config?.url);
             console.error("Data:", error.response.data);
@@ -104,10 +102,10 @@ api.interceptors.response.use(
                 }
             }
         } else if (error.request) {
-            console.error("No response received from backend.");
+            console.error("❌ No response received from backend.");
             console.error("Backend URL:", API_URL);
         } else {
-            console.error("Axios Error:", error.message);
+            console.error("❌ Axios Error:", error.message);
         }
 
         return Promise.reject(error);
@@ -139,27 +137,41 @@ export const publicApi = {
 // ============================================
 
 export const adminApi = {
-    login: (email, password) =>
-        api.post("/admin/login", { email, password }),
+    login: (email, password) => {
+        console.log("🔐 Logging in...");
+        return api.post("/admin/login", { email, password });
+    },
 
-    verify: () =>
-        api.get("/admin/verify"),
+    verify: () => {
+        console.log("🔍 Verifying token...");
+        return api.get("/admin/verify");
+    },
 
-    getContent: () =>
-        api.get("/admin/content"),
+    getContent: () => {
+        console.log("📥 Fetching admin content...");
+        return api.get("/admin/content");
+    },
 
-    updateContent: (id, value, table, originalId, originalKey) =>
-        api.put(`/admin/content/${id}`, {
+    updateContent: (id, value, table, originalId, originalKey, field) => {
+        console.log(`📝 Updating content ${id}...`);
+        console.log("   Table:", table);
+        console.log("   Original ID:", originalId);
+        console.log("   Original Key:", originalKey);
+        console.log("   Field:", field);
+
+        return api.put(`/admin/content/${id}`, {
             value,
             table,
             originalId,
-            originalKey
-        }),
+            originalKey: originalKey || field,
+            field
+        });
+    },
 
-    // Your backend doesn't have /health.
-    // Reuse /test instead.
-    health: () =>
-        api.get("/test")
+    health: () => {
+        console.log("🏥 Health check...");
+        return api.get("/test");
+    }
 };
 
 // ============================================
@@ -169,7 +181,6 @@ export const adminApi = {
 export const checkBackend = async () => {
     try {
         const response = await api.get("/test");
-
         return response.status === 200;
     } catch (error) {
         console.error("Backend unavailable:", error.message);

@@ -291,17 +291,14 @@ const PREDEFINED_COLORS = [
 const getColorDisplay = (colorValue) => {
     if (!colorValue) return 'Select color';
     
-    // Check predefined colors
     const matched = PREDEFINED_COLORS.find(c => c.value === colorValue);
     if (matched) return matched.label;
     
-    // Check if it's a var() color
     if (colorValue.startsWith('var(--')) {
         const name = colorValue.replace('var(--', '').replace(')', '');
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
     
-    // Check if it's a hex color
     if (colorValue.startsWith('#')) {
         return colorValue.toUpperCase();
     }
@@ -313,11 +310,9 @@ const getColorDisplay = (colorValue) => {
 const getColorHex = (colorValue) => {
     if (!colorValue) return '#7a8790';
     
-    // Check predefined colors
     const matched = PREDEFINED_COLORS.find(c => c.value === colorValue);
     if (matched) return matched.hex;
     
-    // Check if it's a var() color
     if (colorValue.startsWith('var(--')) {
         const name = colorValue.replace('var(--', '').replace(')', '');
         const colorMap = {
@@ -329,7 +324,6 @@ const getColorHex = (colorValue) => {
         return colorMap[name] || '#7a8790';
     }
     
-    // Check if it's a hex color
     if (colorValue.startsWith('#')) {
         return colorValue;
     }
@@ -570,7 +564,6 @@ const ColorPicker = ({ value, onChange, label }) => {
     const currentHex = getColorHex(value);
     const currentLabel = getColorDisplay(value);
 
-    // Group colors by category
     const groupedColors = PREDEFINED_COLORS.reduce((acc, color) => {
         if (!acc[color.category]) acc[color.category] = [];
         acc[color.category].push(color);
@@ -611,7 +604,6 @@ const ColorPicker = ({ value, onChange, label }) => {
                         </button>
                     </div>
 
-                    {/* PRESET COLORS */}
                     {activeTab === 'predefined' && (
                         <div className="color-picker-options">
                             {Object.entries(groupedColors).map(([category, colors]) => (
@@ -643,7 +635,6 @@ const ColorPicker = ({ value, onChange, label }) => {
                         </div>
                     )}
 
-                    {/* CUSTOM COLOR PICKER */}
                     {activeTab === 'custom' && (
                         <div className="color-picker-custom-section">
                             <div className="color-picker-custom-preview">
@@ -692,7 +683,6 @@ const ColorPicker = ({ value, onChange, label }) => {
                         </div>
                     )}
 
-                    {/* HEX COLOR INPUT */}
                     {activeTab === 'hex' && (
                         <div className="color-picker-hex-section">
                             <div className="color-picker-hex-preview">
@@ -840,7 +830,8 @@ const AdminDashboard = () => {
                         value: editingContent[item.id],
                         table: item.table,
                         originalId: item.originalId,
-                        originalKey: item.originalKey
+                        originalKey: item.originalKey,
+                        field: item.field
                     });
                 }
             });
@@ -859,7 +850,8 @@ const AdminDashboard = () => {
                     update.value,
                     update.table,
                     update.originalId,
-                    update.originalKey
+                    update.originalKey,
+                    update.field
                 );
             }
 
@@ -959,7 +951,6 @@ const AdminDashboard = () => {
                             {parsed ? (
                                 <div className="json-preview-grid">
                                     {Object.entries(parsed).map(([key, val]) => {
-                                        // Check if this is a color value
                                         const isColor = typeof val === 'string' && 
                                             (val.startsWith('var(--') || val.startsWith('#'));
                                         
