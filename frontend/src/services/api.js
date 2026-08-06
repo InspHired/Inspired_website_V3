@@ -6,6 +6,7 @@ import axios from "axios";
 // ============================================
 
 const getApiBaseUrl = () => {
+    // Production
     if (process.env.NODE_ENV === "production") {
         return (
             process.env.REACT_APP_API_URL ||
@@ -13,18 +14,22 @@ const getApiBaseUrl = () => {
         );
     }
 
+    // Browser only
     if (typeof window !== "undefined") {
         const host = window.location.hostname;
 
+        // GitHub Codespaces
         if (host.includes("app.github.dev")) {
             return `https://${host.replace("-3000.", "-5000.")}/api`;
         }
 
+        // Localhost
         if (host === "localhost" || host === "127.0.0.1") {
             return "http://localhost:5000/api";
         }
     }
 
+    // Fallback
     return "https://inspired-website-v3-fhno.onrender.com/api";
 };
 
@@ -108,6 +113,26 @@ api.interceptors.response.use(
 );
 
 // ============================================
+// PUBLIC API
+// ============================================
+
+export const publicApi = {
+    test: () => api.get("/test"),
+
+    getPageContent: (page) => api.get(`/public/${page}`),
+
+    getAllPages: () =>
+        Promise.all([
+            api.get("/public/home"),
+            api.get("/public/about"),
+            api.get("/public/contact"),
+            api.get("/public/career-lab"),
+            api.get("/public/employers"),
+            api.get("/public/services")
+        ])
+};
+
+// ============================================
 // ADMIN API
 // ============================================
 
@@ -129,6 +154,11 @@ export const adminApi = {
 
     updateContent: (id, value, table, originalId, originalKey, field) => {
         console.log(`📝 Updating content ${id}...`);
+        console.log("   Table:", table);
+        console.log("   Original ID:", originalId);
+        console.log("   Original Key:", originalKey);
+        console.log("   Field:", field);
+
         return api.put(`/admin/content/${id}`, {
             value,
             table,
@@ -138,8 +168,10 @@ export const adminApi = {
         });
     },
 
-    health: () =>
-        api.get("/test")
+    health: () => {
+        console.log("🏥 Health check...");
+        return api.get("/test");
+    }
 };
 
 // ============================================
