@@ -18,9 +18,17 @@ const Footer = ({ content = {} }) => {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-grid">
-          {/* Brand */}
+          {/* Brand - with logo styling matching navbar */}
           <div className="footer-brand">
-            <h4 className="footer-heading">{companyName}</h4>
+            <Link to="/" className="footer-brand-logo" aria-label="InspHired Recruitment Solutions Home">
+              <div className="footer-logo-text">
+                <span className="footer-logo-insp">Insp</span>
+                <span className="footer-logo-hired">Hired</span>
+              </div>
+              <div className="footer-logo-tagline">
+                <span className="footer-logo-tagline-text">Recruitment Solutions</span>
+              </div>
+            </Link>
             <p className="footer-description">{tagline}</p>
           </div>
 
@@ -28,8 +36,8 @@ const Footer = ({ content = {} }) => {
           <div className="footer-links">
             <h4 className="footer-heading">Quick Links</h4>
             <ul>
-              <li><Link to="/#home">Home</Link></li>
-              <li><Link to="/about">About</Link></li>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about-page">About</Link></li>
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/services">Services</Link></li>
             </ul>
@@ -117,6 +125,80 @@ const Footer = ({ content = {} }) => {
           border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
+        /* ── FOOTER BRAND LOGO (Matches Navbar) ── */
+        .footer-brand-logo {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-start;
+          text-decoration: none;
+          user-select: none;
+          transition: transform 0.2s ease;
+          margin-bottom: 12px;
+        }
+
+        .footer-brand-logo:hover {
+          transform: translateY(-1px);
+        }
+
+        .footer-logo-text {
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          font-size: 1.8rem;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: baseline;
+        }
+
+        .footer-logo-insp {
+          font-weight: 500;
+          background: linear-gradient(180deg, #6ecad0 0%, #509b9e 50%, #306c6e 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+        }
+
+        .footer-logo-hired {
+          font-weight: 800;
+          background: linear-gradient(180deg, #c4d4dd 0%, #a8bcc8 50%, #8aa3b3 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+        }
+
+        .footer-logo-tagline {
+          margin-top: 2px;
+          padding: 2px 8px;
+          background: linear-gradient(180deg, #af2828 0%, #8b1818 50%, #630c0c 100%);
+          border-radius: 3px;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.4),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+            0 2px 4px rgba(0, 0, 0, 0.2);
+          border: 1px solid #7a1515;
+        }
+
+        .footer-logo-tagline-text {
+          display: block;
+          color: #ffffff;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          font-size: 0.52rem;
+          font-weight: 700;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+          white-space: nowrap;
+        }
+
+        .footer-description {
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.55);
+          max-width: 320px;
+          margin: 0;
+        }
+
         .footer-heading {
           font-family: 'Playfair Display', Georgia, serif !important;
           font-size: 0.95rem;
@@ -137,14 +219,6 @@ const Footer = ({ content = {} }) => {
           background: var(--teal, #509b9e);
           border-radius: 2px;
           opacity: 0.4;
-        }
-
-        .footer-description {
-          font-size: 0.85rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.55);
-          max-width: 320px;
-          margin: 0;
         }
 
         .footer-links ul,
@@ -257,6 +331,10 @@ const Footer = ({ content = {} }) => {
           .footer-description {
             max-width: 100%;
           }
+
+          .footer-logo-text {
+            font-size: 1.5rem;
+          }
         }
 
         @media (max-width: 480px) {
@@ -289,6 +367,10 @@ const Footer = ({ content = {} }) => {
 
           .footer-social {
             justify-content: center;
+          }
+
+          .footer-logo-text {
+            font-size: 1.3rem;
           }
         }
       `}</style>

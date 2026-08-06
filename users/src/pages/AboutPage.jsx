@@ -1,8 +1,10 @@
-// users/src/pages/AboutPage.jsx (with consistent Playfair Display headings)
-import { useState, useEffect } from "react";
+// users/src/pages/AboutPage.jsx
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { publicApi } from "../services/api";
 
+// Hardcoded Team Members (stays as is)
 const teamMembers = [
   {
     name: "Landry Mutombo",
@@ -27,7 +29,7 @@ const teamMembers = [
   },
 ];
 
-// Updated Timeline Data
+// Hardcoded Timeline Data (stays as is)
 const milestones = [
   {
     year: "2015",
@@ -85,7 +87,8 @@ const milestones = [
   },
 ];
 
-const values = [
+// Hardcoded Values (stays as is)
+const defaultValues = [
   {
     title: "Passion",
     text: "Life is too short to not love what you do. Passion drives everything we do at InspHired.",
@@ -156,7 +159,7 @@ function ValueIcon({ type, color }) {
   }
 }
 
-/* ── RADIAL TIMELINE HERO ── */
+/* ── RADIAL TIMELINE HERO (Hardcoded) ── */
 function CurvedTimelineHero() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -324,13 +327,84 @@ function CurvedTimelineHero() {
 }
 
 const AboutPage = () => {
+  const [aboutData, setAboutData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+
+  // Fetch about page content from API for body sections only
+  useEffect(() => {
+    const fetchAbout = async () => {
+      try {
+        setLoading(true);
+        const response = await publicApi.getAbout();
+        
+        if (response.success && response.data) {
+          setAboutData(response.data);
+          setError(null);
+        } else {
+          setError(response.error || 'Failed to load about content');
+        }
+      } catch (err) {
+        console.error('Error fetching about:', err);
+        setError(err.message || 'Error loading about content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAbout();
+  }, []);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     setSubscribed(true);
   };
+
+  // Use data from API or fallback to defaults (only for body sections)
+  const data = aboutData || {};
+  const missionVision = data.missionVision || {};
+  const story = data.story || {};
+  const timeline = data.timeline || [];
+  const subscribe = data.subscribe || {};
+
+  // Values from API or fallback
+  const values = data.values && data.values.length > 0
+    ? data.values.map(item => ({
+        title: item.title || '',
+        text: item.description || '',
+        icon: item.icon_type || 'pulse',
+        accent: item.accent_color || 'var(--teal, #509b9e)',
+      }))
+    : defaultValues;
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
+        <p style={styles.loadingText}>Loading about page...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div style={styles.errorContainer}>
+        <div style={styles.errorIcon}>⚠️</div>
+        <h3 style={styles.errorTitle}>Failed to Load About Page</h3>
+        <p style={styles.errorText}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          style={styles.retryButton}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.pageWrapper}>
@@ -819,10 +893,10 @@ const AboutPage = () => {
         }
       `}</style>
 
-      {/* Timeline Hero */}
+      {/* Timeline Hero - Hardcoded */}
       <CurvedTimelineHero />
 
-      {/* Body Content */}
+      {/* Body Content - Reads from Database */}
       <div className="about-body">
         {/* ── MISSION & VISION ── */}
         <section style={styles.sectionWhite}>
@@ -832,37 +906,86 @@ const AboutPage = () => {
               <h2 className="title-3d title-section">Mission & Vision</h2>
             </div>
             <div className="mv-grid" style={styles.mvGrid}>
-              <div style={{ ...styles.mvCard, borderTop: "4px solid var(--teal, #509b9e)" }}>
+              <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.mission_color || 'var(--teal, #509b9e)'}` }}>
                 <div
                   style={{
                     ...styles.mvIconWrap,
-                    background: "rgba(80, 155, 158, 0.12)",
-                    color: "var(--teal, #509b9e)",
+                    background: `${missionVision.mission_color || 'var(--teal, #509b9e)'}18`,
+                    color: missionVision.mission_color || 'var(--teal, #509b9e)',
                   }}
                 >
-                  <i className="fas fa-bullseye" aria-hidden="true"></i>
+                  <i className={`fas ${missionVision.mission_icon || 'fa-bullseye'}`} aria-hidden="true"></i>
                 </div>
                 <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Mission</h3>
                 <p style={styles.mvText}>
-                  To provide innovative recruitment solutions through technology and people. To
-                  InspHired.
+                  {missionVision.mission || 'To provide innovative recruitment solutions through technology and people. To InspHired.'}
                 </p>
               </div>
 
-              <div style={{ ...styles.mvCard, borderTop: "4px solid var(--orange, #d96b43)" }}>
+              <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.vision_color || 'var(--orange, #d96b43)'}` }}>
                 <div
                   style={{
                     ...styles.mvIconWrap,
-                    background: "rgba(217, 107, 67, 0.12)",
-                    color: "var(--orange, #d96b43)",
+                    background: `${missionVision.vision_color || 'var(--orange, #d96b43)'}18`,
+                    color: missionVision.vision_color || 'var(--orange, #d96b43)',
                   }}
                 >
-                  <i className="fas fa-eye" aria-hidden="true"></i>
+                  <i className={`fas ${missionVision.vision_icon || 'fa-eye'}`} aria-hidden="true"></i>
                 </div>
                 <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Vision</h3>
                 <p style={styles.mvText}>
-                  To be the number one solution to Africa's employment challenges.
+                  {missionVision.vision || 'To be the number one solution to Africa\'s employment challenges.'}
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── OUR STORY ── */}
+        <section style={styles.sectionLight}>
+          <div style={styles.container}>
+            <div style={styles.storyRow}>
+              <div style={styles.storyTextCol}>
+                <span className="eyebrow-3d">Our story</span>
+                <h2 className="title-3d title-section">{story.title || 'Where it all began'}</h2>
+                <p style={styles.storyText}>
+                  {story.description_1 || 'We embarked on a mission in 2015 to transform recruitment through innovation, connecting the right people with the right opportunities.'}
+                </p>
+                <p style={styles.storyText}>
+                  {story.description_2 || 'What started as a focused recruitment firm has steadily grown into a full talent ecosystem — spanning AI-powered candidate matching, on-demand temp staffing, a free job board, and background verification.'}
+                </p>
+              </div>
+              <div style={styles.storyTimeline}>
+                {timeline.length > 0 ? (
+                  timeline.map((item, index) => (
+                    <div key={index} style={styles.timelineItem}>
+                      <div
+                        style={{ ...styles.timelineDot, background: item.accent_color || 'var(--teal, #509b9e)' }}
+                      ></div>
+                      <div>
+                        <p style={styles.timelineYear}>{item.year}</p>
+                        <p style={styles.timelineText}>{item.text}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div style={styles.timelineItem}>
+                      <div style={{ ...styles.timelineDot, background: 'var(--teal, #509b9e)' }}></div>
+                      <div>
+                        <p style={styles.timelineYear}>2015</p>
+                        <p style={styles.timelineText}>InspHired founded, focused on bridging candidates and clients.</p>
+                      </div>
+                    </div>
+                    <div style={styles.timelineItem}>
+                      <div style={{ ...styles.timelineDot, background: 'var(--orange, #d96b43)' }}></div>
+                      <div>
+                        <p style={styles.timelineYear}>Today</p>
+                        <p style={styles.timelineText}>A multi-platform ecosystem serving candidates and employers across Africa.</p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -877,9 +1000,9 @@ const AboutPage = () => {
             </div>
 
             <div style={styles.valuesGrid}>
-              {values.map((v) => (
+              {values.map((v, index) => (
                 <div
-                  key={v.title}
+                  key={index}
                   style={{ ...styles.valueCard, borderTop: `4px solid ${v.accent}` }}
                   className="value-card"
                 >
@@ -896,7 +1019,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* ── LEADERSHIP & TEAM ── */}
+        {/* ── LEADERSHIP & TEAM (Hardcoded) ── */}
         <section style={styles.sectionLight}>
           <div style={styles.container}>
             <div style={styles.centerHead}>
@@ -938,9 +1061,9 @@ const AboutPage = () => {
           <div style={styles.container}>
             <div style={styles.subscribeCard}>
               <div>
-                <h3 style={styles.subscribeTitle}>Get job notifications</h3>
+                <h3 style={styles.subscribeTitle}>{subscribe.title || 'Get job notifications'}</h3>
                 <p style={styles.subscribeText}>
-                  Hey there 👋 Subscribe to stay updated with new opportunities.
+                  {subscribe.description || 'Hey there 👋 Subscribe to stay updated with new opportunities.'}
                 </p>
               </div>
 
@@ -951,7 +1074,7 @@ const AboutPage = () => {
                     style={{ marginRight: "8px" }}
                     aria-hidden="true"
                   ></i>
-                  You're subscribed — watch your inbox!
+                  {subscribe.success_message || "You're subscribed — watch your inbox!"}
                 </div>
               ) : (
                 <form
@@ -962,7 +1085,7 @@ const AboutPage = () => {
                   <input
                     type="email"
                     required
-                    placeholder="Enter your email"
+                    placeholder={subscribe.placeholder_text || "Enter your email"}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="subscribe-input"
@@ -971,7 +1094,7 @@ const AboutPage = () => {
                     type="submit"
                     className="subscribe-btn"
                   >
-                    Subscribe
+                    {subscribe.button_text || "Subscribe"}
                   </button>
                 </form>
               )}
@@ -1038,6 +1161,46 @@ const styles = {
     marginBottom: "20px",
   },
   mvText: { fontSize: "1rem", color: "#5B6670", lineHeight: 1.7, margin: 0 },
+  storyRow: {
+    display: "grid",
+    gridTemplateColumns: "1.1fr 0.9fr",
+    gap: "60px",
+    alignItems: "start",
+  },
+  storyTextCol: {},
+  storyText: {
+    fontSize: "1rem",
+    color: "#5B6670",
+    lineHeight: 1.75,
+    marginBottom: "16px",
+  },
+  storyTimeline: {
+    background: "#FFFFFF",
+    border: "1px solid var(--border-light, #e5dfd5)",
+    borderRadius: "20px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
+    padding: "36px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "28px",
+  },
+  timelineItem: { display: "flex", gap: "16px", alignItems: "flex-start" },
+  timelineDot: {
+    width: "12px",
+    height: "12px",
+    borderRadius: "50%",
+    marginTop: "6px",
+    flexShrink: 0,
+  },
+  timelineYear: {
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    color: "var(--navy, #1f3540)",
+    margin: "0 0 4px 0",
+  },
+  timelineText: { fontSize: "0.95rem", color: "#5B6670", lineHeight: 1.6, margin: 0 },
   valuesGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
@@ -1134,6 +1297,63 @@ const styles = {
     flexShrink: 0,
     flexWrap: "wrap",
   },
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid #e5dfd5',
+    borderTop: '3px solid #509b9e',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite'
+  },
+  loadingText: {
+    marginTop: '16px',
+    color: '#7a8790',
+    fontSize: '14px'
+  },
+  errorContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#faf6f0',
+    padding: '40px 20px',
+    textAlign: 'center',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  },
+  errorIcon: { fontSize: '48px', marginBottom: '16px' },
+  errorTitle: { fontSize: '22px', fontWeight: 700, color: '#1f3540', margin: '0 0 8px 0' },
+  errorText: { color: '#d96b43', fontSize: '16px', marginBottom: '24px' },
+  retryButton: {
+    padding: '14px 40px',
+    backgroundColor: '#509b9e',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
+  }
 };
+
+// Add keyframes for spinner animation
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default AboutPage;
