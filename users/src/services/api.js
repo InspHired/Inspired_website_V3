@@ -2,21 +2,29 @@
 import axios from 'axios';
 
 // ============================================
-// FORCE USE RENDER BACKEND - Local backend not running
+// API URL CONFIGURATION
 // ============================================
+
 const API_URL = 'https://inspired-website-v3-fhno.onrender.com/api';
 
 console.log('✅ API URL set to:', API_URL);
+
+// ============================================
+// AXIOS INSTANCE
+// ============================================
 
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json'
     },
-    timeout: 30000 // 30 seconds for Render (might be cold start)
+    timeout: 30000
 });
 
-// Add request interceptor for debugging
+// ============================================
+// INTERCEPTORS
+// ============================================
+
 api.interceptors.request.use(
     (config) => {
         console.log('📤 Request:', config.method.toUpperCase(), config.url);
@@ -28,7 +36,6 @@ api.interceptors.request.use(
     }
 );
 
-// Add response interceptor for debugging
 api.interceptors.response.use(
     (response) => {
         console.log('📥 Response:', response.status, response.config.url);
@@ -38,9 +45,6 @@ api.interceptors.response.use(
         if (error.code === 'ERR_NETWORK') {
             console.error('❌ Network Error - Cannot reach backend');
             console.error('   API URL:', API_URL);
-            console.error('   Make sure:');
-            console.error('   1. Backend is running on Render');
-            console.error('   2. The URL is correct');
         } else if (error.response) {
             console.error(`❌ API Error: ${error.response.status}`, error.response.data);
         } else {
@@ -51,21 +55,20 @@ api.interceptors.response.use(
 );
 
 // ============================================
-// PUBLIC API METHODS
+// PUBLIC API
 // ============================================
+
 export const publicApi = {
     getHomepage: async () => {
         try {
-            console.log('📡 Fetching homepage from Render...');
+            console.log('📡 Fetching homepage...');
             const response = await api.get('/public/home');
-            console.log('✅ Homepage fetched:', response.data.success ? 'Success' : 'Failed');
             return response.data;
         } catch (error) {
             console.error('❌ Error fetching homepage:', error.message);
             return { 
                 success: false, 
                 error: error.message,
-                code: error.code,
                 apiUrl: API_URL
             };
         }
@@ -123,7 +126,7 @@ export const publicApi = {
 
     getPageContent: async (page) => {
         try {
-            console.log(`📡 Fetching ${page} page from Render...`);
+            console.log(`📡 Fetching ${page}...`);
             const response = await api.get(`/public/${page}`);
             return response.data;
         } catch (error) {
@@ -132,12 +135,9 @@ export const publicApi = {
         }
     },
 
-    // ============================================
-    // BULK FETCH - Get all pages at once
-    // ============================================
     getAllPages: async () => {
         try {
-            console.log('📡 Fetching all pages from Render...');
+            console.log('📡 Fetching all pages...');
             const [home, about, contact, careerLab, employers, services] = await Promise.all([
                 api.get('/public/home'),
                 api.get('/public/about'),
@@ -146,7 +146,6 @@ export const publicApi = {
                 api.get('/public/employers'),
                 api.get('/public/services')
             ]);
-            
             return {
                 success: true,
                 data: {
@@ -166,8 +165,9 @@ export const publicApi = {
 };
 
 // ============================================
-// ADMIN API METHODS - For Admin Dashboard
+// ADMIN API
 // ============================================
+
 export const adminApi = {
     login: (email, password) => {
         console.log('🔐 Logging in...');
@@ -186,11 +186,6 @@ export const adminApi = {
 
     updateContent: (id, value, table, originalId, originalKey, field) => {
         console.log(`📝 Updating content ${id}...`);
-        console.log('   Table:', table);
-        console.log('   Original ID:', originalId);
-        console.log('   Original Key:', originalKey);
-        console.log('   Field:', field);
-        
         return api.put(`/admin/content/${id}`, {
             value,
             table,
@@ -206,7 +201,4 @@ export const adminApi = {
     }
 };
 
-// ============================================
-// DEFAULT EXPORT
-// ============================================
 export default api;
