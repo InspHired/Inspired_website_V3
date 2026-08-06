@@ -17,7 +17,7 @@ const ecosystemPlatforms = [
     cta: "Learn more",
     ctaHref: "/jobot",
     accent: C.teal,
-    img: "/assets/JobBott.png",
+    img: "/assets/JobBot.png",
   },
   {
     label: "Temp & contract",
@@ -37,7 +37,7 @@ const ecosystemPlatforms = [
     cta: "Learn more",
     ctaHref: "/connect",
     accent: C.yellow,
-    img: "/assets/Connect.png",
+    img: "/assets/InspHiredConnect.png",
   },
   {
     label: "Verification",
@@ -47,7 +47,7 @@ const ecosystemPlatforms = [
     cta: "Learn more",
     ctaHref: "/verify-me",
     accent: C.teal,
-    img: "/assets/VerifyMee.png",
+    img: "/assets/VerifyMe.png",
   },
 ];
 
