@@ -17,37 +17,12 @@ function StarRow({ color }) {
 /* ── EMPLOYER NETWORK CANVAS ── */
 function EmployerNetworkCanvas() {
   return (
-    <div className="pillar-canvas-container">
+   <div className="pillar-canvas-container">
       <div className="glow-sphere teal-glow"></div>
       <div className="glow-sphere orange-glow"></div>
 
       <div className="pillar-stage-card">
-        <div className="floating-pillar-item float-1">
-          <div className="icon-frame teal-border">
-            <i className="fas fa-user-tie" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot teal"></span> Executive Search
-          </div>
-        </div>
-
-        <div className="floating-pillar-item float-2">
-          <div className="icon-frame orange-border">
-            <i className="fas fa-shield-alt" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot orange"></span> Verification
-          </div>
-        </div>
-
-        <div className="floating-pillar-item float-3">
-          <div className="icon-frame yellow-border">
-            <i className="fas fa-users" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot yellow"></span> Bulk Staffing
-          </div>
-        </div>
+        
 
         <div className="center-metallic-core">
           <div className="core-pulse-ring"></div>
@@ -545,8 +520,8 @@ const ForEmployersPage = () => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 130px;
-          height: 130px;
+          width: 180px;
+          height: 180px;
           border-radius: 50%;
           background: radial-gradient(circle, #2a4554 0%, #172831 100%);
           border: 1px solid rgba(255, 255, 255, 0.15);

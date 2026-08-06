@@ -38,10 +38,19 @@ function ServicePillarsCanvas() {
           </div>
         </div>
 
+        <div className="floating-pillar-item float-4">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Temp Services
+          </div>
+        </div>
+
         <div className="center-metallic-core">
           <div className="core-pulse-ring"></div>
           <div className="core-brand-tag">
-            <span className="core-number">06</span>
+            <span className="core-number">04</span>
             <span className="core-label">Core Solutions</span>
           </div>
         </div>
@@ -448,14 +457,10 @@ const ServicesPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
-
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 20px; left: 25px; animation}
+        .float-4 { bottom: 35px; right: 25px; animation}
 
         .icon-frame {
           width: 86px;
@@ -498,8 +503,8 @@ const ServicesPage = () => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 130px;
-          height: 130px;
+          width: 100px;
+          height: 100px;
           border-radius: 50%;
           background: radial-gradient(circle, #2a4554 0%, #172831 100%);
           border: 1px solid rgba(255, 255, 255, 0.15);

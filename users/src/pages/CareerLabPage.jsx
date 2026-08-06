@@ -38,14 +38,23 @@ function CareerGrowthCanvas() {
             <i className="fas fa-chart-line" aria-hidden="true"></i>
           </div>
           <div className="pillar-badge">
-            <span className="badge-dot yellow"></span> Career Growth
+            <span className="badge-dot yellow"></span> Job Search Strategy
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-4">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-chart-line" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Personal Branding
           </div>
         </div>
 
         <div className="center-metallic-core">
           <div className="core-pulse-ring"></div>
           <div className="core-brand-tag">
-            <span className="core-number">06</span>
+            <span className="core-number">04</span>
             <span className="core-label">Coaching Modules</span>
           </div>
         </div>
@@ -465,14 +474,11 @@ function CareerLabPage() {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 20px; left: 25px; animation}
+        .float-4 { bottom: 35px; right: 25px; animation}
 
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
 
         .icon-frame {
           width: 86px;
@@ -515,8 +521,8 @@ function CareerLabPage() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 130px;
-          height: 130px;
+          width: 100px;
+          height: 100px;
           border-radius: 50%;
           background: radial-gradient(circle, #2a4554 0%, #172831 100%);
           border: 1px solid rgba(255, 255, 255, 0.15);
@@ -553,6 +559,14 @@ function CareerLabPage() {
           .form-split-grid { grid-template-columns: 1fr !important; }
           .journey-path { flex-wrap: wrap; justify-content: center; }
         }
+
+        @media (max-width: 900px) {
+  .curriculum-grid { grid-template-columns: 1fr !important; }
+  .curriculum-grid .avatarPanel { position: static !important; }
+}
+@media (max-width: 640px) {
+  .moduleGrid { grid-template-columns: 1fr !important; }
+}
       `}</style>
 
       {/* Hero */}
@@ -678,50 +692,72 @@ function CareerLabPage() {
       </section>
 
       {/* Curriculum */}
-      <div style={styles.curriculumLayout}>
-        <div style={styles.moduleGrid}>
-          {modules.map((mod, index) => (
-            <div
-              key={mod.module_number}
-              style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
-              className="interactive-card"
-              onMouseEnter={() => setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`)}
+<section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
+  <div style={styles.container}>
+    <div style={styles.sectionHeader}>
+      <span className="eyebrow-3d">Structured curriculum</span>
+      <h2 className="title-3d title-section">What you'll learn</h2>
+      <p style={styles.sectionSub}>
+        Six focused modules covering everything from job applications to long-term career navigation.
+      </p>
+    </div>
+
+    <div style={styles.curriculumLayout} className="curriculum-grid">
+      <div style={styles.moduleGrid}>
+        {modules.map((mod, index) => (
+          <div
+            key={mod.module_number}
+            style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
+            className="interactive-card"
+            onMouseEnter={() => {
+              setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`);
+              setHoveredModule(mod.module_number);
+            }}
+            onMouseLeave={() => setHoveredModule(null)}
+          >
+            <span
+              style={{
+                ...styles.moduleNumber,
+                color: hoveredModule === mod.module_number ? mod.accent_color : 'rgba(31, 53, 64, 0.06)',
+              }}
             >
-              <span style={styles.moduleNumber}>{mod.module_number}</span>
-              <h3 className="title-3d" style={{ fontSize: '1.25rem', marginBottom: '20px', paddingRight: '40px' }}>{mod.title}</h3>
-              <ul style={styles.cardList}>
-                {(mod.items || []).map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div style={styles.avatarPanel}>
-          <motion.img
-            src={CareerCoach}
-            alt="Career Coach"
-            style={styles.avatar}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          />
-
-          <div style={styles.speechBubble}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={coachMessage}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                {coachMessage}
-              </motion.div>
-            </AnimatePresence>
+              {mod.module_number}
+            </span>
+            <h3 className="title-3d" style={{ fontSize: '1.25rem', marginBottom: '20px', paddingRight: '40px' }}>{mod.title}</h3>
+            <ul style={styles.cardList}>
+              {(mod.items || []).map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
           </div>
+        ))}
+      </div>
+
+      <div style={styles.avatarPanel}>
+        <motion.img
+          src={CareerCoach}
+          alt="Career Coach"
+          style={styles.avatar}
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        <div style={styles.speechBubble}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={coachMessage}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
+            >
+              {coachMessage}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
       {/* Differentiation */}
       <section style={styles.diffSection}>
@@ -883,6 +919,11 @@ const styles = {
     padding: '0 32px',
     width: '100%',
   },
+  sectionHeader: {
+  textAlign: 'center',
+  maxWidth: '700px',
+  margin: '0 auto 48px auto',
+},
   heroGrid: {
     display: 'grid',
     gridTemplateColumns: '1.15fr 0.85fr',
@@ -1002,53 +1043,51 @@ const styles = {
     margin: '0 0 20px 0'
   },
   curriculumLayout: {
-    display: "grid",
-    gridTemplateColumns: "2fr 1fr",
-    gap: "50px",
-    alignItems: "start",
-    padding: '80px 32px',
-    maxWidth: '1280px',
-    margin: '0 auto'
-  },
+  display: "grid",
+  gridTemplateColumns: "2.2fr 1fr",
+  gap: "40px",
+  alignItems: "start",
+},
   moduleGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "30px"
-  },
+  display: "grid",
+  gridTemplateColumns: "repeat(2, 1fr)",
+  gap: "20px",
+},
   avatarPanel: {
     position: "sticky",
     top: "120px",
     textAlign: "center"
   },
   moduleCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 'var(--radius-card)',
-    padding: '28px 24px',
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: 'var(--shadow-sm)',
-    border: '1px solid var(--border-light)',
-  },
+  backgroundColor: '#FFFFFF',
+  borderRadius: 'var(--radius-card)',
+  padding: '22px 20px',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  boxShadow: 'var(--shadow-sm)',
+  border: '1px solid var(--border-light)',
+},
   moduleNumber: {
-    fontSize: '2.8rem',
-    fontWeight: 700,
-    lineHeight: 1,
-    color: 'rgba(31, 53, 64, 0.06)',
-    position: 'absolute',
-    top: '32px',
-    right: '36px'
-  },
+  fontSize: '2.8rem',
+  fontWeight: 700,
+  lineHeight: 1,
+  color: 'rgba(31, 53, 64, 0.06)',
+  position: 'absolute',
+  top: '32px',
+  right: '36px',
+  transition: 'color var(--transition)',
+},
   cardList: {
-    paddingLeft: '20px',
-    margin: '0',
-    color: '#5B6670',
-    fontSize: '0.93rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-    lineHeight: '1.5'
-  },
+  paddingLeft: '18px',
+  margin: '0',
+  color: '#5B6670',
+  fontSize: '0.85rem',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px',
+  lineHeight: '1.45'
+},
   diffSection: {
     padding: '100px 0',
     backgroundColor: 'var(--navy)',
