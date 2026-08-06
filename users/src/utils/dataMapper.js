@@ -1,46 +1,49 @@
 // users/src/utils/dataMapper.js
 
 /**
- * Safely extracts feature_text from array of objects
- * @param {Array} features - Array of features (could be strings or objects)
+ * Safely extracts text from array of objects or strings
+ * @param {Array} items - Array of items (could be strings or objects)
+ * @param {string} textKey - The key to extract text from
  * @returns {Array} - Array of strings
  */
-export const extractFeatures = (features) => {
-    if (!features || !Array.isArray(features)) {
+export const extractTextArray = (items, textKey = 'feature_text') => {
+    if (!items || !Array.isArray(items)) {
         return [];
     }
     
-    return features.map((feature) => {
-        // If it's a string, return it as is
-        if (typeof feature === 'string') {
-            return feature;
+    return items.map((item) => {
+        if (typeof item === 'string') {
+            return item;
         }
-        // If it's an object with feature_text
-        if (typeof feature === 'object' && feature !== null) {
-            // Check for feature_text (database column)
-            if (feature.feature_text) {
-                return feature.feature_text;
+        if (typeof item === 'object' && item !== null) {
+            if (item[textKey]) {
+                return item[textKey];
             }
-            // Check for text property
-            if (feature.text) {
-                return feature.text;
+            const commonKeys = ['text', 'description', 'name', 'title', 'value', 'feature_text'];
+            for (const key of commonKeys) {
+                if (item[key] && typeof item[key] === 'string') {
+                    return item[key];
+                }
             }
-            // If it's any other object, try to stringify
             try {
-                return JSON.stringify(feature);
+                return JSON.stringify(item);
             } catch (e) {
-                return String(feature);
+                return String(item);
             }
         }
-        // Fallback
-        return String(feature);
+        return String(item);
     });
 };
 
 /**
+ * Safely extracts features from platform data
+ */
+export const extractFeatures = (features) => {
+    return extractTextArray(features, 'feature_text');
+};
+
+/**
  * Safely maps platform data from database
- * @param {Array} platforms - Array of platform objects
- * @returns {Array} - Mapped platforms with string features
  */
 export const mapPlatforms = (platforms) => {
     if (!platforms || !Array.isArray(platforms)) {
@@ -63,8 +66,6 @@ export const mapPlatforms = (platforms) => {
 
 /**
  * Safely maps team member data from database
- * @param {Array} team - Array of team member objects
- * @returns {Array} - Mapped team members
  */
 export const mapTeamMembers = (team) => {
     if (!team || !Array.isArray(team)) {
@@ -83,8 +84,6 @@ export const mapTeamMembers = (team) => {
 
 /**
  * Safely maps testimonial data from database
- * @param {Array} testimonials - Array of testimonial objects
- * @returns {Array} - Mapped testimonials
  */
 export const mapTestimonials = (testimonials) => {
     if (!testimonials || !Array.isArray(testimonials)) {
@@ -100,80 +99,98 @@ export const mapTestimonials = (testimonials) => {
 };
 
 /**
- * Safely maps any array that might contain objects with feature_text
- * @param {Array} items - Array of items
- * @param {string} textKey - The key to extract text from
- * @returns {Array} - Array of strings
+ * Safely maps about timeline data
  */
-export const extractTextArray = (items, textKey = 'text') => {
+export const mapTimeline = (timeline) => {
+    if (!timeline || !Array.isArray(timeline)) {
+        return [];
+    }
+    
+    return timeline.map((item) => ({
+        year: item.year || '',
+        text: item.text || '',
+        accent: item.accent_color || item.accent || '#509b9e',
+        sortOrder: item.sort_order || 0
+    }));
+};
+
+/**
+ * Safely maps about values data
+ */
+export const mapValues = (values) => {
+    if (!values || !Array.isArray(values)) {
+        return [];
+    }
+    
+    return values.map((value) => ({
+        title: value.title || '',
+        description: value.description || '',
+        icon: value.icon_type || value.icon || 'pulse',
+        accent: value.accent_color || value.accent || '#509b9e',
+        sortOrder: value.sort_order || 0
+    }));
+};
+
+/**
+ * Safely maps curriculum modules
+ */
+export const mapModules = (modules) => {
+    if (!modules || !Array.isArray(modules)) {
+        return [];
+    }
+    
+    return modules.map((module) => ({
+        moduleNumber: module.module_number || '',
+        title: module.title || '',
+        items: extractTextArray(module.items || []),
+        accent: module.accent_color || module.accent || '#509b9e'
+    }));
+};
+
+/**
+ * Safely maps career tracks
+ */
+export const mapTracks = (tracks) => {
+    if (!tracks || !Array.isArray(tracks)) {
+        return [];
+    }
+    
+    return tracks.map((track) => ({
+        trackId: track.track_id || '',
+        title: track.title || '',
+        description: track.description || '',
+        bulletPoints: extractTextArray(track.bullet_points || [])
+    }));
+};
+
+/**
+ * Safely maps service offerings
+ */
+export const mapOfferings = (offerings) => {
+    if (!offerings || !Array.isArray(offerings)) {
+        return [];
+    }
+    
+    return offerings.map((offering) => ({
+        number: offering.service_number || '',
+        title: offering.title || '',
+        description: offering.description || '',
+        accent: offering.accent_color || offering.accent || '#509b9e'
+    }));
+};
+
+/**
+ * Safely maps screening items
+ */
+export const mapScreeningItems = (items) => {
     if (!items || !Array.isArray(items)) {
         return [];
     }
     
-    return items.map((item) => {
-        if (typeof item === 'string') {
-            return item;
-        }
-        if (typeof item === 'object' && item !== null) {
-            if (item[textKey]) {
-                return item[textKey];
-            }
-            // Try to find any text-like property
-            const textProps = ['feature_text', 'text', 'description', 'name', 'title', 'value'];
-            for (const prop of textProps) {
-                if (item[prop] && typeof item[prop] === 'string') {
-                    return item[prop];
-                }
-            }
-            try {
-                return JSON.stringify(item);
-            } catch (e) {
-                return String(item);
-            }
-        }
-        return String(item);
-    });
-};
-
-/**
- * Safely parses JSON data from database
- * @param {any} data - Data that might be JSON string or object
- * @param {any} fallback - Fallback value if parsing fails
- * @returns {any} - Parsed data or fallback
- */
-export const safeJSONParse = (data, fallback = null) => {
-    if (data === null || data === undefined) {
-        return fallback;
-    }
-    
-    if (typeof data === 'object') {
-        return data;
-    }
-    
-    if (typeof data === 'string') {
-        try {
-            return JSON.parse(data);
-        } catch (e) {
-            return fallback;
-        }
-    }
-    
-    return fallback;
-};
-
-/**
- * Checks if an array contains objects that need text extraction
- * @param {Array} arr - Array to check
- * @returns {boolean} - True if array contains objects with text properties
- */
-export const needsTextExtraction = (arr) => {
-    if (!arr || !Array.isArray(arr) || arr.length === 0) {
-        return false;
-    }
-    
-    return arr.some(item => 
-        typeof item === 'object' && 
-        item !== null && 
-        (item.feature_text || item.text || item.description)
-    );
+    return items.map((item) => ({
+        title: item.title || '',
+        description: item.description || '',
+        icon: item.icon_class || item.icon || 'fa-check',
+        accent: item.accent_color || item.accent || '#509b9e'
+    }));
 };
