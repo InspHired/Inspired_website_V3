@@ -1102,7 +1102,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        <Footer />
+    
       </div>
     </div>
   );
