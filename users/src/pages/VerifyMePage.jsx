@@ -28,6 +28,8 @@ const VerifyMePage = () => {
   return (
     <div style={styles.pageWrapper}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -203,10 +205,10 @@ const styles = {
   container: { maxWidth: '1280px', margin: '0 auto', padding: '0 32px', width: '100%' },
   heroSection: { backgroundColor: 'var(--navy)', padding: '130px 0 100px 0', position: 'relative', overflow: 'hidden' },
   heroGrid: { display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '60px', alignItems: 'center' },
-  eyebrow: { display: 'inline-block', fontSize: '0.8rem', letterSpacing: '2px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--teal)', backgroundColor: 'rgba(80, 155, 158, 0.15)', padding: '6px 14px', borderRadius: '20px', marginBottom: '18px' },
+  eyebrow: { display: 'inline-block', fontFamily: "'Playfair Display', Georgia, serif", fontSize: '0.8rem', letterSpacing: '2px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--teal)', backgroundColor: 'rgba(80, 155, 158, 0.15)', padding: '6px 14px', borderRadius: '20px', marginBottom: '18px' },
   logoRow: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' },
   appLogo: { width: '48px', height: '48px', objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(80, 155, 158, 0.3))' },
-  pageTitle: { fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 700, color: '#FFFFFF', margin: 0, lineHeight: 1.15, letterSpacing: '-1px' },
+  pageTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 700, color: '#FFFFFF', margin: 0, lineHeight: 1.15, letterSpacing: '-1px' },
   heroLead: { fontSize: '1.05rem', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', maxWidth: '580px', lineHeight: 1.7 },
   btnRow: { display: 'flex', gap: '16px' },
   btnPrimary: { background: 'var(--orange)', color: '#FFFFFF', padding: '14px 32px', borderRadius: '40px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', display: 'inline-flex', alignItems: 'center', boxShadow: '0 4px 14px rgba(217, 107, 67, 0.35)' },
@@ -217,28 +219,28 @@ const styles = {
   glassCard: { background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px dashed rgba(255, 255, 255, 0.18)', borderRadius: 'var(--radius-card)', padding: '40px', maxWidth: '340px', width: '100%' },
   iconContainer: { width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(80, 155, 158, 0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px auto', border: '1px solid rgba(80, 155, 158, 0.3)' },
   heroCardIcon: { fontSize: '1.6rem', color: 'var(--teal)' },
-  heroCardTitle: { fontWeight: 700, fontSize: '1.2rem', margin: '0 0 8px 0', color: '#FFFFFF' },
+  heroCardTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: '1.2rem', margin: '0 0 8px 0', color: '#FFFFFF' },
   heroCardText: { fontSize: '0.88rem', margin: 0, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
   splitRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(45%, 1fr))', gap: '64px', alignItems: 'center' },
-  sectionTag: { color: 'var(--teal)', textTransform: 'uppercase', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '2px', display: 'block', marginBottom: '10px' },
-  sectionHeading: { fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.2, marginBottom: '16px', letterSpacing: '-0.5px' },
+  sectionTag: { fontFamily: "'Playfair Display', Georgia, serif", color: 'var(--teal)', textTransform: 'uppercase', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '2px', display: 'block', marginBottom: '10px' },
+  sectionHeading: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.2, marginBottom: '16px', letterSpacing: '-0.5px' },
   sectionSub: { fontSize: '1.05rem', color: '#5B6670', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 },
   bodyText: { fontSize: '1rem', color: '#5B6670', lineHeight: 1.7 },
   quoteBlock: { marginTop: '24px', borderLeft: '4px solid var(--teal)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '0.98rem', lineHeight: 1.65, backgroundColor: 'var(--bg)', padding: '16px 20px 16px 24px', borderRadius: '0 12px 12px 0' },
   audienceCard: { background: '#FFFFFF', padding: '44px 36px', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' },
-  audienceHeading: { fontWeight: 700, fontSize: '1.2rem', marginBottom: '24px', color: 'var(--navy)', letterSpacing: '-0.3px' },
+  audienceHeading: { fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: '1.2rem', marginBottom: '24px', color: 'var(--navy)', letterSpacing: '-0.3px' },
   bulletList: { listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' },
   centerHead: { textAlign: 'center', marginBottom: '64px' },
   featureGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '32px' },
   featureCard: { background: '#FFFFFF', borderRadius: 'var(--radius-card)', padding: '44px 36px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', position: 'relative', overflow: 'hidden' },
   featureIconWrap: { width: '52px', height: '52px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', fontSize: '1.1rem' },
-  cardTitle: { fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' },
+  cardTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' },
   cardText: { fontSize: '0.94rem', color: '#5B6670', lineHeight: 1.65, margin: 0 },
   faqWrapper: { maxWidth: '780px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px' },
   faqCard: { background: '#FFFFFF', borderRadius: '14px', padding: '24px 28px', border: '1px solid var(--border-light)' },
-  faqQuestion: { fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', margin: 0, display: 'flex', alignItems: 'center', gap: '4px' },
+  faqQuestion: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', margin: 0, display: 'flex', alignItems: 'center', gap: '4px' },
   faqIcon: { marginRight: '14px', color: 'var(--teal)', fontSize: '1.1rem', flexShrink: 0 },
   faqAnswer: { fontSize: '0.94rem', color: '#5B6670', margin: '14px 0 0 0', paddingLeft: '28px', lineHeight: 1.65 },
   audienceItemIcon: { width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', marginRight: '14px', flexShrink: 0, marginTop: '2px' },
