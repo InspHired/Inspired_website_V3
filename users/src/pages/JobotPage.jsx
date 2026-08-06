@@ -83,6 +83,8 @@ const JobotPage = () => {
   return (
     <div style={styles.pageWrapper}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -313,6 +315,7 @@ const styles = {
   },
   eyebrow: {
     display: 'inline-block',
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: '0.8rem',
     letterSpacing: '2px',
     fontWeight: 700,
@@ -336,6 +339,7 @@ const styles = {
     filter: 'drop-shadow(0 4px 12px rgba(80, 155, 158, 0.3))'
   },
   pageTitle: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: 'clamp(2.2rem, 4vw, 3.2rem)',
     fontWeight: 700,
     color: '#FFFFFF',
@@ -433,6 +437,7 @@ const styles = {
     backgroundColor: 'var(--bg)'
   },
   sectionTag: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     color: 'var(--teal)',
     textTransform: 'uppercase',
     fontSize: '0.85rem',
@@ -442,6 +447,7 @@ const styles = {
     marginBottom: '10px',
   },
   sectionHeading: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
     fontWeight: 700,
     color: 'var(--navy)',
@@ -484,6 +490,7 @@ const styles = {
     marginBottom: '20px',
   },
   cardTitle: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: '1.2rem',
     fontWeight: 700,
     color: 'var(--navy)',
@@ -496,6 +503,7 @@ const styles = {
     margin: 0
   },
   moduleHeading: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: '1.2rem',
     fontWeight: 700,
     marginBottom: '12px'
@@ -514,6 +522,7 @@ const styles = {
     border: '1px solid var(--border-light)',
   },
   faqQuestion: {
+    fontFamily: "'Playfair Display', Georgia, serif",
     fontSize: '1rem',
     fontWeight: 700,
     color: 'var(--navy)',
