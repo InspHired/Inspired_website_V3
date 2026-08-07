@@ -5,11 +5,11 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-// Serve static files from the 'dist' directory
+// Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Fallback to index.html for client-side routing
-app.get('*', (req, res) => {
+// Handle all routes - send index.html for any route not found
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
