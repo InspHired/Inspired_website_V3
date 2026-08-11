@@ -32,53 +32,18 @@ function Navbar() {
           transform: translateY(-1px);
         }
 
-        .brand-logo-text {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          font-size: 1.8rem;
-          line-height: 1;
-          letter-spacing: -0.02em;
+        .logo-image-wrapper {
           display: flex;
-          align-items: baseline;
-        }
-        .logo-insp {
-          font-weight: 500;
-          background: linear-gradient(180deg, #6ecad0 0%, #509b9e 50%, #306c6e 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
-        }
-        .logo-hired {
-          font-weight: 800;
-          background: linear-gradient(180deg, #324e5d 0%, #1f3540 50%, #0d1920 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
-        }
-        .logo-tagline-bar {
-          margin-top: 2px;
-          padding: 2px 8px;
-          background: linear-gradient(180deg, #af2828 0%, #8b1818 50%, #630c0c 100%);
-          border-radius: 3px;
-          box-shadow: 
-            inset 0 1px 1px rgba(255, 255, 255, 0.4), /* Top gloss edge */
-            inset 0 -1px 2px rgba(0, 0, 0, 0.5),    /* Inner depth shadow */
-            0 2px 4px rgba(0, 0, 0, 0.2);           /* Outer drop shadow */
-          border: 1px solid #7a1515;
+          align-items: center;
+          height: 50px;
         }
 
-        .logo-tagline-text {
-          display: block;
-          color: #ffffff;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          font-size: 0.52rem;
-          font-weight: 700;
-          letter-spacing: 0.8px;
-          text-transform: uppercase;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-          white-space: nowrap;
+        .logo-image {
+          height: 100%;
+          width: auto;
+          object-fit: contain;
         }
+
         .btn-consult {
           display: inline-flex;
           align-items: center;
@@ -123,7 +88,8 @@ function Navbar() {
             0 0 0 transparent,
             0 2px 4px rgba(0, 0, 0, 0.2) !important;
         }
-            .nav-links {
+
+        .nav-links {
           display: flex;
           align-items: center;
           gap: 2rem;
@@ -131,7 +97,8 @@ function Navbar() {
           margin: 0;
           padding: 0;
         }
-.nav-links a {
+
+        .nav-links a {
           text-decoration: none;
           font-size: 1rem;
           font-weight: 700; 
@@ -139,14 +106,21 @@ function Navbar() {
           letter-spacing: -0.01em;
           transition: color 0.2s ease, opacity 0.2s ease;
         }
+
+        @media (max-width: 768px) {
+          .logo-image-wrapper {
+            height: 38px;
+          }
+        }
       `}</style>
+
       <Link to="/" className="brand-logo-container" aria-label="InspHired Recruitment Solutions Home">
-        <div className="brand-logo-text">
-          <span className="logo-insp">Insp</span>
-          <span className="logo-hired">Hired</span>
-        </div>
-        <div className="logo-tagline-bar">
-          <span className="logo-tagline-text">Recruitment Solutions</span>
+        <div className="logo-image-wrapper">
+          <img 
+            src="/assets/logo.png" 
+            alt="InspHired Logo" 
+            className="logo-image"
+          />
         </div>
       </Link>
 
