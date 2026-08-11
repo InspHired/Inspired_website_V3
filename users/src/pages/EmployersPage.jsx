@@ -653,17 +653,7 @@ const ForEmployersPage = () => {
           .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
           .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
           .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
-        .floating-pillar-item {
-          position: absolute;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-        .float-1 { top: 20px; left: 25px; animation}
-        .float-2 { top: 35px; right: 25px; animation}
-        .float-3 { bottom: 20px; left: 25px; animation}
-        .float-4 { bottom: 35px; right: 25px; animation}
+          .float-4 { bottom: 35px; right: 25px; animation: floatAnim 4.4s ease-in-out infinite 1.2s; }
 
           @keyframes floatAnim {
             0%, 100% { transform: translateY(0px); }
@@ -947,6 +937,7 @@ const ForEmployersPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
