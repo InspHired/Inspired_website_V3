@@ -1,8 +1,13 @@
 // users/src/pages/AboutPage.jsx
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { Helmet } from 'react-helmet-async';
 import { publicApi } from "../services/api";
+import { 
+  OrganizationSchema, 
+  BreadcrumbSchema, 
+  PersonSchema 
+} from "../components/Schema";
+import { SEO_CONFIG } from "../config/seo.config";
 
 // Hardcoded Team Members (stays as is)
 const teamMembers = [
@@ -379,732 +384,913 @@ const AboutPage = () => {
       }))
     : defaultValues;
 
+  // ============ SEO VARIABLES ============
+  const companyName = SEO_CONFIG.companyName;
+  const siteUrl = SEO_CONFIG.siteUrl;
+  const pageTitle = "About Us | " + companyName;
+  const pageDescription = "Learn about InspHired's journey, mission, vision, and values. Discover how we're transforming careers across Africa through innovative recruitment solutions.";
+  const pageKeywords = "about us, company history, mission, vision, values, recruitment, South Africa, career ecosystem";
+  const pageUrl = siteUrl + "/about";
+  const ogImage = siteUrl + "/og-image-about.jpg";
+
+  // Generate team member schemas
+  const teamSchemas = teamMembers.map(member => ({
+    name: member.name,
+    jobTitle: member.role,
+    image: siteUrl + member.avatar,
+    url: siteUrl + "/about",
+    worksFor: { name: companyName, url: siteUrl }
+  }));
+
+  // FAQ data for schema
+  const faqData = [
+    {
+      question: "When was InspHired founded?",
+      answer: "InspHired Recruitment Solutions was founded in 2015 with a vision to become Africa's number one solution to recruitment challenges."
+    },
+    {
+      question: "What services does InspHired offer?",
+      answer: "InspHired offers comprehensive recruitment solutions including Jobot (AI-powered matching), Career Lab (career development), Worx (temporary staffing), Connect (free job board), and VerifyMe (background verification)."
+    },
+    {
+      question: "Where does InspHired operate?",
+      answer: "InspHired operates across South Africa with offices in Johannesburg, Cape Town, and Kinshasa, serving clients and candidates across the African continent."
+    }
+  ];
+
   // Show loading state
   if (loading) {
     return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.spinner}></div>
-        <p style={styles.loadingText}>Loading about page...</p>
-      </div>
+      <>
+        <Helmet>
+          <title>Loading... | {companyName}</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
+          <p style={styles.loadingText}>Loading about page...</p>
+        </div>
+      </>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <div style={styles.errorContainer}>
-        <div style={styles.errorIcon}>⚠️</div>
-        <h3 style={styles.errorTitle}>Failed to Load About Page</h3>
-        <p style={styles.errorText}>{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          style={styles.retryButton}
-        >
-          Retry
-        </button>
-      </div>
+      <>
+        <Helmet>
+          <title>Error | {companyName}</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <div style={styles.errorContainer}>
+          <div style={styles.errorIcon}>⚠️</div>
+          <h3 style={styles.errorTitle}>Failed to Load About Page</h3>
+          <p style={styles.errorText}>{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            style={styles.retryButton}
+          >
+            Retry
+          </button>
+        </div>
+      </>
     );
   }
 
   return (
-    <div style={styles.pageWrapper}>
-      <style>{`
-        /* ── IMPORT PLAYFAIR DISPLAY ── */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+    <>
+      {/* ============ SEO HELMET ============ */}
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{pageTitle}</title>
+        <meta name="title" content={pageTitle} />
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content={companyName} />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={pageUrl} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content={companyName} />
+        <meta property="og:locale" content="en_ZA" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageUrl} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        
+        {/* Additional Meta Tags */}
+        <meta name="theme-color" content="#509b9e" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        
+        {/* JSON-LD Structured Data - AboutPage */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "About " + companyName,
+            "description": pageDescription,
+            "url": pageUrl,
+            "mainEntity": {
+              "@type": "Organization",
+              "name": companyName,
+              "foundingDate": "2015",
+              "foundingLocation": "South Africa",
+              "description": "InspHired Recruitment Solutions - Africa's leading recruitment ecosystem connecting talent with opportunity."
+            }
+          })}
+        </script>
 
-        /* ── 3D HEADING SYSTEM ── */
-        .title-3d {
-          display: block;
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-weight: 700;
-          color: #1f3540;
-          margin-bottom: 12px;
-          letter-spacing: -0.02em;
-          position: relative;
-          text-shadow: 
-            0 2px 4px rgba(0, 0, 0, 0.05),
-            0 8px 16px rgba(80, 155, 158, 0.08),
-            0 12px 32px rgba(0, 0, 0, 0.04);
-          transform: translateY(-4px);
-          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
-        }
+        {/* Organization Schema with founding details */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": companyName,
+            "url": siteUrl,
+            "logo": SEO_CONFIG.logo,
+            "description": pageDescription,
+            "foundingDate": "2015",
+            "founders": [
+              { "@type": "Person", "name": "Landry Mutombo" }
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressCountry": "ZA",
+              "addressLocality": "Johannesburg",
+              "addressRegion": "Gauteng"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer service",
+              "availableLanguage": ["English"],
+              "areaServed": "ZA"
+            }
+          })}
+        </script>
 
-        .title-hero {
-          font-size: clamp(2.8rem, 5vw, 4.2rem);
-          line-height: 1.1;
-        }
+        {/* FAQ Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
 
-        .title-section {
-          font-size: clamp(2rem, 3.5vw, 2.8rem);
-          line-height: 1.2;
-        }
+      {/* ============ SCHEMA COMPONENTS ============ */}
+      <OrganizationSchema />
+      <BreadcrumbSchema items={[{ name: 'Home', url: siteUrl }, { name: 'About', url: pageUrl }]} />
 
-        .title-sub {
-          font-size: clamp(1.4rem, 2vw, 1.8rem);
-          line-height: 1.3;
-        }
+      {/* Person Schemas for each team member */}
+      {teamSchemas.map((member, index) => (
+        <PersonSchema key={index} {...member} />
+      ))}
 
-        .title-small {
-          font-size: clamp(1.1rem, 1.5vw, 1.3rem);
-          line-height: 1.4;
-        }
+      {/* ============ MAIN CONTENT ============ */}
+      <div style={styles.pageWrapper}>
+        <style>{`
+          /* ── IMPORT PLAYFAIR DISPLAY ── */
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
-        .eyebrow-3d {
-          display: inline-block;
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: var(--teal, #509b9e);
-          background: rgba(80, 155, 158, 0.1);
-          padding: 6px 16px;
-          border-radius: 20px;
-          margin-bottom: 16px;
-          border: 1px solid rgba(80, 155, 158, 0.15);
-        }
-
-        /* ── VALUE ICONS ── */
-        .value-icon { width: 34px; height: 34px; }
-        .vi-pulse-ring {
-          transform-origin: center;
-          animation: viPulseRing 2s ease-out infinite;
-        }
-        @keyframes viPulseRing {
-          0% { transform: scale(0.7); opacity: 1; }
-          100% { transform: scale(1.3); opacity: 0; }
-        }
-        .vi-check-draw {
-          stroke-dasharray: 20;
-          stroke-dashoffset: 20;
-          animation: viCheckDraw 2.4s ease-in-out infinite;
-        }
-        @keyframes viCheckDraw {
-          0% { stroke-dashoffset: 20; }
-          40% { stroke-dashoffset: 0; }
-          80% { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: 0; }
-        }
-        .vi-gbar { transform-origin: bottom center; animation: viGrowBar 2s ease-in-out infinite; }
-        .vi-gbar-1 { animation-delay: 0s; }
-        .vi-gbar-2 { animation-delay: 0.25s; }
-        .vi-gbar-3 { animation-delay: 0.5s; }
-        @keyframes viGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
-
-        /* ── RADIAL TIMELINE HERO ── */
-        .polibio-hero-stage {
-          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
-          color: #ffffff;
-          padding: 30px 6% 30px;
-          min-height: 580px;
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          overflow: hidden;
-          font-family: inherit;
-          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
-        }
-
-        .polibio-top-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 0.8rem;
-          letter-spacing: 2px;
-          color: rgba(255, 255, 255, 0.5);
-          text-transform: uppercase;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding-bottom: 16px;
-          position: relative;
-          z-index: 10;
-        }
-
-        .brand-tag {
-          color: var(--teal, #509b9e);
-          font-weight: 600;
-          letter-spacing: 1px;
-        }
-
-        .step-counter {
-          background: rgba(255, 255, 255, 0.06);
-          padding: 4px 16px;
-          border-radius: 20px;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        .polibio-main-grid {
-          display: grid;
-          grid-template-columns: 340px 1fr 1.1fr;
-          gap: 30px;
-          align-items: center;
-          margin: 20px 0;
-          position: relative;
-          z-index: 2;
-        }
-
-        .polibio-story-col {
-          max-width: 400px;
-          z-index: 2;
-        }
-
-        .story-main-title {
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: clamp(1.8rem, 3vw, 2.4rem);
-          font-weight: 500;
-          color: #ffffff;
-          margin: 0 0 16px 0;
-          letter-spacing: -0.5px;
-          line-height: 1.2;
-        }
-
-        .story-desc-text {
-          font-size: 0.95rem;
-          line-height: 1.8;
-          color: rgba(255, 255, 255, 0.65);
-          margin: 0;
-        }
-
-        .polibio-arc-container {
-          position: relative;
-          width: 340px;
-          height: 480px;
-          display: flex;
-          align-items: center;
-          z-index: 1;
-        }
-
-        .polibio-wheel-rotator {
-          position: absolute;
-          left: -360px;
-          top: -60px;
-          width: 720px;
-          height: 720px;
-          z-index: 1;
-          transition: transform 0.9s cubic-bezier(0.25, 1, 0.5, 1);
-          pointer-events: none;
-        }
-
-        .polibio-wheel-svg {
-          width: 100%;
-          height: 100%;
-        }
-
-        .wheel-year-text {
-          transition: fill 0.3s ease, font-size 0.3s ease;
-          user-select: none;
-          letter-spacing: 1px;
-        }
-
-        .polibio-pointer-btn {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 58px;
-          height: 58px;
-          border-radius: 50%;
-          border: none;
-          color: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          z-index: 4;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-          transition: transform 0.3s ease, background-color 0.4s ease;
-        }
-
-        .polibio-pointer-btn:hover {
-          transform: translateY(-50%) scale(1.1);
-        }
-
-        .pointer-icon {
-          font-size: 1.25rem;
-        }
-
-        .polibio-focal-line {
-          position: absolute;
-          width: 70px;
-          height: 2px;
-          background: rgba(255, 255, 255, 0.8);
-          right: 65px;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 3;
-          pointer-events: none;
-        }
-
-        .polibio-year-col {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          text-align: right;
-          z-index: 2;
-        }
-
-        .year-header {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          margin-bottom: 8px;
-        }
-
-        .story-eyebrow {
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: clamp(2rem, 3.5vw, 2.8rem);
-          font-weight: 400;
-          color: #ffffff;
-          letter-spacing: -0.5px;
-          margin: 0;
-          line-height: 1.1;
-        }
-
-        .story-subtitle {
-          font-size: 0.72rem;
-          letter-spacing: 2px;
-          color: rgba(255, 255, 255, 0.45);
-          font-weight: 600;
-          text-transform: uppercase;
-          margin-top: 4px;
-        }
-
-        .big-year-display {
-          overflow: hidden;
-          height: 140px;
-        }
-
-        .giant-year-num {
-          font-size: clamp(5.5rem, 10vw, 9.5rem);
-          font-weight: 300;
-          line-height: 1;
-          color: #ffffff;
-          letter-spacing: -3px;
-          display: block;
-          animation: slideUpYear 0.5s ease-out;
-        }
-
-        @keyframes slideUpYear {
-          from { transform: translateY(40px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-
-        .polibio-bottom-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          padding-top: 18px;
-          position: relative;
-          z-index: 10;
-        }
-
-        .node-selector {
-          display: flex;
-          gap: 16px;
-        }
-
-        .selector-dot-btn {
-          background: transparent;
-          border: none;
-          color: rgba(255, 255, 255, 0.35);
-          font-size: 0.85rem;
-          font-weight: 600;
-          cursor: pointer;
-          padding: 4px 8px;
-          transition: color 0.3s ease;
-          position: relative;
-        }
-
-        .selector-dot-btn.active {
-          color: var(--yellow, #e4af51);
-        }
-
-        .selector-dot-btn.active::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: var(--yellow, #e4af51);
-          border-radius: 2px;
-        }
-
-        .pause-toggle {
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          color: #ffffff;
-          padding: 6px 18px;
-          border-radius: 20px;
-          font-size: 0.75rem;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: background 0.3s ease;
-        }
-
-        .pause-toggle:hover {
-          background: rgba(255, 255, 255, 0.14);
-        }
-
-        /* ── CARDS ── */
-        .value-card, .team-card { 
-          transition: transform 0.3s ease, box-shadow 0.3s ease !important; 
-        }
-        .value-card:hover, .team-card:hover { 
-          transform: translateY(-8px) !important; 
-          box-shadow: 0 16px 40px rgba(0,0,0,0.08) !important; 
-        }
-
-        /* ── SUBSCRIBE BUTTON 3D METALLIC EFFECT ── */
-        .subscribe-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 14px 32px;
-          font-family: inherit;
-          font-size: 0.95rem;
-          font-weight: 700;
-          text-decoration: none;
-          border-radius: 50px;
-          cursor: pointer;
-          letter-spacing: 0.3px;
-          position: relative;
-          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
-          transform: translateY(-3px);
-          border: none;
-          color: #ffffff;
-          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
-          border: 1px solid #73c8cb;
-          box-shadow: 
-            inset 0 1px 1px rgba(255, 255, 255, 0.6),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.25),
-            0 4px 0 #285759,
-            0 8px 15px rgba(31, 53, 64, 0.25);
-          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
-        }
-
-        .subscribe-btn:hover {
-          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
-          transform: translateY(-5px);
-          box-shadow: 
-            inset 0 1px 1px rgba(255, 255, 255, 0.7),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-            0 6px 0 #285759,
-            0 12px 20px rgba(80, 155, 158, 0.35);
-        }
-
-        .subscribe-btn:active {
-          transform: translateY(1px) !important;
-          box-shadow: 
-            inset 0 2px 4px rgba(0, 0, 0, 0.3),
-            0 0 0 transparent,
-            0 3px 6px rgba(0, 0, 0, 0.2) !important;
-        }
-
-        .subscribe-btn:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-          transform: translateY(0) !important;
-        }
-
-        /* ── SUBSCRIBE INPUT ── */
-        .subscribe-input {
-          padding: 14px 20px;
-          border-radius: 40px;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          background: rgba(255, 255, 255, 0.06);
-          color: #FFFFFF;
-          font-size: 0.95rem;
-          min-width: 260px;
-          outline: none;
-          transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-          font-family: inherit;
-        }
-
-        .subscribe-input:focus {
-          border-color: var(--teal, #509b9e) !important;
-          background: rgba(255, 255, 255, 0.1) !important;
-          box-shadow: 0 0 0 4px rgba(80, 155, 158, 0.15);
-        }
-
-        .subscribe-input::placeholder {
-          color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* ── BODY SECTION ── */
-        .about-body {
-          position: relative;
-          z-index: 2;
-          background: var(--bg, #faf6f0);
-          margin-top: 0;
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 1024px) {
-          .polibio-main-grid {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 20px;
+          /* ── 3D HEADING SYSTEM ── */
+          .title-3d {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-weight: 700;
+            color: #1f3540;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            position: relative;
+            text-shadow: 
+              0 2px 4px rgba(0, 0, 0, 0.05),
+              0 8px 16px rgba(80, 155, 158, 0.08),
+              0 12px 32px rgba(0, 0, 0, 0.04);
+            transform: translateY(-4px);
+            background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
           }
-          .polibio-story-col { max-width: 100%; }
-          .polibio-year-col { align-items: center; text-align: center; }
-          .year-header { align-items: center; }
-          .polibio-arc-container { 
-            margin: 20px auto; 
+
+          .title-hero {
+            font-size: clamp(2.8rem, 5vw, 4.2rem);
+            line-height: 1.1;
+          }
+
+          .title-section {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+          }
+
+          .title-sub {
+            font-size: clamp(1.4rem, 2vw, 1.8rem);
+            line-height: 1.3;
+          }
+
+          .title-small {
+            font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+            line-height: 1.4;
+          }
+
+          .eyebrow-3d {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal, #509b9e);
+            background: rgba(80, 155, 158, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(80, 155, 158, 0.15);
+          }
+
+          /* Accessibility */
+          .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
             overflow: hidden;
-            width: 100%;
-            max-width: 340px;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
           }
+
+          a:focus-visible,
+          button:focus-visible {
+            outline: 2px solid #509b9e;
+            outline-offset: 2px;
+          }
+
+          /* ── VALUE ICONS ── */
+          .value-icon { width: 34px; height: 34px; }
+          .vi-pulse-ring {
+            transform-origin: center;
+            animation: viPulseRing 2s ease-out infinite;
+          }
+          @keyframes viPulseRing {
+            0% { transform: scale(0.7); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+          }
+          .vi-check-draw {
+            stroke-dasharray: 20;
+            stroke-dashoffset: 20;
+            animation: viCheckDraw 2.4s ease-in-out infinite;
+          }
+          @keyframes viCheckDraw {
+            0% { stroke-dashoffset: 20; }
+            40% { stroke-dashoffset: 0; }
+            80% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 0; }
+          }
+          .vi-gbar { transform-origin: bottom center; animation: viGrowBar 2s ease-in-out infinite; }
+          .vi-gbar-1 { animation-delay: 0s; }
+          .vi-gbar-2 { animation-delay: 0.25s; }
+          .vi-gbar-3 { animation-delay: 0.5s; }
+          @keyframes viGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
+
+          /* ── RADIAL TIMELINE HERO ── */
+          .polibio-hero-stage {
+            background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+            color: #ffffff;
+            padding: 30px 6% 30px;
+            min-height: 580px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            font-family: inherit;
+            border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+          }
+
+          .polibio-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 16px;
+            position: relative;
+            z-index: 10;
+          }
+
+          .brand-tag {
+            color: var(--teal, #509b9e);
+            font-weight: 600;
+            letter-spacing: 1px;
+          }
+
+          .step-counter {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+          }
+
+          .polibio-main-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr 1.1fr;
+            gap: 30px;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+            z-index: 2;
+          }
+
+          .polibio-story-col {
+            max-width: 400px;
+            z-index: 2;
+          }
+
+          .story-main-title {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 500;
+            color: #ffffff;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+          }
+
+          .story-desc-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
+          }
+
+          .polibio-arc-container {
+            position: relative;
+            width: 340px;
+            height: 480px;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+          }
+
           .polibio-wheel-rotator {
-            left: -50%;
-            top: -20px;
-            width: 600px;
-            height: 600px;
+            position: absolute;
+            left: -360px;
+            top: -60px;
+            width: 720px;
+            height: 720px;
+            z-index: 1;
+            transition: transform 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
           }
-          .polibio-focal-line { display: none; }
-          .polibio-pointer-btn { 
-            right: 5px;
-            width: 48px;
-            height: 48px;
+
+          .polibio-wheel-svg {
+            width: 100%;
+            height: 100%;
           }
-          .pointer-icon { font-size: 1rem; }
-        }
 
-        @media (max-width: 600px) {
-          .polibio-top-bar { flex-direction: column; gap: 8px; text-align: center; }
-          .polibio-bottom-bar { flex-direction: column; gap: 16px; }
-          .node-selector { flex-wrap: wrap; justify-content: center; }
-          .polibio-arc-container { max-width: 280px; }
-          .polibio-wheel-rotator { width: 480px; height: 480px; left: -50%; }
-          .polibio-pointer-btn { width: 40px; height: 40px; right: 0; }
-          .story-main-title { font-size: 1.6rem; }
-          .story-eyebrow { font-size: 1.8rem; }
-          .giant-year-num { font-size: 4rem; }
-          .big-year-display { height: 80px; }
-          .subscribe-input { min-width: 100%; }
-          .subscribe-btn { width: 100%; justify-content: center; }
-        }
-      `}</style>
+          .wheel-year-text {
+            transition: fill 0.3s ease, font-size 0.3s ease;
+            user-select: none;
+            letter-spacing: 1px;
+          }
 
-      {/* Timeline Hero - Hardcoded */}
-      <CurvedTimelineHero />
+          .polibio-pointer-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 4;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, background-color 0.4s ease;
+          }
 
-      {/* Body Content - Reads from Database */}
-      <div className="about-body">
-        {/* ── MISSION & VISION ── */}
-        <section style={styles.sectionWhite}>
-          <div style={styles.container}>
-            <div style={styles.centerHead}>
-              <span className="eyebrow-3d">Our Purpose</span>
-              <h2 className="title-3d title-section">Mission & Vision</h2>
-            </div>
-            <div className="mv-grid" style={styles.mvGrid}>
-              <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.mission_color || 'var(--teal, #509b9e)'}` }}>
-                <div
-                  style={{
-                    ...styles.mvIconWrap,
-                    background: `${missionVision.mission_color || 'var(--teal, #509b9e)'}18`,
-                    color: missionVision.mission_color || 'var(--teal, #509b9e)',
-                  }}
-                >
-                  <i className={`fas ${missionVision.mission_icon || 'fa-bullseye'}`} aria-hidden="true"></i>
+          .polibio-pointer-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+          }
+
+          .pointer-icon {
+            font-size: 1.25rem;
+          }
+
+          .polibio-focal-line {
+            position: absolute;
+            width: 70px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            right: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            pointer-events: none;
+          }
+
+          .polibio-year-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            z-index: 2;
+          }
+
+          .year-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-bottom: 8px;
+          }
+
+          .story-eyebrow {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin: 0;
+            line-height: 1.1;
+          }
+
+          .story-subtitle {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 4px;
+          }
+
+          .big-year-display {
+            overflow: hidden;
+            height: 140px;
+          }
+
+          .giant-year-num {
+            font-size: clamp(5.5rem, 10vw, 9.5rem);
+            font-weight: 300;
+            line-height: 1;
+            color: #ffffff;
+            letter-spacing: -3px;
+            display: block;
+            animation: slideUpYear 0.5s ease-out;
+          }
+
+          @keyframes slideUpYear {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+
+          .polibio-bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 18px;
+            position: relative;
+            z-index: 10;
+          }
+
+          .node-selector {
+            display: flex;
+            gap: 16px;
+          }
+
+          .selector-dot-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.3s ease;
+            position: relative;
+          }
+
+          .selector-dot-btn.active {
+            color: var(--yellow, #e4af51);
+          }
+
+          .selector-dot-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--yellow, #e4af51);
+            border-radius: 2px;
+          }
+
+          .pause-toggle {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s ease;
+          }
+
+          .pause-toggle:hover {
+            background: rgba(255, 255, 255, 0.14);
+          }
+
+          /* ── CARDS ── */
+          .value-card, .team-card { 
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important; 
+          }
+          .value-card:hover, .team-card:hover { 
+            transform: translateY(-8px) !important; 
+            box-shadow: 0 16px 40px rgba(0,0,0,0.08) !important; 
+          }
+
+          /* ── SUBSCRIBE BUTTON 3D METALLIC EFFECT ── */
+          .subscribe-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            position: relative;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+            transform: translateY(-3px);
+            border: none;
+            color: #ffffff;
+            background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+            border: 1px solid #73c8cb;
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+              0 4px 0 #285759,
+              0 8px 15px rgba(31, 53, 64, 0.25);
+            text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+          }
+
+          .subscribe-btn:hover {
+            background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+            transform: translateY(-5px);
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.7),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+              0 6px 0 #285759,
+              0 12px 20px rgba(80, 155, 158, 0.35);
+          }
+
+          .subscribe-btn:active {
+            transform: translateY(1px) !important;
+            box-shadow: 
+              inset 0 2px 4px rgba(0, 0, 0, 0.3),
+              0 0 0 transparent,
+              0 3px 6px rgba(0, 0, 0, 0.2) !important;
+          }
+
+          .subscribe-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(0) !important;
+          }
+
+          /* ── SUBSCRIBE INPUT ── */
+          .subscribe-input {
+            padding: 14px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            min-width: 260px;
+            outline: none;
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            font-family: inherit;
+          }
+
+          .subscribe-input:focus {
+            border-color: var(--teal, #509b9e) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 0 0 4px rgba(80, 155, 158, 0.15);
+          }
+
+          .subscribe-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+          }
+
+          /* ── BODY SECTION ── */
+          .about-body {
+            position: relative;
+            z-index: 2;
+            background: var(--bg, #faf6f0);
+            margin-top: 0;
+          }
+
+          /* ── RESPONSIVE ── */
+          @media (max-width: 1024px) {
+            .polibio-main-grid {
+              grid-template-columns: 1fr;
+              text-align: center;
+              gap: 20px;
+            }
+            .polibio-story-col { max-width: 100%; }
+            .polibio-year-col { align-items: center; text-align: center; }
+            .year-header { align-items: center; }
+            .polibio-arc-container { 
+              margin: 20px auto; 
+              overflow: hidden;
+              width: 100%;
+              max-width: 340px;
+            }
+            .polibio-wheel-rotator {
+              left: -50%;
+              top: -20px;
+              width: 600px;
+              height: 600px;
+            }
+            .polibio-focal-line { display: none; }
+            .polibio-pointer-btn { 
+              right: 5px;
+              width: 48px;
+              height: 48px;
+            }
+            .pointer-icon { font-size: 1rem; }
+          }
+
+          @media (max-width: 600px) {
+            .polibio-top-bar { flex-direction: column; gap: 8px; text-align: center; }
+            .polibio-bottom-bar { flex-direction: column; gap: 16px; }
+            .node-selector { flex-wrap: wrap; justify-content: center; }
+            .polibio-arc-container { max-width: 280px; }
+            .polibio-wheel-rotator { width: 480px; height: 480px; left: -50%; }
+            .polibio-pointer-btn { width: 40px; height: 40px; right: 0; }
+            .story-main-title { font-size: 1.6rem; }
+            .story-eyebrow { font-size: 1.8rem; }
+            .giant-year-num { font-size: 4rem; }
+            .big-year-display { height: 80px; }
+            .subscribe-input { min-width: 100%; }
+            .subscribe-btn { width: 100%; justify-content: center; }
+          }
+        `}</style>
+
+        {/* Hidden H1 for SEO */}
+        <h1 className="sr-only">About {companyName} - Our Story, Mission, and Team</h1>
+
+        {/* Timeline Hero - Hardcoded */}
+        <CurvedTimelineHero />
+
+        {/* Body Content - Reads from Database */}
+        <div className="about-body">
+          {/* ── MISSION & VISION ── */}
+          <section style={styles.sectionWhite}>
+            <div style={styles.container}>
+              <div style={styles.centerHead}>
+                <span className="eyebrow-3d">Our Purpose</span>
+                <h2 className="title-3d title-section">Mission & Vision</h2>
+              </div>
+              <div className="mv-grid" style={styles.mvGrid}>
+                <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.mission_color || 'var(--teal, #509b9e)'}` }}>
+                  <div
+                    style={{
+                      ...styles.mvIconWrap,
+                      background: `${missionVision.mission_color || 'var(--teal, #509b9e)'}18`,
+                      color: missionVision.mission_color || 'var(--teal, #509b9e)',
+                    }}
+                  >
+                    <i className={`fas ${missionVision.mission_icon || 'fa-bullseye'}`} aria-hidden="true"></i>
+                  </div>
+                  <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Mission</h3>
+                  <p style={styles.mvText}>
+                    {missionVision.mission || 'To provide innovative recruitment solutions through technology and people. To InspHired.'}
+                  </p>
                 </div>
-                <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Mission</h3>
-                <p style={styles.mvText}>
-                  {missionVision.mission || 'To provide innovative recruitment solutions through technology and people. To InspHired.'}
-                </p>
-              </div>
 
-              <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.vision_color || 'var(--orange, #d96b43)'}` }}>
-                <div
-                  style={{
-                    ...styles.mvIconWrap,
-                    background: `${missionVision.vision_color || 'var(--orange, #d96b43)'}18`,
-                    color: missionVision.vision_color || 'var(--orange, #d96b43)',
-                  }}
-                >
-                  <i className={`fas ${missionVision.vision_icon || 'fa-eye'}`} aria-hidden="true"></i>
+                <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.vision_color || 'var(--orange, #d96b43)'}` }}>
+                  <div
+                    style={{
+                      ...styles.mvIconWrap,
+                      background: `${missionVision.vision_color || 'var(--orange, #d96b43)'}18`,
+                      color: missionVision.vision_color || 'var(--orange, #d96b43)',
+                    }}
+                  >
+                    <i className={`fas ${missionVision.vision_icon || 'fa-eye'}`} aria-hidden="true"></i>
+                  </div>
+                  <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Vision</h3>
+                  <p style={styles.mvText}>
+                    {missionVision.vision || 'To be the number one solution to Africa\'s employment challenges.'}
+                  </p>
                 </div>
-                <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Vision</h3>
-                <p style={styles.mvText}>
-                  {missionVision.vision || 'To be the number one solution to Africa\'s employment challenges.'}
-                </p>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ── OUR STORY ── */}
-        <section style={styles.sectionLight}>
-          <div style={styles.container}>
-            <div style={styles.storyRow}>
-              <div style={styles.storyTextCol}>
-                <span className="eyebrow-3d">Our story</span>
-                <h2 className="title-3d title-section">{story.title || 'Where it all began'}</h2>
-                <p style={styles.storyText}>
-                  {story.description_1 || 'We embarked on a mission in 2015 to transform recruitment through innovation, connecting the right people with the right opportunities.'}
-                </p>
-                <p style={styles.storyText}>
-                  {story.description_2 || 'What started as a focused recruitment firm has steadily grown into a full talent ecosystem — spanning AI-powered candidate matching, on-demand temp staffing, a free job board, and background verification.'}
-                </p>
-              </div>
-              <div style={styles.storyTimeline}>
-                {timeline.length > 0 ? (
-                  timeline.map((item, index) => (
-                    <div key={index} style={styles.timelineItem}>
-                      <div
-                        style={{ ...styles.timelineDot, background: item.accent_color || 'var(--teal, #509b9e)' }}
-                      ></div>
-                      <div>
-                        <p style={styles.timelineYear}>{item.year}</p>
-                        <p style={styles.timelineText}>{item.text}</p>
+          {/* ── OUR STORY ── */}
+          <section style={styles.sectionLight}>
+            <div style={styles.container}>
+              <div style={styles.storyRow}>
+                <div style={styles.storyTextCol}>
+                  <span className="eyebrow-3d">Our story</span>
+                  <h2 className="title-3d title-section">{story.title || 'Where it all began'}</h2>
+                  <p style={styles.storyText}>
+                    {story.description_1 || 'We embarked on a mission in 2015 to transform recruitment through innovation, connecting the right people with the right opportunities.'}
+                  </p>
+                  <p style={styles.storyText}>
+                    {story.description_2 || 'What started as a focused recruitment firm has steadily grown into a full talent ecosystem — spanning AI-powered candidate matching, on-demand temp staffing, a free job board, and background verification.'}
+                  </p>
+                </div>
+                <div style={styles.storyTimeline}>
+                  {timeline.length > 0 ? (
+                    timeline.map((item, index) => (
+                      <div key={index} style={styles.timelineItem}>
+                        <div
+                          style={{ ...styles.timelineDot, background: item.accent_color || 'var(--teal, #509b9e)' }}
+                        ></div>
+                        <div>
+                          <p style={styles.timelineYear}>{item.year}</p>
+                          <p style={styles.timelineText}>{item.text}</p>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <>
+                      <div style={styles.timelineItem}>
+                        <div style={{ ...styles.timelineDot, background: 'var(--teal, #509b9e)' }}></div>
+                        <div>
+                          <p style={styles.timelineYear}>2015</p>
+                          <p style={styles.timelineText}>InspHired founded, focused on bridging candidates and clients.</p>
+                        </div>
+                      </div>
+                      <div style={styles.timelineItem}>
+                        <div style={{ ...styles.timelineDot, background: 'var(--orange, #d96b43)' }}></div>
+                        <div>
+                          <p style={styles.timelineYear}>Today</p>
+                          <p style={styles.timelineText}>A multi-platform ecosystem serving candidates and employers across Africa.</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── VALUES ── */}
+          <section style={styles.sectionWhite}>
+            <div style={styles.container}>
+              <div style={styles.centerHead}>
+                <span className="eyebrow-3d">What drives us</span>
+                <h2 className="title-3d title-section">Our Values</h2>
+              </div>
+
+              <div style={styles.valuesGrid}>
+                {values.map((v, index) => (
+                  <div
+                    key={index}
+                    style={{ ...styles.valueCard, borderTop: `4px solid ${v.accent}` }}
+                    className="value-card"
+                  >
+                    <div
+                      style={{ ...styles.valueIconWrap, background: `${v.accent}1A` }}
+                    >
+                      <ValueIcon type={v.icon} color={v.accent} />
                     </div>
-                  ))
+                    <h3 className="title-3d title-sub" style={{ fontSize: '1.15rem' }}>{v.title}</h3>
+                    <p style={styles.valueText}>{v.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── LEADERSHIP & TEAM (Hardcoded) ── */}
+          <section style={styles.sectionLight} aria-labelledby="team-heading">
+            <div style={styles.container}>
+              <div style={styles.centerHead}>
+                <span className="eyebrow-3d">People First</span>
+                <h2 id="team-heading" className="title-3d title-section">Leadership & Team</h2>
+                <p style={styles.sectionSub}>
+                  Meet the passionate professionals driving InspHired forward.
+                </p>
+              </div>
+
+              <div style={styles.teamGrid}>
+                {teamMembers.map((member) => (
+                  <div
+                    key={member.name}
+                    style={{ ...styles.teamCard, borderTop: `4px solid ${member.accent}` }}
+                    className="team-card"
+                    itemScope
+                    itemType="https://schema.org/Person"
+                  >
+                    <div style={styles.avatarWrapper}>
+                      <img
+                        src={member.avatar}
+                        alt={member.name}
+                        style={{ ...styles.avatarImage, borderColor: member.accent }}
+                        itemProp="image"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = member.fallback;
+                        }}
+                      />
+                    </div>
+                    <h3 className="title-3d title-small" itemProp="name">{member.name}</h3>
+                    <p style={styles.teamRole} itemProp="jobTitle">{member.role}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── SUBSCRIBE ── */}
+          <section style={styles.subscribeSection}>
+            <div style={styles.container}>
+              <div style={styles.subscribeCard}>
+                <div>
+                  <h3 style={styles.subscribeTitle}>{subscribe.title || 'Get job notifications'}</h3>
+                  <p style={styles.subscribeText}>
+                    {subscribe.description || 'Hey there 👋 Subscribe to stay updated with new opportunities.'}
+                  </p>
+                </div>
+
+                {subscribed ? (
+                  <div style={styles.subscribeSuccess}>
+                    <i
+                      className="fas fa-check-circle"
+                      style={{ marginRight: "8px" }}
+                      aria-hidden="true"
+                    ></i>
+                    {subscribe.success_message || "You're subscribed — watch your inbox!"}
+                  </div>
                 ) : (
-                  <>
-                    <div style={styles.timelineItem}>
-                      <div style={{ ...styles.timelineDot, background: 'var(--teal, #509b9e)' }}></div>
-                      <div>
-                        <p style={styles.timelineYear}>2015</p>
-                        <p style={styles.timelineText}>InspHired founded, focused on bridging candidates and clients.</p>
-                      </div>
-                    </div>
-                    <div style={styles.timelineItem}>
-                      <div style={{ ...styles.timelineDot, background: 'var(--orange, #d96b43)' }}></div>
-                      <div>
-                        <p style={styles.timelineYear}>Today</p>
-                        <p style={styles.timelineText}>A multi-platform ecosystem serving candidates and employers across Africa.</p>
-                      </div>
-                    </div>
-                  </>
+                  <form
+                    onSubmit={handleSubscribe}
+                    className="subscribe-row"
+                    style={styles.subscribeRow}
+                  >
+                    <input
+                      type="email"
+                      required
+                      placeholder={subscribe.placeholder_text || "Enter your email"}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="subscribe-input"
+                      aria-label="Email address for subscription"
+                    />
+                    <button
+                      type="submit"
+                      className="subscribe-btn"
+                    >
+                      {subscribe.button_text || "Subscribe"}
+                    </button>
+                  </form>
                 )}
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* ── VALUES ── */}
-        <section style={styles.sectionWhite}>
-          <div style={styles.container}>
-            <div style={styles.centerHead}>
-              <span className="eyebrow-3d">What drives us</span>
-              <h2 className="title-3d title-section">Our Values</h2>
-            </div>
-
-            <div style={styles.valuesGrid}>
-              {values.map((v, index) => (
-                <div
-                  key={index}
-                  style={{ ...styles.valueCard, borderTop: `4px solid ${v.accent}` }}
-                  className="value-card"
-                >
-                  <div
-                    style={{ ...styles.valueIconWrap, background: `${v.accent}1A` }}
-                  >
-                    <ValueIcon type={v.icon} color={v.accent} />
-                  </div>
-                  <h3 className="title-3d title-sub" style={{ fontSize: '1.15rem' }}>{v.title}</h3>
-                  <p style={styles.valueText}>{v.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── LEADERSHIP & TEAM (Hardcoded) ── */}
-        <section style={styles.sectionLight}>
-          <div style={styles.container}>
-            <div style={styles.centerHead}>
-              <span className="eyebrow-3d">People First</span>
-              <h2 className="title-3d title-section">Leadership & Team</h2>
-              <p style={styles.sectionSub}>
-                Meet the passionate professionals driving InspHired forward.
-              </p>
-            </div>
-
-            <div style={styles.teamGrid}>
-              {teamMembers.map((member) => (
-                <div
-                  key={member.name}
-                  style={{ ...styles.teamCard, borderTop: `4px solid ${member.accent}` }}
-                  className="team-card"
-                >
-                  <div style={styles.avatarWrapper}>
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      style={{ ...styles.avatarImage, borderColor: member.accent }}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = member.fallback;
-                      }}
-                    />
-                  </div>
-                  <h3 className="title-3d title-small">{member.name}</h3>
-                  <p style={styles.teamRole}>{member.role}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── SUBSCRIBE ── */}
-        <section style={styles.subscribeSection}>
-          <div style={styles.container}>
-            <div style={styles.subscribeCard}>
-              <div>
-                <h3 style={styles.subscribeTitle}>{subscribe.title || 'Get job notifications'}</h3>
-                <p style={styles.subscribeText}>
-                  {subscribe.description || 'Hey there 👋 Subscribe to stay updated with new opportunities.'}
-                </p>
-              </div>
-
-              {subscribed ? (
-                <div style={styles.subscribeSuccess}>
-                  <i
-                    className="fas fa-check-circle"
-                    style={{ marginRight: "8px" }}
-                    aria-hidden="true"
-                  ></i>
-                  {subscribe.success_message || "You're subscribed — watch your inbox!"}
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubscribe}
-                  className="subscribe-row"
-                  style={styles.subscribeRow}
-                >
-                  <input
-                    type="email"
-                    required
-                    placeholder={subscribe.placeholder_text || "Enter your email"}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="subscribe-input"
-                  />
-                  <button
-                    type="submit"
-                    className="subscribe-btn"
-                  >
-                    {subscribe.button_text || "Subscribe"}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </section>
-
-    
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

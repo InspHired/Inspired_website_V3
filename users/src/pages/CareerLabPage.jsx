@@ -1,9 +1,15 @@
 // users/src/pages/CareerLabPage.jsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from 'react-helmet-async';
 import { publicApi } from '../services/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { 
+  OrganizationSchema, 
+  BreadcrumbSchema, 
+  ServiceSchema,
+  FAQSchema 
+} from "../components/Schema";
+import { SEO_CONFIG } from "../config/seo.config";
 import CareerQuiz from '../pages/CareerQuiz';
 import CareerCoach from '../assets/career-coach.png';
 
@@ -244,668 +250,855 @@ function CareerLabPage() {
     moduleMessages[1] || "Hi! Hover over a module and I'll explain it."
   );
 
+  // ============ SEO VARIABLES ============
+  const companyName = SEO_CONFIG.companyName;
+  const siteUrl = SEO_CONFIG.siteUrl;
+  const pageTitle = "Career Lab | " + companyName;
+  const pageDescription = "Structured career development & coaching for job seekers. Get expert guidance on CV writing, interview skills, job search strategy, and long-term career growth.";
+  const pageKeywords = "career coaching, career development, job search, CV writing, interview skills, professional development, career growth, South Africa";
+  const pageUrl = siteUrl + "/career-lab";
+  const ogImage = siteUrl + "/og-image-careerlab.jpg";
+
+  // FAQ data for schema
+  const faqData = [
+    {
+      question: "What is Career Lab?",
+      answer: "Career Lab is a structured career development and coaching program designed to help job seekers build professional skills, optimize their job search strategy, and accelerate their career growth."
+    },
+    {
+      question: "Who is Career Lab for?",
+      answer: "Career Lab is for two distinct groups: entry-level candidates (graduates and early-career professionals) and mid-career professionals seeking growth, career transitions, or senior leadership roles."
+    },
+    {
+      question: "How is Career Lab different from recruitment services?",
+      answer: "While our recruitment services are free and focus on matching candidates to active job opportunities, Career Lab is a paid coaching program that builds foundational professional skills, clarifies career direction, and optimizes your professional profile."
+    },
+    {
+      question: "What will I learn in Career Lab?",
+      answer: "Career Lab covers six core modules: Job Application Strategy, Professional Communication, Workplace Readiness, Career Growth & Navigation, Professional Mindset, and Compliance & Documentation."
+    }
+  ];
+
+  // Service schema data
+  const serviceData = {
+    name: "Career Lab - Career Development Program",
+    description: "Structured career coaching and professional development program for job seekers at all levels.",
+    serviceType: "Career Coaching",
+    price: "0.00",
+    priceCurrency: "ZAR"
+  };
+
   // Show loading state
   if (loading) {
     return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.spinner}></div>
-        <p style={styles.loadingText}>Loading Career Lab content...</p>
-      </div>
+      <>
+        <Helmet>
+          <title>Loading... | {companyName}</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
+          <p style={styles.loadingText}>Loading Career Lab content...</p>
+        </div>
+      </>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <div style={styles.errorContainer}>
-        <div style={styles.errorIcon}>⚠️</div>
-        <h3 style={styles.errorTitle}>Failed to Load Career Lab Page</h3>
-        <p style={styles.errorText}>{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          style={styles.retryButton}
-        >
-          Retry
-        </button>
-      </div>
+      <>
+        <Helmet>
+          <title>Error | {companyName}</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <div style={styles.errorContainer}>
+          <div style={styles.errorIcon}>⚠️</div>
+          <h3 style={styles.errorTitle}>Failed to Load Career Lab Page</h3>
+          <p style={styles.errorText}>{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            style={styles.retryButton}
+          >
+            Retry
+          </button>
+        </div>
+      </>
     );
   }
 
   return (
-    <div style={globalStyles.pageWrapper}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+    <>
+      {/* ============ SEO HELMET ============ */}
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{pageTitle}</title>
+        <meta name="title" content={pageTitle} />
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content={companyName} />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={pageUrl} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content={companyName} />
+        <meta property="og:locale" content="en_ZA" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageUrl} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        
+        {/* Additional Meta Tags */}
+        <meta name="theme-color" content="#509b9e" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        
+        {/* JSON-LD Structured Data - Service */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": serviceData.name,
+            "description": serviceData.description,
+            "provider": {
+              "@type": "Organization",
+              "name": companyName,
+              "url": siteUrl
+            },
+            "serviceType": serviceData.serviceType,
+            "areaServed": {
+              "@type": "Country",
+              "name": "South Africa"
+            },
+            "url": pageUrl,
+            "offers": {
+              "@type": "Offer",
+              "price": serviceData.price,
+              "priceCurrency": serviceData.priceCurrency,
+              "availability": "https://schema.org/InStock"
+            }
+          })}
+        </script>
 
-        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
-        .hero-section {
-          background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
-          color: #ffffff;
-          padding: 130px 0 100px;
-          position: relative;
-          overflow: hidden;
-          border-bottom: 4px solid rgba(80, 155, 158, 0.3);
-        }
+        {/* Course Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": "Career Lab Career Development Program",
+            "description": pageDescription,
+            "provider": {
+              "@type": "Organization",
+              "name": companyName,
+              "url": siteUrl
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT8H"
+            }
+          })}
+        </script>
 
-        /* ── HERO EYEBROW - Clean, No Effects ── */
-        .hero-eyebrow {
-          display: inline-block;
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: var(--teal, #509b9e);
-          background: rgba(80, 155, 158, 0.15);
-          padding: 6px 16px;
-          border-radius: 20px;
-          margin-bottom: 20px;
-          border: 1px solid rgba(80, 155, 158, 0.15);
-        }
+        {/* FAQ Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
 
-        /* ── HERO HEADING - Pure White, No Effects ── */
-        .hero-heading {
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: clamp(2.2rem, 4vw, 3rem);
-          font-weight: 700;
-          color: #ffffff;
-          line-height: 1.2;
-          letter-spacing: -0.02em;
-          margin: 0 0 20px 0;
-        }
+      {/* ============ SCHEMA COMPONENTS ============ */}
+      <OrganizationSchema />
+      <BreadcrumbSchema 
+        items={[
+          { name: 'Home', url: siteUrl }, 
+          { name: 'Career Lab', url: pageUrl }
+        ]} 
+      />
+      <ServiceSchema {...serviceData} />
 
-        /* ── HERO DESCRIPTION - Clean, No Effects ── */
-        .hero-description {
-          font-size: 1.1rem;
-          color: rgba(255, 255, 255, 0.75);
-          line-height: 1.75;
-          max-width: 560px;
-          margin-bottom: 24px;
-        }
+      {/* ============ MAIN CONTENT ============ */}
+      <div style={globalStyles.pageWrapper}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
-        /* ── 3D HEADING SYSTEM (For body content only) ── */
-        .title-3d {
-          display: block;
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-weight: 700;
-          color: #1f3540;
-          margin-bottom: 12px;
-          letter-spacing: -0.02em;
-          position: relative;
-          text-shadow: 
-            0 2px 4px rgba(0, 0, 0, 0.05),
-            0 8px 16px rgba(80, 155, 158, 0.08),
-            0 12px 32px rgba(0, 0, 0, 0.04);
-          transform: translateY(-4px);
-          background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
-        }
+          /* Accessibility */
+          .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+          }
 
-        .title-section {
-          font-size: clamp(2rem, 3.5vw, 2.8rem);
-          line-height: 1.2;
-        }
+          a:focus-visible,
+          button:focus-visible,
+          input:focus-visible,
+          select:focus-visible,
+          textarea:focus-visible {
+            outline: 2px solid #509b9e;
+            outline-offset: 2px;
+          }
 
-        .title-sub {
-          font-size: clamp(1.4rem, 2vw, 1.8rem);
-          line-height: 1.3;
-        }
+          /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+          .hero-section {
+            background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+            color: #ffffff;
+            padding: 130px 0 100px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid rgba(80, 155, 158, 0.3);
+          }
 
-        .title-small {
-          font-size: clamp(1.1rem, 1.5vw, 1.3rem);
-          line-height: 1.4;
-        }
+          /* ── HERO EYEBROW - Clean, No Effects ── */
+          .hero-eyebrow {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal, #509b9e);
+            background: rgba(80, 155, 158, 0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(80, 155, 158, 0.15);
+          }
 
-        /* ── BODY EYEBROW ── */
-        .eyebrow-3d {
-          display: inline-block;
-          font-family: 'Playfair Display', Georgia, serif !important;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: var(--teal, #509b9e);
-          background: rgba(80, 155, 158, 0.1);
-          padding: 6px 16px;
-          border-radius: 20px;
-          margin-bottom: 16px;
-          border: 1px solid rgba(80, 155, 158, 0.15);
-        }
+          /* ── HERO HEADING - Pure White, No Effects ── */
+          .hero-heading {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: clamp(2.2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin: 0 0 20px 0;
+          }
 
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
+          /* ── HERO DESCRIPTION - Clean, No Effects ── */
+          .hero-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.75;
+            max-width: 560px;
+            margin-bottom: 24px;
+          }
 
-        .interactive-card {
-          transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
-        }
-        .interactive-card:hover {
-          transform: translateY(-4px) !important;
-          box-shadow: var(--shadow-md) !important;
-        }
+          /* ── 3D HEADING SYSTEM (For body content only) ── */
+          .title-3d {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-weight: 700;
+            color: #1f3540;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            position: relative;
+            text-shadow: 
+              0 2px 4px rgba(0, 0, 0, 0.05),
+              0 8px 16px rgba(80, 155, 158, 0.08),
+              0 12px 32px rgba(0, 0, 0, 0.04);
+            transform: translateY(-4px);
+            background: linear-gradient(180deg, #1f3540 30%, #3a5a6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
+          }
 
-        .btn-hover-transition { transition: all var(--transition) !important; }
-        .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
+          .title-section {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+          }
 
-        .form-input {
-          width: 100%;
-          padding: 14px 16px;
-          border: 1px solid var(--border-light);
-          border-radius: 10px;
-          font-size: 0.95rem;
-          color: var(--navy);
-          background-color: var(--bg);
-          transition: all var(--transition);
-          outline: none;
-        }
-        .form-input:focus {
-          border-color: var(--teal);
-          background-color: #FFFFFF;
-          box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
-        }
+          .title-sub {
+            font-size: clamp(1.4rem, 2vw, 1.8rem);
+            line-height: 1.3;
+          }
 
-        .tab-btn {
-          transition: all var(--transition);
-        }
+          .title-small {
+            font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+            line-height: 1.4;
+          }
 
-        .quiz-option {
-          transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
-        }
-        .quiz-option:hover {
-          border-color: var(--teal) !important;
-          background-color: #FFFFFF !important;
-          transform: translateX(4px);
-        }
-        .quiz-option:hover i {
-          opacity: 1 !important;
-        }
+          /* ── BODY EYEBROW ── */
+          .eyebrow-3d {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal, #509b9e);
+            background: rgba(80, 155, 158, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(80, 155, 158, 0.15);
+          }
 
-        /* ── PILLAR CANVAS CSS ── */
-        .pillar-canvas-container {
-          position: relative;
-          width: 100%;
-          min-height: 440px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          perspective: 1000px;
-        }
+          .titleL {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-weight: 700;
+            color: white;
+          }
 
-        .pillar-stage-card {
-          position: relative;
-          width: 100%;
-          max-width: 460px;
-          height: 400px;
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(16px);
-          border-radius: 28px;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow:
-            0 20px 50px rgba(0, 0, 0, 0.4),
-            inset 0 1px 1px rgba(255, 255, 255, 0.2);
-          transform-style: preserve-3d;
-          transform: rotateX(4deg) rotateY(-4deg);
-          transition: transform 0.5s ease;
-        }
-        .pillar-stage-card:hover {
-          transform: rotateX(0deg) rotateY(0deg) scale(1.02);
-        }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
 
-        .glow-sphere {
-          position: absolute;
-          width: 220px;
-          height: 220px;
-          border-radius: 50%;
-          filter: blur(80px);
-          opacity: 0.35;
-          pointer-events: none;
-        }
-        .teal-glow { background: #509b9e; top: -20px; left: -20px; }
-        .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+          .interactive-card {
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
+          }
+          .interactive-card:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: var(--shadow-md) !important;
+          }
 
-        .floating-pillar-item {
-          position: absolute;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-        .float-1 { top: 20px; left: 25px; animation}
-        .float-2 { top: 35px; right: 25px; animation}
-        .float-3 { bottom: 20px; left: 25px; animation}
-        .float-4 { bottom: 35px; right: 25px; animation}
+          .btn-hover-transition { transition: all var(--transition) !important; }
+          .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
 
+          .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: var(--navy);
+            background-color: var(--bg);
+            transition: all var(--transition);
+            outline: none;
+          }
+          .form-input:focus {
+            border-color: var(--teal);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
+          }
 
-        .icon-frame {
-          width: 86px;
-          height: 86px;
-          border-radius: 50%;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-          overflow: hidden;
-          background: #1f3540;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.6rem;
-          color: #ffffff;
-        }
-        .teal-border { border: 2px solid #509b9e; }
-        .orange-border { border: 2px solid #d96b43; }
-        .yellow-border { border: 2px solid #e4af51; }
+          .tab-btn {
+            transition: all var(--transition);
+          }
 
-        .pillar-badge {
-          background: rgba(15, 27, 34, 0.9);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          padding: 5px 12px;
-          border-radius: 20px;
-          font-size: 0.72rem;
-          color: #ffffff;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-          white-space: nowrap;
-        }
-        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .badge-dot.teal { background: #509b9e; }
-        .badge-dot.orange { background: #d96b43; }
-        .badge-dot.yellow { background: #e4af51; }
+          .quiz-option {
+            transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
+          }
+          .quiz-option:hover {
+            border-color: var(--teal) !important;
+            background-color: #FFFFFF !important;
+            transform: translateX(4px);
+          }
+          .quiz-option:hover i {
+            opacity: 1 !important;
+          }
 
-        .center-metallic-core {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          background: radial-gradient(circle, #2a4554 0%, #172831 100%);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-        }
-        .core-pulse-ring {
-          position: absolute;
-          inset: -8px;
-          border-radius: 50%;
-          border: 1px dashed rgba(228, 175, 81, 0.4);
-          animation: rotateCore 14s linear infinite;
-        }
-        .titleL{
-        font-family: 'Playfair Display', Georgia, serif !important;
-        font-weight: 700;
-        color:white;
-        }
-        @keyframes rotateCore {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
-        .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
-        .core-label {
-          font-size: 0.58rem;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.7);
-          letter-spacing: 0.5px;
-        }
+          /* ── PILLAR CANVAS CSS ── */
+          .pillar-canvas-container {
+            position: relative;
+            width: 100%;
+            min-height: 440px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+          }
 
-        @media (max-width: 900px) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-          .hero-visual-wrap { margin-top: 30px; }
-          .curriculum-grid { grid-template-columns: 1fr !important; }
-          .diff-grid { grid-template-columns: 1fr !important; }
-          .form-split-grid { grid-template-columns: 1fr !important; }
-          .journey-path { flex-wrap: wrap; justify-content: center; }
-        }
+          .pillar-stage-card {
+            position: relative;
+            width: 100%;
+            max-width: 460px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+              0 20px 50px rgba(0, 0, 0, 0.4),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+            transform: rotateX(4deg) rotateY(-4deg);
+            transition: transform 0.5s ease;
+          }
+          .pillar-stage-card:hover {
+            transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+          }
 
-        @media (max-width: 900px) {
-  .curriculum-grid { grid-template-columns: 1fr !important; }
-  .curriculum-grid .avatarPanel { position: static !important; }
-}
-@media (max-width: 640px) {
-  .moduleGrid { grid-template-columns: 1fr !important; }
-}
-      `}</style>
+          .glow-sphere {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            pointer-events: none;
+          }
+          .teal-glow { background: #509b9e; top: -20px; left: -20px; }
+          .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
 
-      {/* Hero */}
-      <header className="hero-section">
-        <div style={styles.container}>
-          <div className="hero-grid" style={styles.heroGrid}>
-            <div style={styles.heroContent} className="animate-fadeup">
-              <span className="hero-eyebrow">{hero.tag || 'Career Lab'}</span>
-              <h1 className="hero-heading">
-                {hero.title || 'Structured career development & coaching for job seekers'}
-              </h1>
-              <p className="hero-description">
-                {hero.description || 'Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today\'s job market.'}
-              </p>
+          .floating-pillar-item {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+          }
+          .float-1 { top: 20px; left: 25px; }
+          .float-2 { top: 35px; right: 25px; }
+          .float-3 { bottom: 20px; left: 25px; }
+          .float-4 { bottom: 35px; right: 25px; }
 
-              <div style={styles.journeyPath}>
-                {journeySteps.map((step, i) => (
-                  <React.Fragment key={step.label || i}>
-                    <div style={styles.journeyStep}>
-                      <span style={styles.journeyIcon}>
-                        <i className={`fas ${step.icon || 'fa-circle'}`} aria-hidden="true"></i>
-                      </span>
-                      {step.label}
-                    </div>
-                    {i < journeySteps.length - 1 && (
-                      <div style={styles.journeyArrow}>
-                        <i className="fas fa-arrow-right" aria-hidden="true"></i>
+          .icon-frame {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+            overflow: hidden;
+            background: #1f3540;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #ffffff;
+          }
+          .teal-border { border: 2px solid #509b9e; }
+          .orange-border { border: 2px solid #d96b43; }
+          .yellow-border { border: 2px solid #e4af51; }
+
+          .pillar-badge {
+            background: rgba(15, 27, 34, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            color: #ffffff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            white-space: nowrap;
+          }
+          .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+          .badge-dot.teal { background: #509b9e; }
+          .badge-dot.orange { background: #d96b43; }
+          .badge-dot.yellow { background: #e4af51; }
+
+          .center-metallic-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+          }
+          .core-pulse-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1px dashed rgba(228, 175, 81, 0.4);
+            animation: rotateCore 14s linear infinite;
+          }
+          @keyframes rotateCore {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
+          .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
+          .core-label {
+            font-size: 0.58rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.5px;
+          }
+
+          @media (max-width: 900px) {
+            .hero-grid { grid-template-columns: 1fr !important; }
+            .hero-visual-wrap { margin-top: 30px; }
+            .curriculum-grid { grid-template-columns: 1fr !important; }
+            .diff-grid { grid-template-columns: 1fr !important; }
+            .form-split-grid { grid-template-columns: 1fr !important; }
+            .journey-path { flex-wrap: wrap; justify-content: center; }
+          }
+
+          @media (max-width: 640px) {
+            .moduleGrid { grid-template-columns: 1fr !important; }
+            .audiencePanel { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+
+        {/* Hidden H1 for SEO */}
+        <h1 className="sr-only">Career Lab - Structured Career Development & Coaching</h1>
+
+        {/* Hero */}
+        <header className="hero-section" role="banner">
+          <div style={styles.container}>
+            <div className="hero-grid" style={styles.heroGrid}>
+              <div style={styles.heroContent} className="animate-fadeup">
+                <span className="hero-eyebrow">{hero.tag || 'Career Lab'}</span>
+                <h2 className="hero-heading">
+                  {hero.title || 'Structured career development & coaching for job seekers'}
+                </h2>
+                <p className="hero-description">
+                  {hero.description || 'Many talented professionals struggle not because they lack potential, but because they lack access to practical career guidance. Career Lab changes that — giving you the tools, insight, and professional skills to succeed in today\'s job market.'}
+                </p>
+
+                <div style={styles.journeyPath} className="journey-path">
+                  {journeySteps.map((step, i) => (
+                    <React.Fragment key={step.label || i}>
+                      <div style={styles.journeyStep}>
+                        <span style={styles.journeyIcon}>
+                          <i className={`fas ${step.icon || 'fa-circle'}`} aria-hidden="true"></i>
+                        </span>
+                        {step.label}
                       </div>
-                    )}
-                  </React.Fragment>
+                      {i < journeySteps.length - 1 && (
+                        <div style={styles.journeyArrow}>
+                          <i className="fas fa-arrow-right" aria-hidden="true"></i>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+
+              <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
+                <CareerGrowthCanvas />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Career Track Quiz */}
+        <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }} aria-labelledby="quiz-heading">
+          <div style={styles.container}>
+            <div style={styles.sectionHeader}>
+              <span className="eyebrow-3d">Find your track</span>
+              <h2 id="quiz-heading" className="title-3d title-section">Which programme is right for you?</h2>
+              <p style={styles.sectionSub}>
+                Answer 10 quick questions and we'll match you to the track that fits where you are right now.
+              </p>
+            </div>
+
+            <CareerQuiz />
+          </div>
+        </section>
+
+        {/* Who it's for */}
+        <section style={{ ...styles.section, backgroundColor: '#FFFFFF' }} aria-labelledby="audience-heading">
+          <div style={styles.container}>
+            <div style={styles.sectionHeader}>
+              <span className="eyebrow-3d">Targeted tracks</span>
+              <h2 id="audience-heading" className="title-3d title-section">Who it's for</h2>
+              <p style={styles.sectionSub}>Career Lab is tailored to two distinct career stages — choose the path that fits where you are right now.</p>
+            </div>
+
+            <div style={styles.tabContainer} role="tablist">
+              <button
+                onClick={() => setActiveTab('entry')}
+                className="tab-btn"
+                role="tab"
+                aria-selected={activeTab === 'entry'}
+                style={{ ...styles.tabButton, ...(activeTab === 'entry' ? styles.tabButtonActive : {}) }}
+              >
+                Entry-level candidates
+              </button>
+              <button
+                onClick={() => setActiveTab('mid')}
+                className="tab-btn"
+                role="tab"
+                aria-selected={activeTab === 'mid'}
+                style={{ ...styles.tabButton, ...(activeTab === 'mid' ? styles.tabButtonActive : {}) }}
+              >
+                Mid-career professionals
+              </button>
+            </div>
+
+            <div style={styles.audienceContent}>
+              {activeTab === 'entry' ? (
+                <div style={styles.audiencePanel} className="animate-fadeup">
+                  <div style={styles.audienceTextSide}>
+                    <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{entryTrack.title}</h3>
+                    <p style={styles.audienceDesc}>{entryTrack.description}</p>
+                  </div>
+                  <div style={styles.audienceGridSide}>
+                    <h4 style={styles.listHeader}>Ideal for candidates who are:</h4>
+                    <ul style={styles.vList}>
+                      {(entryTrack.bullet_points || []).map((point, idx) => (
+                        <li key={idx} style={styles.vItem}>
+                          <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div style={styles.audiencePanel} className="animate-fadeup">
+                  <div style={styles.audienceTextSide}>
+                    <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{midTrack.title}</h3>
+                    <p style={styles.audienceDesc}>{midTrack.description}</p>
+                  </div>
+                  <div style={styles.audienceGridSide}>
+                    <h4 style={styles.listHeader}>Designed for professionals who:</h4>
+                    <ul style={styles.vList}>
+                      {(midTrack.bullet_points || []).map((point, idx) => (
+                        <li key={idx} style={styles.vItem}>
+                          <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Curriculum */}
+        <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }} aria-labelledby="curriculum-heading">
+          <div style={styles.container}>
+            <div style={styles.sectionHeader}>
+              <span className="eyebrow-3d">Structured curriculum</span>
+              <h2 id="curriculum-heading" className="title-3d title-section">What you'll learn</h2>
+              <p style={styles.sectionSub}>
+                Six focused modules covering everything from job applications to long-term career navigation.
+              </p>
+            </div>
+
+            <div style={styles.curriculumLayout} className="curriculum-grid">
+              <div style={styles.moduleGrid} className="moduleGrid">
+                {modules.map((mod, index) => (
+                  <div
+                    key={mod.module_number}
+                    style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
+                    className="interactive-card"
+                    onMouseEnter={() => {
+                      setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`);
+                      setHoveredModule(mod.module_number);
+                    }}
+                    onMouseLeave={() => setHoveredModule(null)}
+                  >
+                    <span
+                      style={{
+                        ...styles.moduleNumber,
+                        color: hoveredModule === mod.module_number ? mod.accent_color : 'rgba(31, 53, 64, 0.06)',
+                      }}
+                    >
+                      {mod.module_number}
+                    </span>
+                    <h3 className="title-3d" style={{ fontSize: '1.25rem', marginBottom: '20px', paddingRight: '40px' }}>{mod.title}</h3>
+                    <ul style={styles.cardList}>
+                      {(mod.items || []).map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
               </div>
-            </div>
 
-            <div className="hero-visual-wrap" style={styles.heroVisualWrap}>
-              <CareerGrowthCanvas />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Career Track Quiz */}
-      <section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
-        <div style={styles.container}>
-          <div style={styles.sectionHeader}>
-            <span className="eyebrow-3d">Find your track</span>
-            <h2 className="title-3d title-section">Which programme is right for you?</h2>
-            <p style={styles.sectionSub}>
-              Answer 10 quick questions and we'll match you to the track that fits where you are right now.
-            </p>
-          </div>
-
-          <CareerQuiz />
-        </div>
-      </section>
-
-      {/* Who it's for */}
-      <section style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
-        <div style={styles.container}>
-          <div style={styles.sectionHeader}>
-            <span className="eyebrow-3d">Targeted tracks</span>
-            <h2 className="title-3d title-section">Who it's for</h2>
-            <p style={styles.sectionSub}>Career Lab is tailored to two distinct career stages — choose the path that fits where you are right now.</p>
-          </div>
-
-          <div style={styles.tabContainer}>
-            <button
-              onClick={() => setActiveTab('entry')}
-              className="tab-btn"
-              style={{ ...styles.tabButton, ...(activeTab === 'entry' ? styles.tabButtonActive : {}) }}
-            >
-              Entry-level candidates
-            </button>
-            <button
-              onClick={() => setActiveTab('mid')}
-              className="tab-btn"
-              style={{ ...styles.tabButton, ...(activeTab === 'mid' ? styles.tabButtonActive : {}) }}
-            >
-              Mid-career professionals
-            </button>
-          </div>
-
-          <div style={styles.audienceContent}>
-            {activeTab === 'entry' ? (
-              <div style={styles.audiencePanel} className="animate-fadeup">
-                <div style={styles.audienceTextSide}>
-                  <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{entryTrack.title}</h3>
-                  <p style={styles.audienceDesc}>{entryTrack.description}</p>
+              <div style={styles.avatarPanel}>
+                <motion.img
+                  src={CareerCoach}
+                  alt="Career Coach avatar - hover over modules for coaching tips"
+                  style={styles.avatar}
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+                <div style={styles.speechBubble} role="status" aria-live="polite">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={coachMessage}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {coachMessage}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-                <div style={styles.audienceGridSide}>
-                  <h4 style={styles.listHeader}>Ideal for candidates who are:</h4>
-                  <ul style={styles.vList}>
-                    {(entryTrack.bullet_points || []).map((point, idx) => (
-                      <li key={idx} style={styles.vItem}>
-                        <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
-                        <span>{point}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Differentiation */}
+        <section style={styles.diffSection} aria-labelledby="diff-heading">
+          <div style={styles.container}>
+            <div style={styles.diffGrid}>
+              <div style={styles.diffLeft}>
+                <span className="eyebrow-3d" style={{ color: 'var(--teal)', borderColor: 'rgba(80,155,158,0.3)' }}>Complementary ecosystems</span>
+                <h3 id="diff-heading" className="titleL" style={{ fontSize: '2.2rem', color: '#FFFFFF', marginBottom: '20px' }}>
+                  {differentiation.title || 'How Career Lab differs from our recruitment services'}
+                </h3>
+                <p style={styles.diffDesc}>
+                  {differentiation.description || 'Our core recruitment services remain completely free to candidates and are dedicated to finding, processing, and placing talent directly into active enterprise client networks.'}
+                </p>
+              </div>
+              <div style={styles.diffRight}>
+                <div style={styles.diffBox}>
+                  <h4 style={styles.diffBoxTitle}>{differentiation.free_track_title || 'Free recruitment track'}</h4>
+                  <ul style={styles.diffBoxList}>
+                    {(differentiation.free_track_items || [
+                      'Matching candidates to active partner company opportunities',
+                      'Processing and routing your applications',
+                      'Facilitating final client interviews and contract placements'
+                    ]).map((item, idx) => (
+                      <li key={idx}>
+                        <i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> 
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div style={{ ...styles.diffBox, backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
+                  <h4 style={{ ...styles.diffBoxTitle, color: '#FFFFFF' }}>{differentiation.coaching_title || 'Career Lab coaching'}</h4>
+                  <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.92rem', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+                    A separate, highly structured professional enhancement program for candidates who want hands-on guided coaching to maximize baseline employability parameters.
+                  </p>
+                  <ul style={{ ...styles.diffBoxList, color: 'rgba(255,255,255,0.85)' }}>
+                    {(differentiation.coaching_items || [
+                      'Build missing professional business skills',
+                      'Clarify long-term direction',
+                      'Optimize profile conversion tracking'
+                    ]).map((item, idx) => (
+                      <li key={idx}>
+                        <i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> 
+                        {item}
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-            ) : (
-              <div style={styles.audiencePanel} className="animate-fadeup">
-                <div style={styles.audienceTextSide}>
-                  <h3 className="title-3d" style={{ fontSize: '1.6rem', marginBottom: '16px' }}>{midTrack.title}</h3>
-                  <p style={styles.audienceDesc}>{midTrack.description}</p>
-                </div>
-                <div style={styles.audienceGridSide}>
-                  <h4 style={styles.listHeader}>Designed for professionals who:</h4>
-                  <ul style={styles.vList}>
-                    {(midTrack.bullet_points || []).map((point, idx) => (
-                      <li key={idx} style={styles.vItem}>
-                        <div style={styles.vCheck}><i className="fas fa-check" aria-hidden="true"></i></div> 
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Registration + Assessment CTA */}
+        <section id="register-interest" style={{ ...styles.section, backgroundColor: '#FFFFFF' }} aria-labelledby="register-heading">
+          <div style={styles.container}>
+            <div style={styles.formSplitGrid}>
+              <div style={styles.formCard}>
+                <span className="eyebrow-3d">Enrollment pathway</span>
+                <h3 id="register-heading" className="title-3d" style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Register your interest</h3>
+                <p style={styles.formSectionSub}>Tell us a bit about yourself and we'll be in touch with full programme details.</p>
+
+                <form onSubmit={handleSubmit} style={styles.actualForm} noValidate>
+                  <div style={styles.formRow}>
+                    <div>
+                      <label style={styles.label} htmlFor="firstName">First name</label>
+                      <input type="text" id="firstName" name="firstName" required value={formData.firstName} onChange={handleInputChange} className="form-input" aria-required="true" />
+                    </div>
+                    <div>
+                      <label style={styles.label} htmlFor="lastName">Last name</label>
+                      <input type="text" id="lastName" name="lastName" required value={formData.lastName} onChange={handleInputChange} className="form-input" aria-required="true" />
+                    </div>
+                  </div>
+
+                  <div style={styles.formRow}>
+                    <div>
+                      <label style={styles.label} htmlFor="phone">Phone number</label>
+                      <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleInputChange} className="form-input" aria-required="true" />
+                    </div>
+                    <div>
+                      <label style={styles.label} htmlFor="email">Email address</label>
+                      <input type="email" id="email" name="email" required value={formData.email} onChange={handleInputChange} className="form-input" aria-required="true" />
+                    </div>
+                  </div>
+
+                  <div style={styles.formRow}>
+                    <div>
+                      <label style={styles.label} htmlFor="careerStatus">Current career status</label>
+                      <select id="careerStatus" name="careerStatus" required value={formData.careerStatus} onChange={handleInputChange} className="form-input" style={{ height: '51px' }} aria-required="true">
+                        <option value="">Select status...</option>
+                        <option value="Graduate / student">Graduate / student</option>
+                        <option value="Employed and looking for growth">Employed and looking for growth</option>
+                        <option value="Unemployed and actively job searching">Unemployed and actively job searching</option>
+                        <option value="Career transitioning">Career transitioning</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={styles.label} htmlFor="industry">Target industry</label>
+                      <input type="text" id="industry" name="industry" placeholder="e.g. Technology, Healthcare" required value={formData.industry} onChange={handleInputChange} className="form-input" aria-required="true" />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={styles.label} htmlFor="challenge">Biggest career challenge right now</label>
+                    <textarea id="challenge" name="challenge" rows="3" required value={formData.challenge} onChange={handleInputChange} className="form-input" placeholder="Describe what hurdles you are currently facing..." aria-required="true"></textarea>
+                  </div>
+
+                  <div style={styles.consentRow}>
+                    <input type="checkbox" id="consent" name="consent" required checked={formData.consent} onChange={handleInputChange} style={styles.checkbox} aria-required="true" />
+                    <label htmlFor="consent" style={styles.consentLabel}>
+                      I consent to being contacted by InspHired regarding the Career Lab programme.
+                    </label>
+                  </div>
+
+                  <button type="submit" style={styles.submitBtn} className="btn-3d-primary">Submit my interest</button>
+                </form>
+              </div>
+
+              <div style={styles.assessmentCard}>
+                <div style={styles.assessmentOverlay}></div>
+                <div style={styles.assessmentContent}>
+                  <span className="eyebrow-3d" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.2)' }}>Diagnostic tool</span>
+                  <h3 className="title-3d" style={{ fontSize: '1.8rem', color: '#FFFFFF', marginBottom: '16px' }}>Find out your career readiness score</h3>
+                  <p style={styles.assessmentDesc}>
+                    Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
+                  </p>
+                  <a
+                    href="https://insphired.jobs/dashboard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={styles.assessmentBtn}
+                    className="btn-hover-transition"
+                  >
+                    Take the free assessment <i className="fas fa-arrow-right" style={{ marginLeft: '10px' }} aria-hidden="true"></i>
+                  </a>
                 </div>
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Curriculum */}
-<section style={{ ...styles.section, backgroundColor: 'var(--bg)' }}>
-  <div style={styles.container}>
-    <div style={styles.sectionHeader}>
-      <span className="eyebrow-3d">Structured curriculum</span>
-      <h2 className="title-3d title-section">What you'll learn</h2>
-      <p style={styles.sectionSub}>
-        Six focused modules covering everything from job applications to long-term career navigation.
-      </p>
-    </div>
-
-    <div style={styles.curriculumLayout} className="curriculum-grid">
-      <div style={styles.moduleGrid}>
-        {modules.map((mod, index) => (
-          <div
-            key={mod.module_number}
-            style={{ ...styles.moduleCard, borderTop: `5px solid ${mod.accent_color || 'var(--teal)'}` }}
-            className="interactive-card"
-            onMouseEnter={() => {
-              setCoachMessage(moduleMessages[index + 1] || `Module ${mod.module_number}: ${mod.title}`);
-              setHoveredModule(mod.module_number);
-            }}
-            onMouseLeave={() => setHoveredModule(null)}
-          >
-            <span
-              style={{
-                ...styles.moduleNumber,
-                color: hoveredModule === mod.module_number ? mod.accent_color : 'rgba(31, 53, 64, 0.06)',
-              }}
-            >
-              {mod.module_number}
-            </span>
-            <h3 className="title-3d" style={{ fontSize: '1.25rem', marginBottom: '20px', paddingRight: '40px' }}>{mod.title}</h3>
-            <ul style={styles.cardList}>
-              {(mod.items || []).map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        </section>
       </div>
-
-      <div style={styles.avatarPanel}>
-        <motion.img
-          src={CareerCoach}
-          alt="Career Coach"
-          style={styles.avatar}
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <div style={styles.speechBubble}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={coachMessage}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-            >
-              {coachMessage}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* Differentiation */}
-      <section style={styles.diffSection}>
-        <div style={styles.container}>
-          <div style={styles.diffGrid}>
-            <div style={styles.diffLeft}>
-              <span className="eyebrow-3d" style={{ color: 'var(--teal)', borderColor: 'rgba(80,155,158,0.3)' }}>Complementary ecosystems</span>
-              <h3 className="titleL" style={{ fontSize: '2.2rem', color: '#FFFFFF', marginBottom: '20px' }}>
-                {differentiation.title || 'How Career Lab differs from our recruitment services'}
-              </h3>
-              <p style={styles.diffDesc}>
-                {differentiation.description || 'Our core recruitment services remain completely free to candidates and are dedicated to finding, processing, and placing talent directly into active enterprise client networks.'}
-              </p>
-            </div>
-            <div style={styles.diffRight}>
-              <div style={styles.diffBox}>
-                <h4 style={styles.diffBoxTitle}>{differentiation.free_track_title || 'Free recruitment track'}</h4>
-                <ul style={styles.diffBoxList}>
-                  {(differentiation.free_track_items || [
-                    'Matching candidates to active partner company opportunities',
-                    'Processing and routing your applications',
-                    'Facilitating final client interviews and contract placements'
-                  ]).map((item, idx) => (
-                    <li key={idx}>
-                      <i className="fas fa-check-circle" style={{ color: 'var(--teal)', marginRight: '10px' }} aria-hidden="true"></i> 
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div style={{ ...styles.diffBox, backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
-                <h4 style={{ ...styles.diffBoxTitle, color: '#FFFFFF' }}>{differentiation.coaching_title || 'Career Lab coaching'}</h4>
-                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.92rem', margin: '0 0 16px 0', lineHeight: 1.5 }}>
-                  A separate, highly structured professional enhancement program for candidates who want hands-on guided coaching to maximize baseline employability parameters.
-                </p>
-                <ul style={{ ...styles.diffBoxList, color: 'rgba(255,255,255,0.85)' }}>
-                  {(differentiation.coaching_items || [
-                    'Build missing professional business skills',
-                    'Clarify long-term direction',
-                    'Optimize profile conversion tracking'
-                  ]).map((item, idx) => (
-                    <li key={idx}>
-                      <i className="fas fa-chevron-right" style={{ color: 'var(--yellow)', marginRight: '10px', fontSize: '0.8rem' }} aria-hidden="true"></i> 
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Registration + Assessment CTA */}
-      <section id="register-interest" style={{ ...styles.section, backgroundColor: '#FFFFFF' }}>
-        <div style={styles.container}>
-          <div style={styles.formSplitGrid}>
-            <div style={styles.formCard}>
-              <span className="eyebrow-3d">Enrollment pathway</span>
-              <h3 className="title-3d" style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Register your interest</h3>
-              <p style={styles.formSectionSub}>Tell us a bit about yourself and we'll be in touch with full programme details.</p>
-
-              <form onSubmit={handleSubmit} style={styles.actualForm}>
-                <div style={styles.formRow}>
-                  <div>
-                    <label style={styles.label}>First name</label>
-                    <input type="text" name="firstName" required value={formData.firstName} onChange={handleInputChange} className="form-input" />
-                  </div>
-                  <div>
-                    <label style={styles.label}>Last name</label>
-                    <input type="text" name="lastName" required value={formData.lastName} onChange={handleInputChange} className="form-input" />
-                  </div>
-                </div>
-
-                <div style={styles.formRow}>
-                  <div>
-                    <label style={styles.label}>Phone number</label>
-                    <input type="tel" name="phone" required value={formData.phone} onChange={handleInputChange} className="form-input" />
-                  </div>
-                  <div>
-                    <label style={styles.label}>Email address</label>
-                    <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="form-input" />
-                  </div>
-                </div>
-
-                <div style={styles.formRow}>
-                  <div>
-                    <label style={styles.label}>Current career status</label>
-                    <select name="careerStatus" required value={formData.careerStatus} onChange={handleInputChange} className="form-input" style={{ height: '51px' }}>
-                      <option value="">Select status...</option>
-                      <option value="Graduate / student">Graduate / student</option>
-                      <option value="Employed and looking for growth">Employed and looking for growth</option>
-                      <option value="Unemployed and actively job searching">Unemployed and actively job searching</option>
-                      <option value="Career transitioning">Career transitioning</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label style={styles.label}>Target industry</label>
-                    <input type="text" name="industry" placeholder="e.g. Technology, Healthcare" required value={formData.industry} onChange={handleInputChange} className="form-input" />
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={styles.label}>Biggest career challenge right now</label>
-                  <textarea name="challenge" rows="3" required value={formData.challenge} onChange={handleInputChange} className="form-input" placeholder="Describe what hurdles you are currently facing..."></textarea>
-                </div>
-
-                <div style={styles.consentRow}>
-                  <input type="checkbox" id="consent" name="consent" required checked={formData.consent} onChange={handleInputChange} style={styles.checkbox} />
-                  <label htmlFor="consent" style={styles.consentLabel}>
-                    I consent to being contacted by InspHired regarding the Career Lab programme.
-                  </label>
-                </div>
-
-                <button type="submit" style={styles.submitBtn} className="btn-3d-primary">Submit my interest</button>
-              </form>
-            </div>
-
-            <div style={styles.assessmentCard}>
-              <div style={styles.assessmentOverlay}></div>
-              <div style={styles.assessmentContent}>
-                <span className="eyebrow-3d" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.2)' }}>Diagnostic tool</span>
-                <h3 className="title-3d" style={{ fontSize: '1.8rem', color: '#FFFFFF', marginBottom: '16px' }}>Find out your career readiness score</h3>
-                <p style={styles.assessmentDesc}>
-                  Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
-                </p>
-                <a
-                  href="https://insphired.jobs/dashboard"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={styles.assessmentBtn}
-                  className="btn-hover-transition"
-                >
-                  Take the free assessment <i className="fas fa-arrow-right" style={{ marginLeft: '10px' }} aria-hidden="true"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      
-    </div>
+    </>
   );
 }
 
@@ -925,10 +1118,10 @@ const styles = {
     width: '100%',
   },
   sectionHeader: {
-  textAlign: 'center',
-  maxWidth: '700px',
-  margin: '0 auto 48px auto',
-},
+    textAlign: 'center',
+    maxWidth: '700px',
+    margin: '0 auto 48px auto',
+  },
   heroGrid: {
     display: 'grid',
     gridTemplateColumns: '1.15fr 0.85fr',
@@ -1048,51 +1241,51 @@ const styles = {
     margin: '0 0 20px 0'
   },
   curriculumLayout: {
-  display: "grid",
-  gridTemplateColumns: "2.2fr 1fr",
-  gap: "40px",
-  alignItems: "start",
-},
+    display: "grid",
+    gridTemplateColumns: "2.2fr 1fr",
+    gap: "40px",
+    alignItems: "start",
+  },
   moduleGrid: {
-  display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gap: "20px",
-},
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "20px",
+  },
   avatarPanel: {
     position: "sticky",
     top: "120px",
     textAlign: "center"
   },
   moduleCard: {
-  backgroundColor: '#FFFFFF',
-  borderRadius: 'var(--radius-card)',
-  padding: '22px 20px',
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'column',
-  boxShadow: 'var(--shadow-sm)',
-  border: '1px solid var(--border-light)',
-},
+    backgroundColor: '#FFFFFF',
+    borderRadius: 'var(--radius-card)',
+    padding: '22px 20px',
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: 'var(--shadow-sm)',
+    border: '1px solid var(--border-light)',
+  },
   moduleNumber: {
-  fontSize: '2.8rem',
-  fontWeight: 700,
-  lineHeight: 1,
-  color: 'rgba(31, 53, 64, 0.06)',
-  position: 'absolute',
-  top: '32px',
-  right: '36px',
-  transition: 'color var(--transition)',
-},
+    fontSize: '2.8rem',
+    fontWeight: 700,
+    lineHeight: 1,
+    color: 'rgba(31, 53, 64, 0.06)',
+    position: 'absolute',
+    top: '32px',
+    right: '36px',
+    transition: 'color var(--transition)',
+  },
   cardList: {
-  paddingLeft: '18px',
-  margin: '0',
-  color: '#5B6670',
-  fontSize: '0.85rem',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '10px',
-  lineHeight: '1.45'
-},
+    paddingLeft: '18px',
+    margin: '0',
+    color: '#5B6670',
+    fontSize: '0.85rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    lineHeight: '1.45'
+  },
   diffSection: {
     padding: '100px 0',
     backgroundColor: 'var(--navy)',
