@@ -22,13 +22,48 @@ function EmployerNetworkCanvas() {
       <div className="glow-sphere orange-glow"></div>
 
       <div className="pillar-stage-card">
+        <div className="floating-pillar-item float-1">
+          <div className="icon-frame teal-border">
+            <i className="fas fa-user-tie" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot teal"></span> Employment Refrences
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-2">
+          <div className="icon-frame orange-border">
+            <i className="fas fa-shield-alt" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot orange"></span> Employment Verification
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-3">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Biometric Checks
+          </div>
+        </div>
+
+        <div className="floating-pillar-item float-4">
+          <div className="icon-frame yellow-border">
+            <i className="fas fa-users" aria-hidden="true"></i>
+          </div>
+          <div className="pillar-badge">
+            <span className="badge-dot yellow"></span> Qualifications
+          </div>
+        </div>
         
 
         <div className="center-metallic-core">
           <div className="core-pulse-ring"></div>
           <div className="core-brand-tag">
-            <span className="core-number">07</span>
-            <span className="core-label">Process Steps</span>
+            <span className="core-number">04</span>
+            <span className="core-label">Verification Checks</span>
           </div>
         </div>
       </div>
@@ -470,9 +505,10 @@ const ForEmployersPage = () => {
           align-items: center;
           gap: 8px;
         }
-        .float-1 { top: 20px; left: 25px; animation: floatAnim 4s ease-in-out infinite; }
-        .float-2 { top: 35px; right: 25px; animation: floatAnim 4.8s ease-in-out infinite 0.8s; }
-        .float-3 { bottom: 25px; left: 50%; transform: translateX(-50%); animation: floatAnim 4.2s ease-in-out infinite 1.5s; }
+        .float-1 { top: 20px; left: 25px; animation}
+        .float-2 { top: 35px; right: 25px; animation}
+        .float-3 { bottom: 20px; left: 25px; animation}
+        .float-4 { bottom: 35px; right: 25px; animation}
 
         @keyframes floatAnim {
           0%, 100% { transform: translateY(0px); }
@@ -520,8 +556,8 @@ const ForEmployersPage = () => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 180px;
-          height: 180px;
+          width: 100px;
+          height: 100px;
           border-radius: 50%;
           background: radial-gradient(circle, #2a4554 0%, #172831 100%);
           border: 1px solid rgba(255, 255, 255, 0.15);

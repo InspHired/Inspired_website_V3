@@ -51,7 +51,7 @@ function ServicePillarsCanvas() {
           <div className="core-pulse-ring"></div>
           <div className="core-brand-tag">
             <span className="core-number">04</span>
-            <span className="core-label">Core Solutions</span>
+            <span className="core-label">Solutions</span>
           </div>
         </div>
       </div>
