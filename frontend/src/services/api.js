@@ -1,13 +1,13 @@
 // admin/src/services/api.js
-import axios from "axios";
+import axios from 'axios';
 
 // ============================================
-// API URL - USE ENVIRONMENT VARIABLE
+// API URL CONFIGURATION
 // ============================================
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://inspired-website-v3-fhno.onrender.com/api';
 
-console.log(`🔌 API URL: ${API_URL}`);
+console.log('✅ API URL set to:', API_URL);
 
 // ============================================
 // AXIOS INSTANCE
@@ -15,15 +15,14 @@ console.log(`🔌 API URL: ${API_URL}`);
 
 const api = axios.create({
     baseURL: API_URL,
-    timeout: 30000,
     headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-    }
+        'Content-Type': 'application/json'
+    },
+    timeout: 30000
 });
 
 // ============================================
-// REQUEST INTERCEPTOR
+// INTERCEPTORS
 // ============================================
 
 api.interceptors.request.use(
@@ -32,44 +31,138 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        console.log(`📤 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+        console.log('📤 Request:', config.method?.toUpperCase(), config.url);
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        console.error('❌ Request Error:', error);
+        return Promise.reject(error);
+    }
 );
-
-// ============================================
-// RESPONSE INTERCEPTOR
-// ============================================
 
 api.interceptors.response.use(
     (response) => {
-        console.log(`✅ ${response.config.url} (${response.status})`);
+        console.log('📥 Response:', response.status, response.config?.url);
         return response;
     },
     (error) => {
-        if (error.response) {
-            console.error('❌ API Error');
-            console.error('Status:', error.response.status);
-            console.error('URL:', error.config?.url);
-            console.error('Data:', error.response.data);
-
-            if (error.response.status === 401) {
-                localStorage.removeItem('adminToken');
-                localStorage.removeItem('adminUser');
-                if (window.location.pathname !== '/admin/login') {
-                    window.location.href = '/admin/login';
-                }
-            }
-        } else if (error.request) {
-            console.error('❌ No response received from backend.');
-            console.error('Backend URL:', API_URL);
+        if (error.code === 'ERR_NETWORK') {
+            console.error('❌ Network Error - Cannot reach backend');
+            console.error('   API URL:', API_URL);
+        } else if (error.response) {
+            console.error(`❌ API Error: ${error.response.status}`, error.response.data);
         } else {
-            console.error('❌ Axios Error:', error.message);
+            console.error('❌ API Error:', error.message);
         }
         return Promise.reject(error);
     }
 );
+
+// ============================================
+// PUBLIC API - ✅ ADD THIS
+// ============================================
+
+export const publicApi = {
+    getHomepage: async () => {
+        try {
+            console.log('📡 Fetching homepage...');
+            const response = await api.get('/public/home');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching homepage:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getAbout: async () => {
+        try {
+            const response = await api.get('/public/about');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching about:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getContact: async () => {
+        try {
+            const response = await api.get('/public/contact');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching contact:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getCareerLab: async () => {
+        try {
+            const response = await api.get('/public/career-lab');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching career lab:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getEmployers: async () => {
+        try {
+            const response = await api.get('/public/employers');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching employers:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getServices: async () => {
+        try {
+            const response = await api.get('/public/services');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Error fetching services:', error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getPageContent: async (page) => {
+        try {
+            console.log(`📡 Fetching ${page}...`);
+            const response = await api.get(`/public/${page}`);
+            return response.data;
+        } catch (error) {
+            console.error(`❌ Error fetching ${page}:`, error.message);
+            return { success: false, error: error.message };
+        }
+    },
+
+    getAllPages: async () => {
+        try {
+            console.log('📡 Fetching all pages...');
+            const [home, about, contact, careerLab, employers, services] = await Promise.all([
+                api.get('/public/home'),
+                api.get('/public/about'),
+                api.get('/public/contact'),
+                api.get('/public/career-lab'),
+                api.get('/public/employers'),
+                api.get('/public/services')
+            ]);
+            return {
+                success: true,
+                data: {
+                    home: home.data,
+                    about: about.data,
+                    contact: contact.data,
+                    careerLab: careerLab.data,
+                    employers: employers.data,
+                    services: services.data
+                }
+            };
+        } catch (error) {
+            console.error('❌ Error fetching all pages:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+};
 
 // ============================================
 // ADMIN API
@@ -107,5 +200,9 @@ export const adminApi = {
         return api.get('/test');
     }
 };
+
+// ============================================
+// DEFAULT EXPORT
+// ============================================
 
 export default api;
