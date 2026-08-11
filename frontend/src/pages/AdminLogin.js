@@ -5,26 +5,31 @@ import { useAuth } from '../contexts/AuthContext';
 import './AdminLogin.css';
 
 // ============================================
-// API BASE URL CONFIGURATION
+// API BASE URL CONFIGURATION - FIXED FOR RENDER
 // ============================================
 const getApiBaseUrl = () => {
-    // Check if we're in GitHub Codespaces
-    if (window.location.hostname.includes('app.github.dev')) {
-        // Get the current hostname and replace port 3000 with 5000
+    // Production - Use Render backend
+    if (process.env.NODE_ENV === 'production') {
+        return process.env.REACT_APP_API_URL || 'https://inspired-website-v3-fhno.onrender.com';
+    }
+    
+    // GitHub Codespaces
+    if (typeof window !== 'undefined' && window.location.hostname.includes('app.github.dev')) {
         const hostname = window.location.hostname;
-        // If the hostname contains the port (e.g., legendary-space-train-...-3000.app.github.dev)
         if (hostname.includes('-3000.')) {
             return `https://${hostname.replace('-3000.', '-5000.')}`;
         }
-        // Fallback: use the environment variable or construct from window.location
         return process.env.REACT_APP_API_URL || `https://${hostname.replace(':3000', ':5000')}`;
     }
     
-    // Local development
-    return process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    // Local development - Use Render backend instead of localhost
+    // Change this to 'http://localhost:5000' if you want to use local backend
+    return process.env.REACT_APP_API_URL || 'https://inspired-website-v3-fhno.onrender.com';
 };
 
 const API_BASE_URL = getApiBaseUrl();
+
+console.log(`🔌 API Base URL: ${API_BASE_URL}`);
 
 // ============================================
 // PROFESSIONAL SVG ICONS
@@ -108,7 +113,7 @@ const AdminLogin = () => {
 
     const checkBackend = async () => {
         try {
-            const response = await fetch('https://inspired-website-v3-fhno.onrender.com/api/test');
+            const response = await fetch(`${API_BASE_URL}/api/test`);
             if (response.ok) {
                 const data = await response.json();
                 console.log('✅ Backend is online:', data);
