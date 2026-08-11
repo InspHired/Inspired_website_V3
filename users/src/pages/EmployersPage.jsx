@@ -734,14 +734,6 @@ const ForEmployersPage = () => {
               <Link to={finalCta.cta_secondary_url || '/contact'} className="btn-3d-secondary">
                 {finalCta.cta_secondary_text || 'Request callback'}
               </Link>
-              <a
-                href={finalCta.cta_tertiary_url || 'https://worx.insphired.jobs/'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-3d-secondary"
-              >
-                {finalCta.cta_tertiary_text || 'Worx (temp hiring platform)'}
-              </a>
             </div>
           </div>
         </div>

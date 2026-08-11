@@ -108,6 +108,14 @@ const ContactPage = () => {
   // Placeholders from backend or fallback
   const placeholders = data.placeholders || {};
 
+  // Map configuration with your office address
+  const mapConfig = {
+    address: info.address || 'Block D, La Rocca Business Park, 321 Main Road, Bryanston, Johannesburg, 2191',
+    latitude: info.latitude || -26.0581, // Bryanston coordinates
+    longitude: info.longitude || 28.0245,
+    zoom: 16
+  };
+
   // Show loading state
   if (loading) {
     return (
@@ -318,8 +326,37 @@ const ContactPage = () => {
           box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
         }
 
+        /* Map container styles */
+        .map-container {
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(0, 0, 0, 0.06);
+          position: relative;
+          background: #f0f2f5;
+        }
+
+        .map-container iframe {
+          display: block;
+          width: 100%;
+          height: 100%;
+          border: 0;
+        }
+
+        /* Responsive styles */
         @media (max-width: 900px) {
-          .Contact-grid { grid-template-columns: 1fr !important; }
+          .Contact-grid { 
+            grid-template-columns: 1fr !important; 
+          }
+          .hero-section {
+            padding: 100px 0 60px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .map-container {
+            height: 200px !important;
+          }
         }
       `}</style>
 
@@ -449,25 +486,76 @@ const ContactPage = () => {
               </form>
             </div>
 
-            {/* INFO CARD */}
+            {/* INFO CARD WITH STATIC MAP */}
             <div style={styles.infoCard}>
-              <h3 className="title-3d" style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Need immediate assistance?</h3>
+              <h3 className="title-3d" style={{ fontSize: '1.5rem', marginBottom: '24px' }}>
+                Need immediate assistance?
+              </h3>
 
               <div style={styles.infoItem}>
-                <span style={styles.infoIcon}><i className="fas fa-envelope" aria-hidden="true"></i></span>
+                <span style={styles.infoIcon}>
+                  <i className="fas fa-envelope" aria-hidden="true"></i>
+                </span>
                 {info.email || 'info@insphired.co.za'}
               </div>
 
               <div style={styles.infoItem}>
-                <span style={styles.infoIcon}><i className="fas fa-phone" aria-hidden="true"></i></span>
-                {info.phone || '+27 XX XXX XXXX'}
+                <span style={styles.infoIcon}>
+                  <i className="fas fa-phone" aria-hidden="true"></i>
+                </span>
+                {info.phone || '+27 11 463 5540'}
               </div>
 
               <div style={styles.infoItem}>
-                <span style={styles.infoIcon}><i className="fas fa-clock" aria-hidden="true"></i></span>
+                <span style={styles.infoIcon}>
+                  <i className="fas fa-clock" aria-hidden="true"></i>
+                </span>
                 {info.hours_title || 'Monday - Friday'}
                 <br />
                 {info.hours_time || '08:00 - 17:00'}
+              </div>
+
+              {/* Address with map link */}
+              <div style={styles.infoItem}>
+                <span style={styles.infoIcon}>
+                  <i className="fas fa-map-marker-alt" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div style={{ marginBottom: '8px', lineHeight: '1.5' }}>
+                    <strong>Block D</strong>, La Rocca Business Park<br />
+                    321 Main Road, Bryanston<br />
+                    Johannesburg, 2191
+                  </div>
+                  <a
+                    href={`https://www.google.com/maps?q=${mapConfig.latitude},${mapConfig.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: '#509b9e',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    View on Google Maps →
+                  </a>
+                </div>
+              </div>
+
+              {/* STATIC MAP - No API Key Required */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="map-container" style={{ height: '250px' }}>
+                  <iframe
+                    title="Insphired Office Location - Bryanston, Johannesburg"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(mapConfig.address)}&z=${mapConfig.zoom}&output=embed&hl=en`}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
               </div>
 
               <a
