@@ -775,7 +775,6 @@ const ForEmployersPage = () => {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };

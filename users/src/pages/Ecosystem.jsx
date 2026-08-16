@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Ecosystem.css";
 
 const C = {
@@ -15,7 +16,7 @@ const ecosystemPlatforms = [
     tagline: "In-house AI Applicant Tracking System",
     features: ["AI-powered candidate matching", "Full pipeline management", "ATS & CRM in one platform"],
     cta: "Learn more",
-    ctaHref: "/jobot",
+    ctaTo: "/jobot",  // Changed from ctaHref to ctaTo
     accent: C.teal,
     img: "/assets/JobBot.png",
   },
@@ -25,7 +26,7 @@ const ecosystemPlatforms = [
     tagline: "On-demand temp booking platform",
     features: ["Pre-vetted talent pool", "On-demand booking", "Shift-based placements"],
     cta: "Learn more",
-    ctaHref: "/worx",
+    ctaTo: "/worx",
     accent: C.orange,
     img: "/assets/Worx.png",
   },
@@ -35,7 +36,7 @@ const ecosystemPlatforms = [
     tagline: "Free job board & CRM",
     features: ["Free for all candidates", "Smart talent matching", "Direct employer access"],
     cta: "Learn more",
-    ctaHref: "/connect",
+    ctaTo: "/connect",
     accent: C.yellow,
     img: "/assets/InspHiredConnect.png",
   },
@@ -45,7 +46,7 @@ const ecosystemPlatforms = [
     tagline: "Background checks & screening",
     features: ["Criminal & biometric checks", "Education verification", "Employment history"],
     cta: "Learn more",
-    ctaHref: "/verify-me",
+    ctaTo: "/verify-me",
     accent: C.teal,
     img: "/assets/VerifyMe.png",
   },
@@ -74,7 +75,6 @@ function Ecosystem() {
                 <h3 className="eco-name">{p.name}</h3>
                 <p className="eco-tagline" style={{ color: p.accent }}>{p.tagline}</p>
                 
-                {/* ===== FEATURES/BULLET POINTS ONLY ===== */}
                 <ul className="eco-list">
                   {p.features.map((f, fi) => (
                     <li key={fi}>
@@ -84,10 +84,11 @@ function Ecosystem() {
                   ))}
                 </ul>
 
-                <a href={p.ctaHref} className="eco-btn" style={{ borderColor: p.accent }}>
+                {/* ✅ Use Link instead of a tag */}
+                <Link to={p.ctaTo} className="eco-btn" style={{ borderColor: p.accent }}>
                   {p.cta}
                   <span className="eco-arrow" style={{ background: p.accent }}>→</span>
-                </a>
+                </Link>
               </div>
             </div>
           ))}
