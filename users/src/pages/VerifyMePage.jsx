@@ -36,6 +36,11 @@ const VerifyMePage = () => {
         }
         .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
 
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(80, 155, 158, 0.3), 0 0 40px rgba(80, 155, 158, 0.1); }
+          50% { box-shadow: 0 0 30px rgba(80, 155, 158, 0.5), 0 0 60px rgba(80, 155, 158, 0.2); }
+        }
+
         .interactive-card {
           transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
         }
@@ -43,8 +48,57 @@ const VerifyMePage = () => {
           transform: translateY(-6px) !important;
           box-shadow: var(--shadow-md) !important;
         }
+
+        /* ===== 3D METALLIC BUTTONS (Same as Connect page) ===== */
+        .btn-3d-metallic {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px 36px;
+          font-family: inherit;
+          font-size: 1rem;
+          font-weight: 700;
+          color: #ffffff;
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          border: 1px solid #73c8cb;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.5px;
+          text-decoration: none;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.6),
+            inset 0 -3px 6px rgba(0, 0, 0, 0.3),
+            0 4px 0 #285759,
+            0 8px 20px rgba(80, 155, 158, 0.35);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+          transform: translateY(-3px);
+        }
+
+        .btn-3d-metallic:hover {
+          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+          transform: translateY(-5px);
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.7),
+            inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+            0 5px 0 #285759,
+            0 12px 28px rgba(80, 155, 158, 0.45);
+        }
+
+        .btn-3d-metallic:active {
+          transform: translateY(1px) !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 transparent,
+            0 4px 12px rgba(80, 155, 158, 0.2) !important;
+        }
+
+        .btn-3d-metallic i {
+          margin-right: 10px;
+        }
+
         .btn-hover-transition { transition: all var(--transition) !important; }
-        .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
 
         .faq-item-transition { transition: border-color var(--transition), background-color var(--transition) !important; cursor: pointer; }
         .faq-item-transition:hover {
@@ -56,16 +110,45 @@ const VerifyMePage = () => {
         .faq-answer-wrap { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
         .faq-answer-wrap.open { max-height: 200px; }
 
-        .hero-orbit-dot { animation: heroOrbit 10s linear infinite; }
-        @keyframes heroOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
         .shield-pulse { animation: shieldPulse 2.4s ease-in-out infinite; }
         @keyframes shieldPulse {
           0%, 100% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.08); opacity: 0.85; }
         }
-      `}</style>
 
+        /* ===== HERO IMAGE ===== */
+        .hero-image-wrapper {
+          position: relative;
+          width: 320px;
+          height: 320px;
+          margin: 0 auto;
+        }
+
+        .hero-image-wrapper img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.05);
+          padding: 20px;
+          box-shadow: 
+            0 0 40px rgba(80, 155, 158, 0.2),
+            inset 0 0 60px rgba(80, 155, 158, 0.05);
+          animation: pulseGlow 3s ease-in-out infinite;
+          transition: transform 0.3s ease;
+        }
+
+        .hero-image-wrapper img:hover {
+          transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+          .hero-image-wrapper {
+            width: 200px;
+            height: 200px;
+          }
+        }
+      `}</style>
 
       {/* ── HERO ── */}
       <header style={styles.heroSection}>
@@ -82,23 +165,22 @@ const VerifyMePage = () => {
                 and protect corporate ecosystems with high-fidelity validation.
               </p>
               <div style={styles.btnRow}>
-                <a href="https://verifyme.insphired.jobs" target="_blank" rel="noreferrer" style={styles.btnPrimary} className="btn-hover-transition">
-                  <i className="fas fa-external-link-alt" style={{ marginRight: '8px' }} aria-hidden="true"></i>Launch console
+                <a 
+                  href="https://verifyme.insphired.jobs" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="btn-3d-metallic"
+                >
+                  <i className="fas fa-external-link-alt" aria-hidden="true"></i>Launch console
                 </a>
               </div>
             </div>
             <div style={styles.heroVisualWrap}>
-              <div style={styles.orbitRing}>
-                <div className="hero-orbit-dot" style={styles.orbitDotWrap}>
-                  <div style={styles.orbitDot}></div>
-                </div>
-                <div style={{ ...styles.glassCard, textAlign: 'center' }}>
-                  <div style={styles.iconContainer} className="shield-pulse">
-                    <i className="fas fa-shield-alt" style={styles.heroCardIcon} aria-hidden="true"></i>
-                  </div>
-                  <h3 style={styles.heroCardTitle}>POPIA secure</h3>
-                  <p style={styles.heroCardText}>Fully decentralized and encrypted applicant compliance workflows.</p>
-                </div>
+              <div className="hero-image-wrapper">
+                <img 
+                  src="/assets/VerifyMe.png" 
+                  alt="VerifyMe - Background Screening" 
+                />
               </div>
             </div>
           </div>
@@ -195,7 +277,6 @@ const VerifyMePage = () => {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };
@@ -210,17 +291,8 @@ const styles = {
   appLogo: { width: '48px', height: '48px', objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(80, 155, 158, 0.3))' },
   pageTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 700, color: '#FFFFFF', margin: 0, lineHeight: 1.15, letterSpacing: '-1px' },
   heroLead: { fontSize: '1.05rem', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', maxWidth: '580px', lineHeight: 1.7 },
-  btnRow: { display: 'flex', gap: '16px' },
-  btnPrimary: { background: 'var(--orange)', color: '#FFFFFF', padding: '14px 32px', borderRadius: '40px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', display: 'inline-flex', alignItems: 'center', boxShadow: '0 4px 14px rgba(217, 107, 67, 0.35)' },
+  btnRow: { display: 'flex', gap: '16px', flexWrap: 'wrap' },
   heroVisualWrap: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
-  orbitRing: { position: 'relative', width: '100%', maxWidth: '340px', display: 'flex', justifyContent: 'center' },
-  orbitDotWrap: { position: 'absolute', inset: '-14px', pointerEvents: 'none' },
-  orbitDot: { position: 'absolute', top: '-6px', left: '50%', transform: 'translateX(-50%)', width: '12px', height: '12px', borderRadius: '50%', background: 'var(--yellow)', boxShadow: '0 0 16px rgba(228, 175, 81, 0.6)' },
-  glassCard: { background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px dashed rgba(255, 255, 255, 0.18)', borderRadius: 'var(--radius-card)', padding: '40px', maxWidth: '340px', width: '100%' },
-  iconContainer: { width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(80, 155, 158, 0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px auto', border: '1px solid rgba(80, 155, 158, 0.3)' },
-  heroCardIcon: { fontSize: '1.6rem', color: 'var(--teal)' },
-  heroCardTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: '1.2rem', margin: '0 0 8px 0', color: '#FFFFFF' },
-  heroCardText: { fontSize: '0.88rem', margin: 0, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5 },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
   splitRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(45%, 1fr))', gap: '64px', alignItems: 'center' },

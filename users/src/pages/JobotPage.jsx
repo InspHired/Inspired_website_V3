@@ -47,7 +47,7 @@ const modules = [
   },
 ];
 
-// Small abstract animated shape-icons, reused from the same visual language as the About/Team sections.
+// Small abstract animated shape-icons
 function PillarIcon({ type, color }) {
   switch (type) {
     case "candidate":
@@ -91,6 +91,11 @@ const JobotPage = () => {
         }
         .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
 
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(80, 155, 158, 0.3), 0 0 40px rgba(80, 155, 158, 0.1); }
+          50% { box-shadow: 0 0 30px rgba(80, 155, 158, 0.5), 0 0 60px rgba(80, 155, 158, 0.2); }
+        }
+
         .interactive-card {
           transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
         }
@@ -99,8 +104,56 @@ const JobotPage = () => {
           box-shadow: var(--shadow-md) !important;
         }
 
+        /* ===== 3D METALLIC BUTTONS (Same as Connect page) ===== */
+        .btn-3d-metallic {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px 36px;
+          font-family: inherit;
+          font-size: 1rem;
+          font-weight: 700;
+          color: #ffffff;
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          border: 1px solid #73c8cb;
+          border-radius: 50px;
+          cursor: pointer;
+          letter-spacing: 0.5px;
+          text-decoration: none;
+          position: relative;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.6),
+            inset 0 -3px 6px rgba(0, 0, 0, 0.3),
+            0 4px 0 #285759,
+            0 8px 20px rgba(80, 155, 158, 0.35);
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+          transform: translateY(-3px);
+        }
+
+        .btn-3d-metallic:hover {
+          background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+          transform: translateY(-5px);
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.7),
+            inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+            0 5px 0 #285759,
+            0 12px 28px rgba(80, 155, 158, 0.45);
+        }
+
+        .btn-3d-metallic:active {
+          transform: translateY(1px) !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 transparent,
+            0 4px 12px rgba(80, 155, 158, 0.2) !important;
+        }
+
+        .btn-3d-metallic i {
+          margin-right: 10px;
+        }
+
         .btn-hover-transition { transition: all var(--transition) !important; }
-        .btn-hover-transition:hover { transform: translateY(-2px) !important; opacity: 0.95; }
 
         .metric-block { transition: transform var(--transition), box-shadow var(--transition) !important; }
         .metric-block:hover { transform: translateY(-4px) scale(1.03) !important; box-shadow: var(--shadow-md) !important; }
@@ -142,15 +195,39 @@ const JobotPage = () => {
         .pi-gbar-3 { animation-delay: 0.5s; }
         @keyframes piGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
 
-        .hero-orbit-dot {
-          animation: heroOrbit 10s linear infinite;
+        /* ===== HERO IMAGE ===== */
+        .hero-image-wrapper {
+          position: relative;
+          width: 320px;
+          height: 320px;
+          margin: 0 auto;
         }
-        @keyframes heroOrbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+
+        .hero-image-wrapper img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.05);
+          padding: 20px;
+          box-shadow: 
+            0 0 40px rgba(80, 155, 158, 0.2),
+            inset 0 0 60px rgba(80, 155, 158, 0.05);
+          animation: pulseGlow 3s ease-in-out infinite;
+          transition: transform 0.3s ease;
+        }
+
+        .hero-image-wrapper img:hover {
+          transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+          .hero-image-wrapper {
+            width: 200px;
+            height: 200px;
+          }
         }
       `}</style>
-
 
       {/* ── HERO ── */}
       <header style={styles.heroSection}>
@@ -167,29 +244,23 @@ const JobotPage = () => {
                 talents dynamically, and accelerate your recruitment lifecycles with advanced sorting infrastructure.
               </p>
               <div style={styles.btnRow}>
-                <a href="https://app.insphired.jobs/jobs?standalone=true" target="_blank" rel="noreferrer" style={styles.btnPrimary} className="btn-hover-transition">
-                  <i className="fas fa-external-link-alt" style={{ marginRight: '8px' }} aria-hidden="true"></i>Visit site
+                <a 
+                  href="https://app.insphired.jobs/jobs?standalone=true" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="btn-3d-metallic"
+                >
+                  <i className="fas fa-external-link-alt" aria-hidden="true"></i>Visit site
                 </a>
               </div>
             </div>
 
             <div style={styles.heroVisualWrap}>
-              <div style={styles.orbitRing}>
-                <div className="hero-orbit-dot" style={styles.orbitDotWrap}>
-                  <div style={styles.orbitDot}></div>
-                </div>
-                <div style={styles.glassCard}>
-                  <div style={{ display: 'flex', gap: '16px', textAlign: 'center' }}>
-                    <div style={styles.metricBlock} className="metric-block">
-                      <div style={{ ...styles.metricNumber, color: 'var(--teal)' }}>24/7</div>
-                      <div style={styles.metricLabel}>Smart screening</div>
-                    </div>
-                    <div style={styles.metricBlock} className="metric-block">
-                      <div style={{ ...styles.metricNumber, color: 'var(--orange)' }}>85%</div>
-                      <div style={styles.metricLabel}>Time saved</div>
-                    </div>
-                  </div>
-                </div>
+              <div className="hero-image-wrapper">
+                <img 
+                  src="/assets/JobBot.png" 
+                  alt="Jobot - Automated Talent Sourcing" 
+                />
               </div>
             </div>
           </div>
@@ -284,7 +355,7 @@ const JobotPage = () => {
         </div>
       </section>
 
-      <Footer />
+
     </div>
   );
 };
@@ -356,77 +427,13 @@ const styles = {
   },
   btnRow: {
     display: 'flex',
-    gap: '16px'
-  },
-  btnPrimary: {
-    background: 'var(--orange)',
-    color: '#FFFFFF',
-    padding: '14px 32px',
-    borderRadius: '40px',
-    textDecoration: 'none',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    display: 'inline-flex',
-    alignItems: 'center',
-    boxShadow: '0 4px 14px rgba(217, 107, 67, 0.35)',
+    gap: '16px',
+    flexWrap: 'wrap'
   },
   heroVisualWrap: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  orbitRing: {
-    position: 'relative',
-    width: '100%',
-    maxWidth: '380px',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  orbitDotWrap: {
-    position: 'absolute',
-    inset: '-14px',
-    pointerEvents: 'none',
-  },
-  orbitDot: {
-    position: 'absolute',
-    top: '-6px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    background: 'var(--yellow)',
-    boxShadow: '0 0 16px rgba(228, 175, 81, 0.6)',
-  },
-  glassCard: {
-    background: 'rgba(255, 255, 255, 0.07)',
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
-    border: '1px dashed rgba(255, 255, 255, 0.18)',
-    borderRadius: 'var(--radius-card)',
-    padding: '40px',
-    maxWidth: '380px',
-    width: '100%',
-  },
-  metricBlock: {
-    flex: 1,
-    padding: '20px 16px',
-    background: '#FFFFFF',
-    borderRadius: '16px',
-    boxShadow: 'var(--shadow-sm)',
-  },
-  metricNumber: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    lineHeight: 1.2,
-    marginBottom: '4px'
-  },
-  metricLabel: {
-    fontSize: '0.75rem',
-    textTransform: 'uppercase',
-    fontWeight: 700,
-    letterSpacing: '1px',
-    color: 'var(--navy)'
   },
   sectionWhite: {
     padding: '100px 0',
