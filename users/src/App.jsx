@@ -1,5 +1,6 @@
 // users/src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { ContentProvider } from "./contexts/ContentContext";
 import HomePage from "./pages/HomePage";
 import About from "./pages/AboutPage";
