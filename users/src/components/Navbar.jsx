@@ -415,7 +415,7 @@ function Navbar() {
         <li><Link to="/" className={location.pathname === "/" ? "active" : ""}>Home</Link></li>
         <li><Link to="/about-page" className={location.pathname === "/about-page" ? "active" : ""}>About</Link></li>
         <li><Link to="/services" className={location.pathname === "/services" ? "active" : ""}>Services</Link></li>
-        <li><Link to="/employers" className={location.pathname === "/employers" ? "active" : ""}>Employers</Link></li>
+        
         
         {/* "Our Brands" Dropdown */}
         <li className="dropdown-wrapper">
