@@ -1,6 +1,7 @@
 // users/src/pages/ServicesPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { publicApi } from '../services/api';
 import { 
   OrganizationSchema, 
@@ -11,7 +12,7 @@ import {
 import { SEO_CONFIG } from "../config/seo.config";
 import Footer from '../components/Footer';
 
-/* ── SERVICES VISUAL STAGE ── */
+// ── SERVICES VISUAL STAGE ──
 function ServicePillarsCanvas() {
   return (
     <div className="pillar-canvas-container">
@@ -19,47 +20,72 @@ function ServicePillarsCanvas() {
       <div className="glow-sphere orange-glow"></div>
 
       <div className="pillar-stage-card">
-        <div className="floating-pillar-item float-1">
-          <div className="icon-frame teal-border">
-            <i className="fas fa-user-tie" aria-hidden="true"></i>
+        {/* Top row - 3 items */}
+        <div className="pillar-row pillar-row-top">
+          <div className="floating-pillar-item">
+            <div className="icon-frame teal-border">
+              <i className="fas fa-user-tie" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot teal"></span> Executive Search
+            </div>
           </div>
-          <div className="pillar-badge">
-            <span className="badge-dot teal"></span> Executive Search
+
+          <div className="floating-pillar-item">
+            <div className="icon-frame orange-border">
+              <i className="fas fa-shield-alt" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot orange"></span> Verification
+            </div>
+          </div>
+
+          <div className="floating-pillar-item">
+            <div className="icon-frame yellow-border">
+              <i className="fas fa-users" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot yellow"></span> Bulk Staffing
+            </div>
           </div>
         </div>
 
-        <div className="floating-pillar-item float-2">
-          <div className="icon-frame orange-border">
-            <i className="fas fa-shield-alt" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot orange"></span> Verification
-          </div>
-        </div>
-
-        <div className="floating-pillar-item float-3">
-          <div className="icon-frame yellow-border">
-            <i className="fas fa-users" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot yellow"></span> Bulk Staffing
-          </div>
-        </div>
-
-        <div className="floating-pillar-item float-4">
-          <div className="icon-frame yellow-border">
-            <i className="fas fa-users" aria-hidden="true"></i>
-          </div>
-          <div className="pillar-badge">
-            <span className="badge-dot yellow"></span> Temp Services
-          </div>
-        </div>
-
+        {/* Center - 06 Solutions */}
         <div className="center-metallic-core">
           <div className="core-pulse-ring"></div>
           <div className="core-brand-tag">
-            <span className="core-number">04</span>
+            <span className="core-number">06</span>
             <span className="core-label">Solutions</span>
+          </div>
+        </div>
+
+        {/* Bottom row - 3 items */}
+        <div className="pillar-row pillar-row-bottom">
+          <div className="floating-pillar-item">
+            <div className="icon-frame teal-border">
+              <i className="fas fa-briefcase" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot teal"></span> RPO
+            </div>
+          </div>
+
+          <div className="floating-pillar-item">
+            <div className="icon-frame orange-border">
+              <i className="fas fa-search" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot orange"></span> Headhunting
+            </div>
+          </div>
+
+          <div className="floating-pillar-item">
+            <div className="icon-frame yellow-border">
+              <i className="fas fa-clock" aria-hidden="true"></i>
+            </div>
+            <div className="pillar-badge">
+              <span className="badge-dot yellow"></span> Temp Services
+            </div>
           </div>
         </div>
       </div>
@@ -67,36 +93,215 @@ function ServicePillarsCanvas() {
   );
 }
 
+// ── CUSTOM HOOK FOR SCROLL ANIMATIONS ──
+const useScrollAnimation = (threshold = 0.15) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+            setTimeout(() => {
+              element.classList.add('slide-in-visible');
+            }, 50);
+          }
+        });
+      },
+      {
+        threshold: threshold,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  }, [threshold, isVisible]);
+
+  return { elementRef, isVisible };
+};
+
+// ── ANIMATED SERVICE CARD COMPONENT ──
+const AnimatedServiceCard = ({ service, index, hoveredService, setHoveredService }) => {
+  const { elementRef } = useScrollAnimation(0.1);
+  const delay = 0.2 + (index * 0.25);
+  
+  return (
+    <div
+      ref={elementRef}
+      className="service-card slide-in-right"
+      style={{ 
+        ...styles.serviceCard, 
+        borderTop: `4px solid ${service.accent}`,
+        transitionDelay: `${delay}s`,
+        animationDelay: `${delay}s`
+      }}
+      onMouseEnter={() => setHoveredService(service.number)}
+      onMouseLeave={() => setHoveredService(null)}
+    >
+      <span style={{ 
+        ...styles.serviceNumber, 
+        color: hoveredService === service.number ? service.accent : 'rgba(31, 53, 64, 0.08)' 
+      }}>
+        {service.number}
+      </span>
+      <h3 className="title-3d" style={{ fontSize: '1.15rem', marginBottom: '12px' }}>
+        {service.title}
+      </h3>
+      <p style={styles.serviceText}>{service.text}</p>
+    </div>
+  );
+};
+
+// ── ANIMATED PROCESS STEP COMPONENT ──
+const AnimatedProcessStep = ({ step, index, hoveredStep, setHoveredStep }) => {
+  const { elementRef } = useScrollAnimation(0.1);
+  const delay = 0.2 + (index * 0.2);
+  
+  return (
+    <div
+      ref={elementRef}
+      className="process-step slide-in-right"
+      style={{ 
+        ...styles.processStep,
+        borderTop: `4px solid ${step.accent || 'var(--teal)'}`,
+        transitionDelay: `${delay}s`,
+        animationDelay: `${delay}s`
+      }}
+      onMouseEnter={() => setHoveredStep(step.number)}
+      onMouseLeave={() => setHoveredStep(null)}
+    >
+      <span style={{ 
+        ...styles.processNumber, 
+        color: hoveredStep === step.number ? step.accent || 'var(--teal)' : 'rgba(31, 53, 64, 0.08)' 
+      }}>
+        {step.number}
+      </span>
+      <div style={styles.processStepContent}>
+        <h4 className="title-3d" style={{ fontSize: '1.05rem', marginBottom: '8px' }}>
+          {step.title}
+        </h4>
+        <p style={styles.processText}>{step.text}</p>
+      </div>
+    </div>
+  );
+};
+
+// ── ANIMATED VERIFICATION ITEM ──
+const AnimatedVerificationItem = ({ item, index }) => {
+  const { elementRef } = useScrollAnimation(0.1);
+  const delay = 0.2 + (index * 0.08);
+  const colors = ['var(--teal)', 'var(--orange)', 'var(--yellow)', 'var(--navy)', 'var(--teal)', 'var(--orange)'];
+  
+  return (
+    <div
+      ref={elementRef}
+      className="verify-item slide-in-right"
+      style={{ 
+        ...styles.verifyItem,
+        transitionDelay: `${delay}s`,
+        animationDelay: `${delay}s`
+      }}
+    >
+      <div style={{ 
+        ...styles.verifyIcon, 
+        background: colors[index % 6] + '1A', 
+        color: colors[index % 6] 
+      }}>
+        <i className={`fas ${item.icon || 'fa-check'}`} aria-hidden="true"></i>
+      </div>
+      <h4 className="title-3d" style={{ fontSize: '0.98rem', marginBottom: 0 }}>{item.title}</h4>
+    </div>
+  );
+};
+
+// ── ANIMATED TESTIMONIAL COMPONENT ──
+const AnimatedTestimonial = ({ testimonial, index }) => {
+  const { elementRef } = useScrollAnimation(0.1);
+  const delay = 0.2 + (index * 0.15);
+  
+  return (
+    <div
+      ref={elementRef}
+      className="testimonial-card slide-in-right"
+      style={{ 
+        ...styles.testimonialCard,
+        borderTop: `4px solid ${testimonial.accent || 'var(--teal)'}`,
+        transitionDelay: `${delay}s`,
+        animationDelay: `${delay}s`
+      }}
+    >
+      <div style={styles.starRow}>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <i key={i} className="fas fa-star" style={{ color: testimonial.accent || 'var(--teal)', fontSize: 13 }} aria-hidden="true"></i>
+        ))}
+      </div>
+      <p style={styles.testimonialQuote}>"{testimonial.quote}"</p>
+      <p style={styles.testimonialName}>{testimonial.name}</p>
+    </div>
+  );
+};
+
+function StarRow({ color }) {
+  return (
+    <div style={{ display: 'flex', gap: 3, marginBottom: 16 }}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <i key={i} className="fas fa-star" style={{ color, fontSize: 13 }} aria-hidden="true"></i>
+      ))}
+    </div>
+  );
+}
+
 const ServicesPage = () => {
   const [servicesData, setServicesData] = useState(null);
+  const [employersData, setEmployersData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredService, setHoveredService] = useState(null);
+  const [hoveredStep, setHoveredStep] = useState(null);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  // Fetch services data directly from API
+  // Fetch services and employers data
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await publicApi.getServices();
-
-        if (response.success && response.data) {
-          setServicesData(response.data);
-          setError(null);
+        const [servicesResponse, employersResponse] = await Promise.all([
+          publicApi.getServices(),
+          publicApi.getEmployers()
+        ]);
+        
+        if (servicesResponse.success && servicesResponse.data) {
+          setServicesData(servicesResponse.data);
         } else {
-          setError(response.error || 'Failed to load services');
+          setError(servicesResponse.error || 'Failed to load services');
         }
+
+        if (employersResponse.success && employersResponse.data) {
+          setEmployersData(employersResponse.data);
+        }
+        
+        setError(null);
       } catch (err) {
-        console.error('Error fetching services:', err);
-        setError(err.message || 'Error loading services');
+        console.error('Error fetching data:', err);
+        setError(err.message || 'Error loading data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchServices();
+    fetchData();
   }, []);
 
   // Default services data (fallback)
@@ -139,18 +344,87 @@ const ServicesPage = () => {
     },
   ];
 
-  const defaultScreeningItems = [
-    { title: 'Biometric criminal checks', text: 'Secure digital identity clearance.', icon: 'fa-fingerprint' },
-    { title: 'ID, work permits & driver\'s licenses', text: 'Strict regional legal validations.', icon: 'fa-id-card' },
-    { title: 'Education qualifications', text: 'Direct authentication with academic bodies.', icon: 'fa-graduation-cap' },
-    { title: 'Employment references', text: 'Complete audio recorded historical verifications.', icon: 'fa-history' },
-    { title: 'Interview assistance panels', text: 'Expert cross-examinations for target roles.', icon: 'fa-users' },
+  const defaultProcessSteps = [
+    {
+      number: '01',
+      title: 'Client Consultation',
+      text: 'We start by diving deep into your business goals, culture, and hiring requirements to align our recruitment strategy with your vision.',
+      accent: 'var(--teal)',
+    },
+    {
+      number: '02',
+      title: 'Position Profile Development',
+      text: 'We collaborate with you to create a compelling position profile outlining responsibilities, qualifications, and ideal candidate traits.',
+      accent: 'var(--orange)',
+    },
+    {
+      number: '03',
+      title: 'Targeted Search Strategy',
+      text: 'Using our extensive network and modern sourcing tools, we identify professionals who match your business needs and culture.',
+      accent: 'var(--yellow)',
+    },
+    {
+      number: '04',
+      title: 'Candidate Screening & Assessment',
+      text: 'We conduct interviews, skills assessments, and background checks to ensure only the highest-quality candidates are shortlisted.',
+      accent: 'var(--navy)',
+    },
+    {
+      number: '05',
+      title: 'Presentation of Shortlist',
+      text: 'Receive a curated shortlist of candidates complete with detailed profiles and recommendations.',
+      accent: 'var(--teal)',
+    },
+    {
+      number: '06',
+      title: 'Final Candidate Selection',
+      text: 'We guide you through final interviews and hiring decisions with strategic insights and support.',
+      accent: 'var(--orange)',
+    },
+    {
+      number: '07',
+      title: 'Post-Placement Support',
+      text: 'Our partnership continues after placement with ongoing support to ensure long-term success and smooth onboarding.',
+      accent: 'var(--yellow)',
+    },
+  ];
+
+  const defaultVerificationItems = [
+    { title: 'Employment verification', icon: 'fa-briefcase' },
+    { title: 'Biometric criminal checks', icon: 'fa-fingerprint' },
+    { title: 'ID, work permits & driver\'s license', icon: 'fa-id-card' },
+    { title: 'Education qualifications', icon: 'fa-graduation-cap' },
+    { title: 'Employment references', icon: 'fa-history' },
+    { title: 'Interview assistance', icon: 'fa-users' },
+  ];
+
+  const defaultTestimonials = [
+    {
+      quote: 'InspHired completely transformed our hiring process. Their team consistently delivers exceptional candidates aligned with our company culture.',
+      name: 'Global Logistics Group',
+      accent: 'var(--teal)',
+    },
+    {
+      quote: 'The professionalism, speed, and verification standards were outstanding. We found top-tier talent faster than ever before.',
+      name: 'Fintech Africa',
+      accent: 'var(--orange)',
+    },
+    {
+      quote: 'From consultation to onboarding support, the entire recruitment journey felt seamless and highly strategic.',
+      name: 'Healthcare Solutions SA',
+      accent: 'var(--yellow)',
+    },
   ];
 
   // Use data from API or fallback to defaults
   const data = servicesData || {};
   const hero = data.hero || {};
   const skillsTraining = data.skillsTraining || {};
+
+  // Employers data
+  const employersDataObj = employersData || {};
+  const employersQuote = employersDataObj.quote || {};
+  const employersFinalCta = employersDataObj.finalCta || {};
 
   const services = data.offerings && data.offerings.length > 0
     ? data.offerings.map((item, index) => ({
@@ -161,13 +435,29 @@ const ServicesPage = () => {
     }))
     : defaultServices;
 
-  const screeningItems = data.screening && data.screening.length > 0
-    ? data.screening.map(item => ({
+  const processSteps = employersDataObj.processSteps && employersDataObj.processSteps.length > 0
+    ? employersDataObj.processSteps.map((item, index) => ({
+      number: item.step_number || `0${index + 1}`,
+      title: item.title || defaultProcessSteps[index]?.title || '',
+      text: item.description || defaultProcessSteps[index]?.text || '',
+      accent: item.accent_color || defaultProcessSteps[index]?.accent || 'var(--teal)',
+    }))
+    : defaultProcessSteps;
+
+  const verificationItems = employersDataObj.verification && employersDataObj.verification.length > 0
+    ? employersDataObj.verification.map(item => ({
       title: item.title || '',
-      text: item.description || '',
       icon: item.icon_class || 'fa-check',
     }))
-    : defaultScreeningItems;
+    : defaultVerificationItems;
+
+  const testimonials = employersDataObj.testimonials && employersDataObj.testimonials.length > 0
+    ? employersDataObj.testimonials.map(item => ({
+      quote: item.quote || '',
+      name: item.client_name || '',
+      accent: item.accent_color || 'var(--teal)',
+    }))
+    : defaultTestimonials;
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -359,7 +649,7 @@ const ServicesPage = () => {
             outline-offset: 2px;
           }
 
-          /* ── UNIFIED HERO STYLE (Matches About Page) ── */
+          /* ── UNIFIED HERO STYLE ── */
           .hero-section {
             background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
             color: #ffffff;
@@ -368,7 +658,8 @@ const ServicesPage = () => {
             overflow: hidden;
             border-bottom: 4px solid rgba(80, 155, 158, 0.3);
           }
-          /* ── SUBSCRIBE HEADING - White, No Effects ── */
+
+          /* ── SUBSCRIBE HEADING ── */
           .subscribe-heading {
             font-family: 'Playfair Display', Georgia, serif !important;
             font-size: clamp(1.3rem, 2vw, 1.8rem);
@@ -379,7 +670,7 @@ const ServicesPage = () => {
             margin: 0 0 8px 0;
           }
 
-          /* ── HERO EYEBROW - Clean, No Effects ── */
+          /* ── HERO EYEBROW ── */
           .hero-eyebrow {
             display: inline-block;
             font-family: 'Playfair Display', Georgia, serif !important;
@@ -395,7 +686,7 @@ const ServicesPage = () => {
             border: 1px solid rgba(80, 155, 158, 0.15);
           }
 
-          /* ── HERO HEADING - Pure White, No Effects ── */
+          /* ── HERO HEADING ── */
           .hero-heading {
             font-family: 'Playfair Display', Georgia, serif !important;
             font-size: clamp(2.2rem, 4vw, 3rem);
@@ -406,7 +697,7 @@ const ServicesPage = () => {
             margin: 0 0 20px 0;
           }
 
-          /* ── HERO DESCRIPTION - Clean, No Effects ── */
+          /* ── HERO DESCRIPTION ── */
           .hero-description {
             font-size: 1.1rem;
             color: rgba(255, 255, 255, 0.75);
@@ -415,7 +706,7 @@ const ServicesPage = () => {
             margin-bottom: 24px;
           }
 
-          /* ── 3D HEADING SYSTEM (For body content only) ── */
+          /* ── 3D HEADING SYSTEM ── */
           .title-3d {
             display: block;
             font-family: 'Playfair Display', Georgia, serif !important;
@@ -465,6 +756,17 @@ const ServicesPage = () => {
             border-radius: 20px;
             margin-bottom: 16px;
             border: 1px solid rgba(80, 155, 158, 0.15);
+          }
+
+          /* ── FINAL CTA HEADING ── */
+          .final-cta-heading {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: clamp(1.5rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin: 0 0 10px 0;
           }
 
           /* ── 3D METALLIC BUTTONS ── */
@@ -554,147 +856,284 @@ const ServicesPage = () => {
           }
           .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
 
+          /* ── SLIDE IN FROM RIGHT - SLOW & INDIVIDUAL ── */
+          .slide-in-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+
+          .slide-in-right.slide-in-visible {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          /* ── SERVICE CARD STYLES ── */
           .service-card {
-            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+            will-change: transform, opacity;
           }
           .service-card:hover {
             transform: translateY(-6px) !important;
             box-shadow: var(--shadow-md) !important;
           }
 
-          .screening-item { transition: background-color var(--transition), border-color var(--transition) !important; }
-          .screening-item:hover {
+          .process-step {
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+            will-change: transform, opacity;
+          }
+          .process-step:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: var(--shadow-md) !important;
+          }
+
+          .verify-item {
+            transition: background-color 0.3s ease, border-color 0.3s ease !important;
+            will-change: transform, opacity;
+          }
+          .verify-item:hover {
             background-color: var(--bg) !important;
             border-color: rgba(80, 155, 158, 0.35) !important;
           }
 
+          .testimonial-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+            will-change: transform, opacity;
+          }
+          .testimonial-card:hover {
+            transform: translateY(-6px) !important;
+            box-shadow: var(--shadow-md) !important;
+          }
+
           /* ── SERVICE PILLARS CANVAS CSS ── */
-          .pillar-canvas-container {
-            position: relative;
-            width: 100%;
-            min-height: 440px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-          }
+.pillar-canvas-container {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
 
-          .pillar-stage-card {
-            position: relative;
-            width: 100%;
-            max-width: 460px;
-            height: 400px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow:
-              0 20px 50px rgba(0, 0, 0, 0.4),
-              inset 0 1px 1px rgba(255, 255, 255, 0.2);
-            transform-style: preserve-3d;
-            transform: rotateX(4deg) rotateY(-4deg);
-            transition: transform 0.5s ease;
-          }
-          .pillar-stage-card:hover {
-            transform: rotateX(0deg) rotateY(0deg) scale(1.02);
-          }
+.pillar-stage-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 440px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  transform-style: preserve-3d;
+  transform: rotateX(4deg) rotateY(-4deg);
+  transition: transform 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.pillar-stage-card:hover {
+  transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+}
 
-          .glow-sphere {
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            pointer-events: none;
-          }
-          .teal-glow { background: #509b9e; top: -20px; left: -20px; }
-          .orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
+.glow-sphere {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.teal-glow { background: #509b9e; top: -20px; left: -20px; }
+.orange-glow { background: #d96b43; bottom: -20px; right: -20px; }
 
-          .floating-pillar-item {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-          }
-          .float-1 { top: 20px; left: 25px; }
-          .float-2 { top: 35px; right: 25px; }
-          .float-3 { bottom: 20px; left: 25px; }
-          .float-4 { bottom: 35px; right: 25px; }
+.pillar-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+}
 
-          .icon-frame {
-            width: 86px;
-            height: 86px;
-            border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-            overflow: hidden;
-            background: #1f3540;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            color: #ffffff;
-          }
-          .teal-border { border: 2px solid #509b9e; }
-          .orange-border { border: 2px solid #d96b43; }
-          .yellow-border { border: 2px solid #e4af51; }
+.pillar-row-top {
+  margin-bottom: auto;
+  padding-top: 10px;
+}
 
-          .pillar-badge {
-            background: rgba(15, 27, 34, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            color: #ffffff;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            white-space: nowrap;
-          }
-          .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
-          .badge-dot.teal { background: #509b9e; }
-          .badge-dot.orange { background: #d96b43; }
-          .badge-dot.yellow { background: #e4af51; }
+.pillar-row-bottom {
+  margin-top: auto;
+  padding-bottom: 10px;
+}
 
-          .center-metallic-core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2a4554 0%, #172831 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-          }
-          .core-pulse-ring {
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            border: 1px dashed rgba(228, 175, 81, 0.4);
-            animation: rotateCore 14s linear infinite;
-          }
-          @keyframes rotateCore {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          .core-brand-tag { text-align: center; display: flex; flex-direction: column; }
-          .core-number { font-size: 1.5rem; font-weight: 800; color: #e4af51; }
-          .core-label {
-            font-size: 0.58rem;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 0.5px;
-          }
+.floating-pillar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
 
-          /* ── SUBSCRIBE BUTTON 3D METALLIC EFFECT ── */
+.icon-frame {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  overflow: hidden;
+  background: #1f3540;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+.icon-frame:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+}
+
+.teal-border { border: 2px solid #509b9e; }
+.orange-border { border: 2px solid #d96b43; }
+.yellow-border { border: 2px solid #e4af51; }
+
+.pillar-badge {
+  background: rgba(15, 27, 34, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.62rem;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+}
+.floating-pillar-item:hover .pillar-badge {
+  transform: scale(1.05);
+}
+
+.badge-dot { 
+  width: 5px; 
+  height: 5px; 
+  border-radius: 50%; 
+  flex-shrink: 0;
+}
+.badge-dot.teal { background: #509b9e; }
+.badge-dot.orange { background: #d96b43; }
+.badge-dot.yellow { background: #e4af51; }
+
+.center-metallic-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a4554 0%, #172831 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+  z-index: 2;
+}
+.core-pulse-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(228, 175, 81, 0.4);
+  animation: rotateCore 14s linear infinite;
+}
+@keyframes rotateCore {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.core-brand-tag { 
+  text-align: center; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+}
+.core-number { 
+  font-size: 1.4rem; 
+  font-weight: 800; 
+  color: #e4af51; 
+  line-height: 1;
+}
+.core-label {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .pillar-stage-card {
+    max-width: 380px;
+    height: 380px;
+    padding: 15px;
+  }
+  .icon-frame {
+    width: 55px;
+    height: 55px;
+    font-size: 1rem;
+  }
+  .pillar-badge {
+    font-size: 0.5rem;
+    padding: 3px 7px;
+  }
+  .center-metallic-core {
+    width: 70px;
+    height: 70px;
+  }
+  .core-number { font-size: 1.1rem; }
+  .core-label { font-size: 0.4rem; }
+  .pillar-row {
+    padding: 0 5px;
+  }
+  .floating-pillar-item {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar-stage-card {
+    max-width: 320px;
+    height: 340px;
+    padding: 10px;
+  }
+  .icon-frame {
+    width: 45px;
+    height: 45px;
+    font-size: 0.85rem;
+  }
+  .pillar-badge {
+    font-size: 0.45rem;
+    padding: 2px 6px;
+  }
+  .center-metallic-core {
+    width: 60px;
+    height: 60px;
+  }
+  .core-number { font-size: 0.9rem; }
+  .core-label { font-size: 0.35rem; }
+}
+
+          /* ── SUBSCRIBE BUTTON ── */
           .subscribe-btn {
             display: inline-flex;
             align-items: center;
@@ -777,6 +1216,20 @@ const ServicesPage = () => {
             .subscribe-row { flex-direction: column !important; }
             .subscribe-row input, .subscribe-row button { width: 100% !important; }
             .service-grid { grid-template-columns: 1fr !important; }
+            .process-grid { grid-template-columns: 1fr !important; }
+            .verify-grid { grid-template-columns: 1fr !important; }
+            .testimonial-grid { grid-template-columns: 1fr !important; }
+            .final-cta-row { flex-direction: column !important; align-items: stretch !important; }
+            
+            /* Mobile: slide from bottom with slower animation */
+            .slide-in-right {
+              transform: translateY(50px) !important;
+              transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                          transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            }
+            .slide-in-right.slide-in-visible {
+              transform: translateY(0) !important;
+            }
           }
         `}</style>
 
@@ -835,20 +1288,14 @@ const ServicesPage = () => {
             </div>
 
             <div style={styles.serviceGrid}>
-              {services.map((s) => (
-                <div
+              {services.map((s, index) => (
+                <AnimatedServiceCard
                   key={s.number}
-                  style={{ ...styles.serviceCard, borderTop: `4px solid ${s.accent}` }}
-                  className="service-card"
-                  onMouseEnter={() => setHoveredService(s.number)}
-                  onMouseLeave={() => setHoveredService(null)}
-                >
-                  <span style={{ ...styles.serviceNumber, color: hoveredService === s.number ? s.accent : 'rgba(31, 53, 64, 0.08)' }}>
-                    {s.number}
-                  </span>
-                  <h3 className="title-3d" style={{ fontSize: '1.15rem', marginBottom: '12px' }}>{s.title}</h3>
-                  <p style={styles.serviceText}>{s.text}</p>
-                </div>
+                  service={s}
+                  index={index}
+                  hoveredService={hoveredService}
+                  setHoveredService={setHoveredService}
+                />
               ))}
             </div>
           </div>
@@ -901,29 +1348,71 @@ const ServicesPage = () => {
           </div>
         </section>
 
-        {/* ── RISK MANAGEMENT / SCREENING ── */}
-        <section style={styles.sectionWhite} aria-labelledby="screening-heading">
+        {/* ── FOR EMPLOYERS SECTION ── */}
+        <section style={styles.sectionWhite} aria-labelledby="employers-heading">
           <div style={styles.container}>
             <div style={styles.centerHead}>
-              <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Risk management</span>
-              <h2 id="screening-heading" className="title-3d title-section">Employment verification & background screening</h2>
+              <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>For employers</span>
+              <h2 id="employers-heading" className="title-3d title-section">A proven hiring framework built for results</h2>
               <p style={styles.sectionSub}>
-                Every candidate we place is thoroughly vetted, so you can hire with full confidence and protect what makes your workplace work.
+                Every step of our recruitment process is intentionally designed to deliver exceptional candidates and long-term hiring success.
               </p>
             </div>
 
-            <div style={styles.screeningList}>
-              {screeningItems.map((item, i) => (
-                <div key={item.title || i} style={styles.screeningItem} className="screening-item">
-                  <div style={{ ...styles.screeningIcon, background: [`var(--teal)`, `var(--orange)`, `var(--yellow)`, `var(--navy)`, `var(--teal)`][i % 5] + '1A', color: [`var(--teal)`, `var(--orange)`, `var(--yellow)`, `var(--navy)`, `var(--teal)`][i % 5] }}>
-                    <i className={`fas ${item.icon || 'fa-check'}`} aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <h4 className="title-3d" style={{ fontSize: '1.02rem', marginBottom: '4px' }}>{item.title}</h4>
-                    <p style={styles.screeningText}>{item.text}</p>
-                  </div>
-                </div>
+            {/* Recruitment Process */}
+            <div style={styles.processGrid}>
+              {processSteps.map((step, index) => (
+                <AnimatedProcessStep 
+                  key={step.number} 
+                  step={step} 
+                  index={index}
+                  hoveredStep={hoveredStep}
+                  setHoveredStep={setHoveredStep}
+                />
               ))}
+            </div>
+
+            {/* Quote */}
+            <div style={styles.quoteWrap}>
+              <i className="fas fa-quote-left" style={styles.quoteMark} aria-hidden="true"></i>
+              <p style={styles.quoteText}>
+                {employersQuote.quote || 'Hiring is the most important people function you have, and most of us aren\'t as good at it as we think. Refocusing your resources on hiring better will have a higher return than almost any training program you can develop.'}
+              </p>
+              <p style={styles.quoteAttribution}>{employersQuote.attribution || '— Laszlo Bock'}</p>
+            </div>
+
+            {/* Verification Services */}
+            <div style={styles.verifySection}>
+              <div style={styles.centerHead}>
+                <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Verification services</span>
+                <h2 className="title-3d title-section" style={{ marginBottom: '8px' }}>Recruitment backed by trusted verification</h2>
+                <p style={styles.sectionSub}>
+                  We ensure every candidate is thoroughly verified to protect your business and strengthen hiring confidence.
+                </p>
+              </div>
+
+              <div style={styles.verifyGrid}>
+                {verificationItems.map((item, index) => (
+                  <AnimatedVerificationItem key={item.title || index} item={item} index={index} />
+                ))}
+              </div>
+            </div>
+
+            {/* Client Testimonials */}
+            <div style={styles.testimonialSection}>
+              <div style={styles.centerHead}>
+                <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Client testimonials</span>
+                <h2 className="title-3d title-section" style={{ marginBottom: '8px' }}>Trusted by growing organisations</h2>
+                <p style={styles.sectionSub}>
+                  Discover how InspHired has transformed recruitment experiences for businesses across Africa.
+                </p>
+              </div>
+
+              <div style={styles.testimonialGrid}>
+                {testimonials.map((testimonial, index) => (
+                  <AnimatedTestimonial key={testimonial.name || index} testimonial={testimonial} index={index} />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -967,8 +1456,6 @@ const ServicesPage = () => {
             </div>
           </div>
         </section>
-
-        
       </div>
     </>
   );
@@ -1103,38 +1590,128 @@ const styles = {
     lineHeight: 1.6,
     margin: 0
   },
-  screeningList: {
-    maxWidth: '820px',
-    margin: '0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px'
+  // Employer section styles
+  processGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '28px',
+    marginBottom: '60px'
   },
-  screeningItem: {
+  processStep: {
     display: 'flex',
-    alignItems: 'flex-start',
     gap: '20px',
+    background: '#FFFFFF',
+    borderRadius: '16px',
+    padding: '28px 24px',
+    border: '1px solid var(--border-light)',
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    alignItems: 'flex-start'
+  },
+  processNumber: {
+    fontSize: '2.4rem',
+    fontWeight: 700,
+    lineHeight: 1,
+    flexShrink: 0,
+    minWidth: '50px',
+    transition: 'color var(--transition)'
+  },
+  processStepContent: {
+    flex: 1
+  },
+  processText: {
+    fontSize: '0.92rem',
+    color: '#5B6670',
+    lineHeight: 1.6,
+    margin: 0
+  },
+  quoteWrap: {
+    maxWidth: '820px',
+    margin: '0 auto 60px auto',
+    textAlign: 'center',
+    padding: '40px 30px',
+    backgroundColor: 'var(--bg)',
+    borderRadius: '16px',
+    border: '1px solid var(--border-light)'
+  },
+  quoteMark: {
+    fontSize: '2rem',
+    color: 'rgba(80, 155, 158, 0.5)',
+    marginBottom: '20px',
+    display: 'block'
+  },
+  quoteText: {
+    fontSize: '1.3rem',
+    lineHeight: 1.6,
+    color: 'var(--navy)',
+    fontWeight: 500,
+    marginBottom: '20px'
+  },
+  quoteAttribution: {
+    fontSize: '0.95rem',
+    color: 'var(--teal)',
+    fontWeight: 600,
+    margin: 0
+  },
+  verifySection: {
+    marginBottom: '60px'
+  },
+  verifyGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '20px'
+  },
+  verifyItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
     background: '#FFFFFF',
     border: '1px solid var(--border-light)',
     borderRadius: '16px',
-    padding: '24px 28px',
-    transition: 'background-color 0.3s ease, border-color 0.3s ease',
+    padding: '22px',
+    transition: 'background-color 0.3s ease, border-color 0.3s ease'
   },
-  screeningIcon: {
-    width: '48px',
-    height: '48px',
+  verifyIcon: {
+    width: '46px',
+    height: '46px',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '1.1rem',
+    fontSize: '1.05rem',
     flexShrink: 0
   },
-  screeningText: {
+  testimonialSection: {
+    marginTop: '20px'
+  },
+  testimonialGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '28px'
+  },
+  testimonialCard: {
+    background: 'var(--bg)',
+    borderRadius: 'var(--radius-card)',
+    padding: '32px 28px',
+    border: '1px solid var(--border-light)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+  },
+  testimonialQuote: {
+    fontSize: '0.98rem',
+    color: 'var(--navy)',
+    lineHeight: 1.65,
+    marginBottom: '18px'
+  },
+  testimonialName: {
     fontSize: '0.92rem',
+    fontWeight: 700,
     color: '#5B6670',
-    margin: 0,
-    lineHeight: 1.5
+    margin: 0
+  },
+  starRow: {
+    display: 'flex',
+    gap: '3px',
+    marginBottom: '16px'
   },
   subscribeSection: { padding: '80px 0 100px', backgroundColor: 'var(--bg)' },
   subscribeCard: {
@@ -1212,7 +1789,6 @@ const styles = {
     transition: 'background-color 0.2s',
     boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   }
-
 };
 
 // Add keyframes for spinner animation
