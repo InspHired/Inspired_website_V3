@@ -157,7 +157,7 @@ const VerifyMePage = () => {
             <div>
               <span style={styles.eyebrow}>Automated background screening</span>
               <div style={styles.logoRow}>
-                <img src="/assets/VerifyMe.png" alt="VerifyMe Logo" style={styles.appLogo} />
+                <img src="/assets/VM.png" alt="VerifyMe Logo" style={styles.appLogo} />
                 <h1 style={styles.pageTitle}>VerifyMe</h1>
               </div>
               <p style={styles.heroLead}>
@@ -178,7 +178,7 @@ const VerifyMePage = () => {
             <div style={styles.heroVisualWrap}>
               <div className="hero-image-wrapper">
                 <img 
-                  src="/assets/VerifyMe.png" 
+                  src="/assets/VM.png" 
                   alt="VerifyMe - Background Screening" 
                 />
               </div>

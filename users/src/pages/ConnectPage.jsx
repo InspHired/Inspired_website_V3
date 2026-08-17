@@ -98,27 +98,6 @@ const ConnectPage = () => {
           margin-right: 10px;
         }
 
-        /* Orange variant */
-        .btn-3d-metallic-orange {
-          background: linear-gradient(180deg, #e88355 0%, #d96b43 45%, #c05a35 100%);
-          border-color: #f09066;
-          box-shadow: 
-            inset 0 1px 1px rgba(255, 255, 255, 0.5),
-            inset 0 -3px 6px rgba(0, 0, 0, 0.3),
-            0 4px 0 #9e4a2e,
-            0 8px 20px rgba(217, 107, 67, 0.4);
-          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-3d-metallic-orange:hover {
-          background: linear-gradient(180deg, #f09066 0%, #e07a50 45%, #c05a35 100%);
-          box-shadow: 
-            inset 0 1px 1px rgba(255, 255, 255, 0.6),
-            inset 0 -3px 6px rgba(0, 0, 0, 0.25),
-            0 5px 0 #9e4a2e,
-            0 12px 28px rgba(217, 107, 67, 0.5);
-        }
-
         .btn-hover-transition { transition: all var(--transition) !important; }
 
         .faq-item-transition { transition: border-color var(--transition), background-color var(--transition) !important; cursor: pointer; }
@@ -140,25 +119,30 @@ const ConnectPage = () => {
           50% { transform: translateY(-4px); }
         }
 
-        /* ===== HERO IMAGE ===== */
+        /* ===== HERO IMAGE - SLIGHTLY ZOOMED ===== */
         .hero-image-wrapper {
           position: relative;
           width: 320px;
           height: 320px;
           margin: 0 auto;
+          border-radius: 50%;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.05);
+          box-shadow: 
+            0 0 40px rgba(80, 155, 158, 0.2),
+            inset 0 0 60px rgba(80, 155, 158, 0.05);
+          animation: pulseGlow 3s ease-in-out infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .hero-image-wrapper img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.05);
-          padding: 20px;
-          box-shadow: 
-            0 0 40px rgba(80, 155, 158, 0.2),
-            inset 0 0 60px rgba(80, 155, 158, 0.05);
-          animation: pulseGlow 3s ease-in-out infinite;
+          object-fit: cover;
+          object-position: center 20%;
+          display: block;
           transition: transform 0.3s ease;
         }
 
@@ -181,7 +165,7 @@ const ConnectPage = () => {
             <div>
               <span style={styles.eyebrow}>Frictionless talent matching</span>
               <div style={styles.logoRow}>
-                <img src="/assets/InspHiredConnect.png" alt="Connect Logo" style={styles.appLogo} />
+                <img src="/assets/IC.jpg" alt="Connect Logo" style={styles.appLogo} />
                 <h1 style={styles.pageTitle}>InspHired Connect</h1>
               </div>
               <p style={styles.heroLead}>
@@ -202,7 +186,7 @@ const ConnectPage = () => {
             <div style={styles.heroVisualWrap}>
               <div className="hero-image-wrapper">
                 <img 
-                  src="/assets/InspHiredConnect.png" 
+                  src="/assets/IC.jpg" 
                   alt="InspHired Connect Platform" 
                 />
               </div>

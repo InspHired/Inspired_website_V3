@@ -152,7 +152,7 @@ const WorxPage = () => {
             <div>
               <span style={styles.eyebrow}>On-demand workforce allocation</span>
               <div style={styles.logoRow}>
-                <img src="/assets/InspHiredWorx.png" alt="Worx Logo" style={styles.appLogo} />
+                <img src="/assets/IW.jpg" alt="Worx Logo" style={styles.appLogo} />
                 <h1 style={styles.pageTitle}>InspHired Worx</h1>
               </div>
               <p style={styles.heroLead}>
@@ -173,7 +173,7 @@ const WorxPage = () => {
             <div style={styles.heroVisualWrap}>
               <div className="hero-image-wrapper">
                 <img 
-                  src="/assets/InspHiredWorx.png" 
+                  src="/assets/IW.jpg" 
                   alt="InspHired Worx - On-demand Workforce" 
                 />
               </div>

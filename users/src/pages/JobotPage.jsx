@@ -236,7 +236,7 @@ const JobotPage = () => {
             <div>
               <span style={styles.eyebrow}>Automated talent sourcing</span>
               <div style={styles.logoRow}>
-                <img src="/assets/JobBot.png" alt="Jobot Logo" style={styles.appLogo} />
+                <img src="/assets/JB.jpg" alt="Jobot Logo" style={styles.appLogo} />
                 <h1 style={styles.pageTitle}>Jobot</h1>
               </div>
               <p style={styles.heroLead}>
@@ -258,7 +258,7 @@ const JobotPage = () => {
             <div style={styles.heroVisualWrap}>
               <div className="hero-image-wrapper">
                 <img 
-                  src="/assets/JobBot.png" 
+                  src="/assets/JB.jpg" 
                   alt="Jobot - Automated Talent Sourcing" 
                 />
               </div>
