@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { publicApi } from '../services/api';
 import Footer from '../components/Footer';
+import useWeb3Forms from '@web3forms/react';
 
 const ContactPage = () => {
   const [contactData, setContactData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
 
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +20,40 @@ const ContactPage = () => {
     service: '',
     ContactTime: '',
     message: ''
+  });
+
+  // Web3Forms configuration
+  const { submit } = useWeb3Forms({
+    access_key:'635d93a9-3b33-4efa-8e41-22fe6f5adbac',
+    settings: {
+      from_name: 'Insphired Website',
+      subject: 'New Contact Form Submission',
+    },
+    onSuccess: (message, data) => {
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you! Our team will contact you shortly.'
+      });
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        position: '',
+        service: '',
+        ContactTime: '',
+        message: ''
+      });
+      setSubmitting(false);
+    },
+    onError: (message, data) => {
+      setSubmitStatus({
+        type: 'error',
+        message: message || 'Failed to submit form. Please try again.'
+      });
+      setSubmitting(false);
+    },
   });
 
   // Fetch contact page content from API
@@ -44,6 +80,16 @@ const ContactPage = () => {
     fetchContact();
   }, []);
 
+  // Clear status message after 5 seconds
+  useEffect(() => {
+    if (submitStatus.message) {
+      const timer = setTimeout(() => {
+        setSubmitStatus({ type: '', message: '' });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitStatus]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -54,38 +100,17 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
 
     try {
-      // Send form data to your backend API
-      const response = await fetch('https://inspired-website-v3-fhno.onrender.com/api/contact/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert('Thank you! Our team will contact you shortly.');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          position: '',
-          service: '',
-          ContactTime: '',
-          message: ''
-        });
-      } else {
-        alert(result.message || 'Failed to submit request. Please try again.');
-      }
+      // Send form data using Web3Forms
+      await submit(formData);
     } catch (err) {
       console.error('Submission error:', err);
-      alert('Something went wrong. Please try again.');
-    } finally {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again.'
+      });
       setSubmitting(false);
     }
   };
@@ -111,7 +136,7 @@ const ContactPage = () => {
   // Map configuration with your office address
   const mapConfig = {
     address: info.address || 'Block D, La Rocca Business Park, 321 Main Road, Bryanston, Johannesburg, 2191',
-    latitude: info.latitude || -26.0581, // Bryanston coordinates
+    latitude: info.latitude || -26.0581,
     longitude: info.longitude || 28.0245,
     zoom: 16
   };
@@ -148,7 +173,6 @@ const ContactPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
-        /* ── UNIFIED HERO STYLE (Matches About Page) ── */
         .hero-section {
           background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
           color: #ffffff;
@@ -158,7 +182,6 @@ const ContactPage = () => {
           border-bottom: 4px solid rgba(80, 155, 158, 0.3);
         }
 
-        /* ── HERO EYEBROW - Clean, No Effects ── */
         .hero-eyebrow {
           display: inline-block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -174,7 +197,6 @@ const ContactPage = () => {
           border: 1px solid rgba(80, 155, 158, 0.15);
         }
 
-        /* ── HERO HEADING - Pure White, No Effects ── */
         .hero-heading {
           font-family: 'Playfair Display', Georgia, serif !important;
           font-size: clamp(2.2rem, 4vw, 3rem);
@@ -185,7 +207,6 @@ const ContactPage = () => {
           margin: 0 0 20px 0;
         }
 
-        /* ── HERO DESCRIPTION - Clean, No Effects ── */
         .hero-description {
           font-size: 1.1rem;
           color: rgba(255, 255, 255, 0.75);
@@ -194,7 +215,6 @@ const ContactPage = () => {
           margin-bottom: 24px;
         }
 
-        /* ── 3D HEADING SYSTEM (For body content only) ── */
         .title-3d {
           display: block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -220,7 +240,6 @@ const ContactPage = () => {
           line-height: 1.2;
         }
 
-        /* ── BODY EYEBROW ── */
         .eyebrow-3d {
           display: inline-block;
           font-family: 'Playfair Display', Georgia, serif !important;
@@ -236,7 +255,6 @@ const ContactPage = () => {
           border: 1px solid rgba(80, 155, 158, 0.15);
         }
 
-        /* ── 3D METALLIC BUTTONS ── */
         .btn-3d-primary {
           display: inline-flex;
           align-items: center;
@@ -326,7 +344,25 @@ const ContactPage = () => {
           box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
         }
 
-        /* Map container styles */
+        /* Status message styles */
+        .status-success {
+          background-color: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+          padding: 12px 16px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+
+        .status-error {
+          background-color: #f8d7da;
+          color: #721c24;
+          border: 1px solid #f5c6cb;
+          padding: 12px 16px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+
         .map-container {
           border-radius: 12px;
           overflow: hidden;
@@ -343,7 +379,6 @@ const ContactPage = () => {
           border: 0;
         }
 
-        /* Responsive styles */
         @media (max-width: 900px) {
           .Contact-grid { 
             grid-template-columns: 1fr !important; 
@@ -384,6 +419,13 @@ const ContactPage = () => {
             <div style={styles.formCard}>
               <span className="eyebrow-3d">Let's talk</span>
               <h2 className="title-3d title-section">Request your Contact</h2>
+
+              {/* Status Message Display */}
+              {submitStatus.message && (
+                <div className={submitStatus.type === 'success' ? 'status-success' : 'status-error'}>
+                  {submitStatus.message}
+                </div>
+              )}
 
               <form onSubmit={handleSubmit}>
                 <input
@@ -725,7 +767,6 @@ const styles = {
     boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   }
 };
-
 
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
