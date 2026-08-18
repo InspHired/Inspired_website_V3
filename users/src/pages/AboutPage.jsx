@@ -1,5 +1,5 @@
 // users/src/pages/AboutPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Helmet } from 'react-helmet-async';
 import { publicApi } from "../services/api";
 import { 
@@ -162,6 +162,59 @@ function ValueIcon({ type, color }) {
     default:
       return null;
   }
+}
+
+// ============================================
+// SLIDE-IN ANIMATION HOOK
+// ============================================
+function useSlideIn(delay = 0) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsVisible(true);
+          }, delay);
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [delay]);
+
+  return { ref, isVisible };
+}
+
+// ============================================
+// SLIDE-IN CARD COMPONENT
+// ============================================
+function SlideInCard({ children, delay = 0 }) {
+  const { ref, isVisible } = useSlideIn(delay);
+
+  return (
+    <div
+      ref={ref}
+      className={`slide-in-card ${isVisible ? 'visible' : ''}`}
+    >
+      {children}
+    </div>
+  );
 }
 
 /* ── RADIAL TIMELINE HERO (Hardcoded) ── */
@@ -675,6 +728,19 @@ const AboutPage = () => {
           .vi-gbar-3 { animation-delay: 0.5s; }
           @keyframes viGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
 
+          /* ── SLIDE-IN ANIMATIONS ── */
+          .slide-in-card {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+
+          .slide-in-card.visible {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
           /* ── RADIAL TIMELINE HERO ── */
           .polibio-hero-stage {
             background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
@@ -934,10 +1000,10 @@ const AboutPage = () => {
           }
 
           /* ── CARDS ── */
-          .value-card, .team-card { 
+          .value-card, .team-card, .mv-card { 
             transition: transform 0.3s ease, box-shadow 0.3s ease !important; 
           }
-          .value-card:hover, .team-card:hover { 
+          .value-card:hover, .team-card:hover, .mv-card:hover { 
             transform: translateY(-8px) !important; 
             box-shadow: 0 16px 40px rgba(0,0,0,0.08) !important; 
           }
@@ -1089,37 +1155,43 @@ const AboutPage = () => {
                 <h2 className="title-3d title-section">Mission & Vision</h2>
               </div>
               <div className="mv-grid" style={styles.mvGrid}>
-                <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.mission_color || 'var(--teal, #509b9e)'}` }}>
-                  <div
-                    style={{
-                      ...styles.mvIconWrap,
-                      background: `${missionVision.mission_color || 'var(--teal, #509b9e)'}18`,
-                      color: missionVision.mission_color || 'var(--teal, #509b9e)',
-                    }}
-                  >
-                    <i className={`fas ${missionVision.mission_icon || 'fa-bullseye'}`} aria-hidden="true"></i>
+                {/* Mission Card - Slide in */}
+                <SlideInCard delay={0}>
+                  <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.mission_color || 'var(--teal, #509b9e)'}` }}>
+                    <div
+                      style={{
+                        ...styles.mvIconWrap,
+                        background: `${missionVision.mission_color || 'var(--teal, #509b9e)'}18`,
+                        color: missionVision.mission_color || 'var(--teal, #509b9e)',
+                      }}
+                    >
+                      <i className={`fas ${missionVision.mission_icon || 'fa-bullseye'}`} aria-hidden="true"></i>
+                    </div>
+                    <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Mission</h3>
+                    <p style={styles.mvText}>
+                      {missionVision.mission || 'To provide innovative recruitment solutions through technology and people. To InspHired.'}
+                    </p>
                   </div>
-                  <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Mission</h3>
-                  <p style={styles.mvText}>
-                    {missionVision.mission || 'To provide innovative recruitment solutions through technology and people. To InspHired.'}
-                  </p>
-                </div>
+                </SlideInCard>
 
-                <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.vision_color || 'var(--orange, #d96b43)'}` }}>
-                  <div
-                    style={{
-                      ...styles.mvIconWrap,
-                      background: `${missionVision.vision_color || 'var(--orange, #d96b43)'}18`,
-                      color: missionVision.vision_color || 'var(--orange, #d96b43)',
-                    }}
-                  >
-                    <i className={`fas ${missionVision.vision_icon || 'fa-eye'}`} aria-hidden="true"></i>
+                {/* Vision Card - Slide in with delay */}
+                <SlideInCard delay={200}>
+                  <div style={{ ...styles.mvCard, borderTop: `4px solid ${missionVision.vision_color || 'var(--orange, #d96b43)'}` }}>
+                    <div
+                      style={{
+                        ...styles.mvIconWrap,
+                        background: `${missionVision.vision_color || 'var(--orange, #d96b43)'}18`,
+                        color: missionVision.vision_color || 'var(--orange, #d96b43)',
+                      }}
+                    >
+                      <i className={`fas ${missionVision.vision_icon || 'fa-eye'}`} aria-hidden="true"></i>
+                    </div>
+                    <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Vision</h3>
+                    <p style={styles.mvText}>
+                      {missionVision.vision || 'To be the number one solution to Africa\'s employment challenges.'}
+                    </p>
                   </div>
-                  <h3 className="title-3d title-sub" style={{ fontSize: '1.3rem' }}>Our Vision</h3>
-                  <p style={styles.mvText}>
-                    {missionVision.vision || 'To be the number one solution to Africa\'s employment challenges.'}
-                  </p>
-                </div>
+                </SlideInCard>
               </div>
             </div>
           </section>
@@ -1184,25 +1256,23 @@ const AboutPage = () => {
 
               <div style={styles.valuesGrid}>
                 {values.map((v, index) => (
-                  <div
-                    key={index}
-                    style={{ ...styles.valueCard, borderTop: `4px solid ${v.accent}` }}
-                    className="value-card"
-                  >
+                  <SlideInCard key={index} delay={index * 150}>
                     <div
-                      style={{ ...styles.valueIconWrap, background: `${v.accent}1A` }}
+                      style={{ ...styles.valueCard, borderTop: `4px solid ${v.accent}` }}
                     >
-                      <ValueIcon type={v.icon} color={v.accent} />
+                      <div
+                        style={{ ...styles.valueIconWrap, background: `${v.accent}1A` }}
+                      >
+                        <ValueIcon type={v.icon} color={v.accent} />
+                      </div>
+                      <h3 className="title-3d title-sub" style={{ fontSize: '1.15rem' }}>{v.title}</h3>
+                      <p style={styles.valueText}>{v.text}</p>
                     </div>
-                    <h3 className="title-3d title-sub" style={{ fontSize: '1.15rem' }}>{v.title}</h3>
-                    <p style={styles.valueText}>{v.text}</p>
-                  </div>
+                  </SlideInCard>
                 ))}
               </div>
             </div>
           </section>
-
-        
         </div>
       </div>
     </>

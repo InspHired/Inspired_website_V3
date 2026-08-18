@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -22,6 +22,65 @@ const features = [
   { title: "Reference harvesting", text: "Automated communication sequences targeting historic corporate supervisors. Collects and stores structural workspace telemetry cleanly.", icon: "fa-history", accent: "var(--yellow)" },
 ];
 
+// ============================================
+// SLIDE-IN ANIMATION HOOK
+// ============================================
+function useSlideIn(delay = 0) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsVisible(true);
+          }, delay);
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [delay]);
+
+  return { ref, isVisible };
+}
+
+// ============================================
+// SLIDE-IN CARD COMPONENT - Fixed sizing
+// ============================================
+function SlideInCard({ children, delay = 0 }) {
+  const { ref, isVisible } = useSlideIn(delay);
+
+  return (
+    <div
+      ref={ref}
+      className={`slide-in-card ${isVisible ? 'visible' : ''}`}
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%'
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 const VerifyMePage = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
@@ -43,6 +102,9 @@ const VerifyMePage = () => {
 
         .interactive-card {
           transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
         .interactive-card:hover {
           transform: translateY(-6px) !important;
@@ -116,25 +178,45 @@ const VerifyMePage = () => {
           50% { transform: scale(1.08); opacity: 0.85; }
         }
 
+        /* ===== SLIDE-IN ANIMATIONS ===== */
+        .slide-in-card {
+          opacity: 0;
+          transform: translateX(60px);
+          transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                      transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .slide-in-card.visible {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
         /* ===== HERO IMAGE ===== */
         .hero-image-wrapper {
           position: relative;
           width: 320px;
           height: 320px;
           margin: 0 auto;
-        }
-
-        .hero-image-wrapper img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
           border-radius: 50%;
+          overflow: hidden;
           background: rgba(255, 255, 255, 0.05);
-          padding: 20px;
           box-shadow: 
             0 0 40px rgba(80, 155, 158, 0.2),
             inset 0 0 60px rgba(80, 155, 158, 0.05);
           animation: pulseGlow 3s ease-in-out infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .hero-image-wrapper img {
+          width: 80%;
+          height: 80%;
+          object-fit: contain;
+          display: block;
           transition: transform 0.3s ease;
         }
 
@@ -146,6 +228,18 @@ const VerifyMePage = () => {
           .hero-image-wrapper {
             width: 200px;
             height: 200px;
+          }
+          
+          .slide-in-card {
+            transform: translateX(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .slide-in-card {
+            transform: translateX(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
           }
         }
       `}</style>
@@ -227,14 +321,16 @@ const VerifyMePage = () => {
           </div>
 
           <div style={styles.featureGrid}>
-            {features.map((f) => (
-              <div key={f.title} style={{ ...styles.featureCard, borderTop: `5px solid ${f.accent}` }} className="interactive-card">
-                <div style={{ ...styles.featureIconWrap, backgroundColor: `${f.accent}1A`, color: f.accent }}>
-                  <i className={`fas ${f.icon}`} aria-hidden="true"></i>
+            {features.map((f, index) => (
+              <SlideInCard key={f.title} delay={index * 150}>
+                <div style={{ ...styles.featureCard, borderTop: `5px solid ${f.accent}` }} className="interactive-card">
+                  <div style={{ ...styles.featureIconWrap, backgroundColor: `${f.accent}1A`, color: f.accent }}>
+                    <i className={`fas ${f.icon}`} aria-hidden="true"></i>
+                  </div>
+                  <h3 style={styles.cardTitle}>{f.title}</h3>
+                  <p style={styles.cardText}>{f.text}</p>
                 </div>
-                <h3 style={styles.cardTitle}>{f.title}</h3>
-                <p style={styles.cardText}>{f.text}</p>
-              </div>
+              </SlideInCard>
             ))}
           </div>
         </div>
@@ -277,6 +373,7 @@ const VerifyMePage = () => {
         </div>
       </section>
 
+      
     </div>
   );
 };
@@ -306,10 +403,21 @@ const styles = {
   bulletList: { listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' },
   centerHead: { textAlign: 'center', marginBottom: '64px' },
   featureGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '32px' },
-  featureCard: { background: '#FFFFFF', borderRadius: 'var(--radius-card)', padding: '44px 36px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', position: 'relative', overflow: 'hidden' },
+  featureCard: { 
+    background: '#FFFFFF', 
+    borderRadius: 'var(--radius-card)', 
+    padding: '44px 36px', 
+    border: '1px solid var(--border-light)', 
+    boxShadow: 'var(--shadow-sm)', 
+    position: 'relative', 
+    overflow: 'hidden',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   featureIconWrap: { width: '52px', height: '52px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', fontSize: '1.1rem' },
   cardTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' },
-  cardText: { fontSize: '0.94rem', color: '#5B6670', lineHeight: 1.65, margin: 0 },
+  cardText: { fontSize: '0.94rem', color: '#5B6670', lineHeight: 1.65, margin: 0, flex: 1 },
   faqWrapper: { maxWidth: '780px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px' },
   faqCard: { background: '#FFFFFF', borderRadius: '14px', padding: '24px 28px', border: '1px solid var(--border-light)' },
   faqQuestion: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', margin: 0, display: 'flex', alignItems: 'center', gap: '4px' },

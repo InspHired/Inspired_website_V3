@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -19,6 +19,65 @@ const modules = [
   { title: "GEO location filter", text: "Pinpoint active, vetted candidates within localized radiuses. Drastically cuts transit lag for immediate emergency assignments.", accent: "var(--orange)" },
   { title: "Performance matrices", text: "Ensure premium service delivery metrics across shift boundaries. Log direct workspace reviews, monitor attendance tracking, and rate shift output metrics inside the interface.", accent: "var(--navy)" },
 ];
+
+// ============================================
+// SLIDE-IN ANIMATION HOOK
+// ============================================
+function useSlideIn(delay = 0) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsVisible(true);
+          }, delay);
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [delay]);
+
+  return { ref, isVisible };
+}
+
+// ============================================
+// SLIDE-IN CARD COMPONENT - Fixed sizing
+// ============================================
+function SlideInCard({ children, delay = 0 }) {
+  const { ref, isVisible } = useSlideIn(delay);
+
+  return (
+    <div
+      ref={ref}
+      className={`slide-in-card ${isVisible ? 'visible' : ''}`}
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%'
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 const WorxPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
@@ -41,6 +100,9 @@ const WorxPage = () => {
 
         .interactive-card {
           transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
         .interactive-card:hover {
           transform: translateY(-6px) !important;
@@ -111,25 +173,46 @@ const WorxPage = () => {
         .faq-answer-wrap { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
         .faq-answer-wrap.open { max-height: 200px; }
 
-        /* ===== HERO IMAGE ===== */
+        /* ===== SLIDE-IN ANIMATIONS ===== */
+        .slide-in-card {
+          opacity: 0;
+          transform: translateX(60px);
+          transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                      transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .slide-in-card.visible {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        /* ===== HERO IMAGE - FIXED ===== */
         .hero-image-wrapper {
           position: relative;
           width: 320px;
           height: 320px;
           margin: 0 auto;
+          border-radius: 50%;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.05);
+          box-shadow: 
+            0 0 40px rgba(80, 155, 158, 0.2),
+            inset 0 0 60px rgba(80, 155, 158, 0.05);
+          animation: pulseGlow 3s ease-in-out infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .hero-image-wrapper img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.05);
-          padding: 20px;
-          box-shadow: 
-            0 0 40px rgba(80, 155, 158, 0.2),
-            inset 0 0 60px rgba(80, 155, 158, 0.05);
-          animation: pulseGlow 3s ease-in-out infinite;
+          object-fit: cover;
+          object-position: center;
+          display: block;
           transition: transform 0.3s ease;
         }
 
@@ -141,6 +224,18 @@ const WorxPage = () => {
           .hero-image-wrapper {
             width: 200px;
             height: 200px;
+          }
+          
+          .slide-in-card {
+            transform: translateX(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .slide-in-card {
+            transform: translateX(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
           }
         }
       `}</style>
@@ -192,14 +287,16 @@ const WorxPage = () => {
           </div>
 
           <div style={styles.featureGrid}>
-            {pillars.map((p) => (
-              <div key={p.title} style={{ ...styles.featureCard, borderTop: `4px solid ${p.accent}` }} className="interactive-card">
-                <div style={{ ...styles.iconBox, backgroundColor: `${p.accent}1A`, color: p.accent }}>
-                  <i className={`fas ${p.icon}`} aria-hidden="true"></i>
+            {pillars.map((p, index) => (
+              <SlideInCard key={p.title} delay={index * 150}>
+                <div style={{ ...styles.featureCard, borderTop: `4px solid ${p.accent}` }} className="interactive-card">
+                  <div style={{ ...styles.iconBox, backgroundColor: `${p.accent}1A`, color: p.accent }}>
+                    <i className={`fas ${p.icon}`} aria-hidden="true"></i>
+                  </div>
+                  <h3 style={styles.cardTitle}>{p.title}</h3>
+                  <p style={styles.cardText}>{p.text}</p>
                 </div>
-                <h3 style={styles.cardTitle}>{p.title}</h3>
-                <p style={styles.cardText}>{p.text}</p>
-              </div>
+              </SlideInCard>
             ))}
           </div>
         </div>
@@ -215,11 +312,13 @@ const WorxPage = () => {
           </div>
 
           <div style={styles.featureGrid}>
-            {modules.map((m) => (
-              <div key={m.title} style={{ ...styles.featureCard, borderLeft: `4px solid ${m.accent}` }} className="interactive-card">
-                <h4 style={{ ...styles.moduleHeading, color: m.accent }}>{m.title}</h4>
-                <p style={styles.cardText}>{m.text}</p>
-              </div>
+            {modules.map((m, index) => (
+              <SlideInCard key={m.title} delay={index * 150 + 200}>
+                <div style={{ ...styles.featureCard, borderLeft: `4px solid ${m.accent}` }} className="interactive-card">
+                  <h4 style={{ ...styles.moduleHeading, color: m.accent }}>{m.title}</h4>
+                  <p style={styles.cardText}>{m.text}</p>
+                </div>
+              </SlideInCard>
             ))}
           </div>
         </div>
@@ -262,7 +361,7 @@ const WorxPage = () => {
         </div>
       </section>
 
-  
+      
     </div>
   );
 };
@@ -286,10 +385,21 @@ const styles = {
   sectionSub: { fontSize: '1.05rem', color: '#5B6670', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 },
   centerHead: { textAlign: 'center', marginBottom: '64px' },
   featureGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '32px' },
-  featureCard: { background: '#FFFFFF', borderRadius: 'var(--radius-card)', padding: '44px 36px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', position: 'relative', overflow: 'hidden' },
+  featureCard: { 
+    background: '#FFFFFF', 
+    borderRadius: 'var(--radius-card)', 
+    padding: '44px 36px', 
+    border: '1px solid var(--border-light)', 
+    boxShadow: 'var(--shadow-sm)', 
+    position: 'relative', 
+    overflow: 'hidden',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   iconBox: { width: '52px', height: '52px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', fontSize: '1.1rem' },
   cardTitle: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' },
-  cardText: { fontSize: '0.94rem', color: '#5B6670', lineHeight: 1.65, margin: 0 },
+  cardText: { fontSize: '0.94rem', color: '#5B6670', lineHeight: 1.65, margin: 0, flex: 1 },
   moduleHeading: { fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px' },
   faqWrapper: { maxWidth: '780px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px' },
   faqCard: { background: '#FFFFFF', borderRadius: '14px', padding: '24px 28px', border: '1px solid var(--border-light)' },

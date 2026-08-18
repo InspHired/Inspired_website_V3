@@ -147,9 +147,19 @@ function Info({ content: propContent }) {
     }
   }, [propContent, contextContent]);
 
-  // Compute node positions
+  // Compute node positions - Responsive radius based on screen size
+  const getRadius = () => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+      if (width < 480) return 32;
+      if (width < 768) return 38;
+      if (width < 1024) return 42;
+    }
+    return 44;
+  };
+
   const nodePositions = useMemo(() => {
-    const radius = 44;
+    const radius = getRadius();
     return flowSteps.map((step, i) => {
       const angle = (360 / flowSteps.length) * i - 90;
       const rad = (angle * Math.PI) / 180;
@@ -419,51 +429,54 @@ function Info({ content: propContent }) {
           border: 1px solid rgba(80, 155, 158, 0.15);
         }
         .about-section {
-          padding: 80px 0;
+          padding: clamp(50px, 8vw, 80px) 0;
           background: #faf6f0;
+          overflow: hidden;
         }
         .container {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 0 32px;
+          padding: 0 clamp(16px, 4vw, 32px);
+          width: 100%;
         }
         .sec-head {
           text-align: center;
-          margin-bottom: 56px;
+          margin-bottom: clamp(32px, 6vw, 56px);
           max-width: 640px;
           margin-left: auto;
           margin-right: auto;
+          padding: 0 16px;
         }
         .about-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 60px;
+          gap: clamp(30px, 5vw, 60px);
           align-items: start;
         }
         .about-text-col {
           padding-top: 8px;
         }
         .section-text {
-          font-size: 17px;
+          font-size: clamp(0.95rem, 1.2vw, 1.05rem);
           color: #3d3d3d;
           line-height: 1.7;
           margin-bottom: 16px;
         }
         .quote-block {
           background: #f5f0e9;
-          padding: 32px 40px;
-          border-radius: var(--radius-card);
-          font-size: 22px;
+          padding: clamp(20px, 2.5vw, 32px) clamp(24px, 3vw, 40px);
+          border-radius: var(--radius-card, 24px);
+          font-size: clamp(1rem, 1.5vw, 1.2rem);
           font-weight: 500;
           line-height: 1.5;
           color: var(--navy);
           margin-top: 32px;
-          border-left: 6px solid var(--teal);
+          border-left: 4px solid var(--teal);
         }
         .recruitment-circle {
           position: relative;
-          width: 380px;
-          height: 380px;
+          width: clamp(300px, 40vw, 380px);
+          height: clamp(300px, 40vw, 380px);
           margin: auto;
           border: 2px dashed rgba(80, 155, 158, 0.3);
           border-radius: 50%;
@@ -477,7 +490,7 @@ function Info({ content: propContent }) {
         }
         .flow-node {
           position: absolute;
-          width: 96px;
+          width: clamp(70px, 10vw, 96px);
           text-align: center;
           transform: translate(-50%, -50%);
           transition: transform var(--transition);
@@ -493,8 +506,8 @@ function Info({ content: propContent }) {
           z-index: 3;
         }
         .flow-node-avatar {
-          width: 60px;
-          height: 60px;
+          width: clamp(44px, 6vw, 60px);
+          height: clamp(44px, 6vw, 60px);
           border-radius: 50%;
           border: 1.5px solid;
           display: flex;
@@ -510,14 +523,15 @@ function Info({ content: propContent }) {
           box-shadow: var(--shadow-md);
         }
         .flow-node p {
-          margin-top: 10px;
-          font-size: 14px;
+          margin-top: clamp(6px, 1vw, 10px);
+          font-size: clamp(11px, 1.2vw, 14px);
           color: var(--navy);
           font-weight: 500;
+          white-space: nowrap;
         }
         .stage-icon {
-          width: 30px;
-          height: 30px;
+          width: clamp(22px, 3vw, 30px);
+          height: clamp(22px, 3vw, 30px);
         }
         .flow-tooltip {
           position: absolute;
@@ -546,8 +560,8 @@ function Info({ content: propContent }) {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 130px;
-          height: 130px;
+          width: clamp(100px, 14vw, 130px);
+          height: clamp(100px, 14vw, 130px);
           border-radius: 50%;
           background: var(--bg);
           border: 1px solid var(--border-light);
@@ -563,12 +577,12 @@ function Info({ content: propContent }) {
           padding: 12px;
         }
         .center-label {
-          font-size: 13px;
+          font-size: clamp(11px, 1.2vw, 13px);
           font-weight: 700;
           margin: 0 0 4px;
         }
         .center-detail {
-          font-size: 10.5px;
+          font-size: clamp(9px, 1vw, 10.5px);
           font-weight: 400;
           color: var(--navy);
           opacity: 0.85;
@@ -577,18 +591,18 @@ function Info({ content: propContent }) {
         }
         .orbit {
           position: absolute;
-          width: 300px;
-          height: 300px;
+          width: clamp(240px, 32vw, 300px);
+          height: clamp(240px, 32vw, 300px);
           top: 50%;
           left: 50%;
-          margin-left: -150px;
-          margin-top: -150px;
+          margin-left: calc(clamp(240px, 32vw, 300px) / -2);
+          margin-top: calc(clamp(240px, 32vw, 300px) / -2);
           animation: orbit 8s linear infinite;
           pointer-events: none;
         }
         .orbit-dot {
-          width: 16px;
-          height: 16px;
+          width: clamp(12px, 1.5vw, 16px);
+          height: clamp(12px, 1.5vw, 16px);
           background: var(--orange);
           border-radius: 50%;
           position: absolute;
@@ -652,41 +666,179 @@ function Info({ content: propContent }) {
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
-        @media (max-width: 900px) {
+        
+        /* ===== RESPONSIVE BREAKPOINTS ===== */
+        @media (max-width: 1024px) {
           .about-grid {
-            grid-template-columns: 1fr;
+            gap: 40px;
           }
           .recruitment-circle {
-            margin-top: 40px;
-          }
-        }
-        @media (max-width: 480px) {
-          .recruitment-circle {
-            width: 300px;
-            height: 300px;
+            width: 320px;
+            height: 320px;
           }
           .flow-node {
-            width: 78px;
+            width: 80px;
+          }
+          .flow-node-avatar {
+            width: 52px;
+            height: 52px;
+          }
+        }
+
+        @media (max-width: 820px) {
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+          }
+          .about-text-col {
+            padding-top: 0;
+          }
+          .recruitment-circle {
+            width: 340px;
+            height: 340px;
+            margin-top: 20px;
+          }
+          .flow-node {
+            width: 76px;
           }
           .flow-node-avatar {
             width: 48px;
             height: 48px;
           }
+          .circle-center {
+            width: 110px;
+            height: 110px;
+          }
+          .center-detail {
+            font-size: 9px;
+          }
+          .orbit {
+            width: 260px;
+            height: 260px;
+            margin-left: -130px;
+            margin-top: -130px;
+          }
+          .quote-block {
+            font-size: 1.1rem;
+            padding: 20px 24px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .about-section {
+            padding: 40px 0;
+          }
+          .sec-head {
+            margin-bottom: 24px;
+          }
+          .sec-head .eyebrow {
+            font-size: 0.65rem;
+            padding: 4px 12px;
+          }
+          .sec-head .title-3d {
+            font-size: 1.8rem;
+          }
+          .recruitment-circle {
+            width: 280px;
+            height: 280px;
+          }
+          .flow-node {
+            width: 64px;
+          }
+          .flow-node p {
+            font-size: 10px;
+            white-space: nowrap;
+          }
+          .flow-node-avatar {
+            width: 40px;
+            height: 40px;
+          }
           .stage-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
           }
           .circle-center {
-            width: 100px;
-            height: 100px;
-            padding: 8px;
+            width: 90px;
+            height: 90px;
+          }
+          .center-progress {
+            font-size: 1.4rem;
+          }
+          .center-label {
+            font-size: 10px;
           }
           .center-detail {
             display: none;
           }
+          .orbit {
+            width: 220px;
+            height: 220px;
+            margin-left: -110px;
+            margin-top: -110px;
+          }
+          .orbit-dot {
+            width: 10px;
+            height: 10px;
+            top: -5px;
+          }
           .quote-block {
-            padding: 20px;
-            font-size: 18px;
+            font-size: 1rem;
+            padding: 16px 20px;
+            border-left-width: 3px;
+          }
+          .section-text {
+            font-size: 0.9rem;
+          }
+        }
+
+        @media (max-width: 400px) {
+          .recruitment-circle {
+            width: 240px;
+            height: 240px;
+          }
+          .flow-node {
+            width: 56px;
+          }
+          .flow-node p {
+            font-size: 9px;
+          }
+          .flow-node-avatar {
+            width: 34px;
+            height: 34px;
+            border-width: 1.5px;
+          }
+          .stage-icon {
+            width: 18px;
+            height: 18px;
+          }
+          .circle-center {
+            width: 76px;
+            height: 76px;
+            padding: 6px;
+          }
+          .center-progress {
+            font-size: 1.1rem;
+          }
+          .center-label {
+            font-size: 8px;
+          }
+          .orbit {
+            width: 190px;
+            height: 190px;
+            margin-left: -95px;
+            margin-top: -95px;
+          }
+          .flow-node-check {
+            width: 14px;
+            height: 14px;
+            font-size: 0.45rem;
+            bottom: -4px;
+            right: -4px;
+          }
+          .flow-tooltip {
+            width: 130px;
+            font-size: 10px;
+            padding: 6px 10px;
           }
         }
       `}</style>

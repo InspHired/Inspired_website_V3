@@ -13,7 +13,6 @@ import Info from "./info.jsx";
 import Ecosystem from "../pages/Ecosystem";
 import Team from "../pages/TeamPage";
 import Testimonials from "../pages/Testimonials.jsx";
-import Footer from "../components/Footer";
 import { OrganizationSchema, BreadcrumbSchema } from "../components/Schema";
 import SubscribeModal from "../components/SubscribeModal";
 
@@ -281,7 +280,7 @@ function HomePage() {
       <BreadcrumbSchema items={breadcrumbItems} />
 
       {/* ============ MAIN CONTENT ============ */}
-      <main>
+      <main style={styles.main}>
         <style>{`
           /* ── IMPORT PLAYFAIR DISPLAY ── */
           @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
@@ -354,26 +353,21 @@ function HomePage() {
             margin-top: 16px;
           }
 
-          /* ====== Accessibility Improvements ====== */
-          .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
+          /* ── RESPONSIVE FIXES ── */
+          .subscribe-card {
+            background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
+            border-radius: 24px;
+            padding: clamp(32px, 5vw, 56px) clamp(24px, 4vw, 56px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            gap: clamp(24px, 3vw, 32px);
+            box-shadow: 0 16px 48px rgba(31, 53, 64, 0.2);
+            width: 100%;
           }
 
-          /* Focus visible for keyboard navigation */
-          a:focus-visible,
-          button:focus-visible {
-            outline: 2px solid #509b9e;
-            outline-offset: 2px;
-          }
-
-          /* ====== SUBSCRIBE SECTION ====== */
           .subscribe-heading {
             font-family: 'Playfair Display', Georgia, serif !important;
             font-size: clamp(1.3rem, 2vw, 1.8rem);
@@ -385,22 +379,10 @@ function HomePage() {
           }
 
           .subscribe-text {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 1.2vw, 1rem);
             color: rgba(255,255,255,0.7);
             margin: 0;
-          }
-
-          .subscribe-card {
-            background: linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%);
-            border-radius: 24px;
-            padding: 48px 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-            gap: 32px;
-            box-shadow: 0 16px 48px rgba(31, 53, 64, 0.2);
+            max-width: 600px;
           }
 
           .subscribe-buttons {
@@ -408,6 +390,7 @@ function HomePage() {
             gap: 14px;
             flex-wrap: wrap;
             justify-content: center;
+            width: 100%;
           }
 
           /* ── 3D METALLIC BUTTONS ── */
@@ -415,9 +398,9 @@ function HomePage() {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 32px;
+            padding: clamp(12px, 1.5vw, 14px) clamp(24px, 3vw, 32px);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 1.1vw, 0.95rem);
             font-weight: 700;
             text-decoration: none;
             border-radius: 50px;
@@ -436,6 +419,7 @@ function HomePage() {
               0 4px 0 #285759,
               0 8px 15px rgba(31, 53, 64, 0.25);
             text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
           }
 
           .btn-3d-primary:hover {
@@ -460,9 +444,9 @@ function HomePage() {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 32px;
+            padding: clamp(12px, 1.5vw, 14px) clamp(24px, 3vw, 32px);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 1.1vw, 0.95rem);
             font-weight: 700;
             text-decoration: none;
             border-radius: 50px;
@@ -477,6 +461,7 @@ function HomePage() {
             border: 1.5px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
             text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
           }
 
           .btn-3d-secondary:hover {
@@ -492,23 +477,82 @@ function HomePage() {
           }
 
           .subscribe-section {
-            padding: 80px 0 100px;
+            padding: clamp(50px, 8vw, 80px) 0;
             background-color: var(--bg, #faf6f0);
           }
 
-          @media (max-width: 600px) {
+          /* ── RESPONSIVE BREAKPOINTS ── */
+          @media (max-width: 768px) {
             .subscribe-card {
-              padding: 32px 24px;
+              padding: 32px 20px;
+              border-radius: 20px;
+              margin: 0 10px;
             }
+            
             .subscribe-buttons {
               flex-direction: column;
-              width: 100%;
+              align-items: center;
+              gap: 12px;
             }
+            
             .subscribe-buttons a,
             .subscribe-buttons button {
               width: 100%;
               justify-content: center;
+              white-space: normal;
             }
+
+            .btn-3d-primary,
+            .btn-3d-secondary {
+              width: 100%;
+              justify-content: center;
+              padding: 14px 24px;
+              font-size: 0.9rem;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .subscribe-section {
+              padding: 40px 0;
+            }
+            
+            .subscribe-card {
+              padding: 24px 16px;
+              border-radius: 16px;
+              margin: 0 8px;
+            }
+            
+            .subscribe-heading {
+              font-size: 1.1rem;
+            }
+            
+            .subscribe-text {
+              font-size: 0.85rem;
+            }
+
+            .btn-3d-primary,
+            .btn-3d-secondary {
+              padding: 12px 20px;
+              font-size: 0.8rem;
+            }
+          }
+
+          /* ── ACCESSIBILITY ── */
+          .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+          }
+
+          a:focus-visible,
+          button:focus-visible {
+            outline: 2px solid #509b9e;
+            outline-offset: 2px;
           }
         `}</style>
 
@@ -560,8 +604,6 @@ function HomePage() {
           onClose={() => setModalOpen(false)}
           type={modalType}
         />
-
-        
       </main>
     </>
   );
@@ -569,6 +611,11 @@ function HomePage() {
 
 // Inline styles for loading/error states
 const styles = {
+  main: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   loadingContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -576,7 +623,8 @@ const styles = {
     justifyContent: 'center',
     minHeight: '100vh',
     backgroundColor: '#faf6f0',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    padding: '20px'
   },
   spinner: {
     width: '40px',
@@ -629,16 +677,12 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     transition: 'background-color 0.2s, transform 0.2s',
-    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)',
-    ':hover': {
-      transform: 'translateY(-2px)',
-      boxShadow: '0 8px 25px rgba(80, 155, 158, 0.4)'
-    }
+    boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
   },
   container: {
     maxWidth: "1280px",
     margin: "0 auto",
-    padding: "0 32px",
+    padding: "0 20px",
     width: "100%",
   },
 };

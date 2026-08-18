@@ -18,9 +18,33 @@ function Navbar() {
     };
   }, [isOpen]);
 
+  // ===== FIX: Scroll to top on navigation =====
+  const handleNavClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsOpen(false);
+    setIsDropdownOpen(false);
+  };
+
   return (
     <header className="navbar">
       <style>{`
+        /* ===== RESET & BASE ===== */
+        .navbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px 24px;
+          background: var(--bg, #faf6f0);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          min-height: 72px;
+          width: 100%;
+        }
+
         .brand-logo-container {
           display: inline-flex;
           flex-direction: column;
@@ -28,6 +52,7 @@ function Navbar() {
           text-decoration: none;
           user-select: none;
           transition: transform 0.2s ease;
+          flex-shrink: 0;
         }
 
         .brand-logo-container:hover {
@@ -71,6 +96,8 @@ function Navbar() {
             0 6px 12px rgba(31, 53, 64, 0.2);
           text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
           transform: translateY(-2px);
+          white-space: nowrap;
+          text-align: center;
         }
 
         .btn-consult:hover {
@@ -223,13 +250,18 @@ function Navbar() {
         .hamburger-btn {
           display: none;
           flex-direction: column;
+          justify-content: center;
+          align-items: center;
           gap: 5px;
           background: none;
           border: none;
           cursor: pointer;
-          padding: 6px 4px;
+          padding: 8px;
           z-index: 200;
           border-radius: 4px;
+          width: 44px;
+          height: 44px;
+          flex-shrink: 0;
         }
 
         .hamburger-line {
@@ -264,6 +296,10 @@ function Navbar() {
           backdrop-filter: blur(2px);
         }
 
+        .nav-overlay.visible {
+          display: block;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
           .nav-links {
@@ -271,7 +307,12 @@ function Navbar() {
           }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 820px) {
+          .navbar {
+            padding: 14px 20px;
+            min-height: 64px;
+          }
+
           .logo-image-wrapper {
             height: 38px;
           }
@@ -281,6 +322,10 @@ function Navbar() {
           }
 
           .nav-overlay {
+            display: none;
+          }
+
+          .nav-overlay.visible {
             display: block;
           }
 
@@ -288,14 +333,14 @@ function Navbar() {
             position: fixed;
             top: 0;
             right: -100%;
-            width: 75%;
+            width: 80%;
             max-width: 340px;
             height: 100vh;
             background: #ffffff;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
             gap: 0;
-            padding: 80px 28px 30px;
+            padding: 80px 24px 30px;
             margin: 0;
             z-index: 100;
             transition: right 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -310,22 +355,23 @@ function Navbar() {
 
           .nav-links li {
             width: 100%;
-            padding: 6px 0;
+            padding: 0;
             border-bottom: 1px solid rgba(31, 53, 64, 0.04);
           }
 
           .nav-links li:last-child {
             border-bottom: none;
-            margin-top: 16px;
-            padding-top: 16px;
+            margin-top: 8px;
+            padding-top: 8px;
             border-top: 1px solid rgba(31, 53, 64, 0.08);
           }
 
           .nav-links a {
             display: block;
-            font-size: 1.1rem;
-            padding: 8px 0;
+            font-size: 1.05rem;
+            padding: 12px 0;
             width: 100%;
+            white-space: normal;
           }
 
           .nav-links a.active {
@@ -333,13 +379,25 @@ function Navbar() {
             color: #509b9e;
           }
 
+          /* ===== FIX: Button full width and centered ===== */
+          .nav-links li:last-child {
+            border-top: 1px solid rgba(31, 53, 64, 0.08);
+            border-bottom: none;
+            padding-top: 16px;
+            margin-top: 8px;
+          }
+
           .btn-consult {
             width: 100%;
             justify-content: center;
-            color: #ffffff !important;
+            padding: 14px 24px;
+            font-size: 0.95rem;
+            white-space: normal;
+            display: flex;
+            text-align: center;
           }
 
-          /* Dropdown in mobile */
+          /* Dropdown in mobile - improved */
           .dropdown-wrapper {
             width: 100%;
           }
@@ -347,19 +405,20 @@ function Navbar() {
           .dropdown-trigger {
             width: 100%;
             justify-content: space-between;
-            padding: 8px 0;
-            font-size: 1.1rem;
+            padding: 12px 0;
+            font-size: 1.05rem;
           }
 
           .dropdown-trigger .arrow {
             font-size: 1.1rem;
+            flex-shrink: 0;
           }
 
           .dropdown-menu {
             position: static;
             transform: none;
             box-shadow: none;
-            padding: 0 0 0 16px;
+            padding: 0;
             background: transparent;
             opacity: 1;
             visibility: visible;
@@ -370,26 +429,79 @@ function Navbar() {
             min-width: unset;
             width: 100%;
             left: auto;
+            border-radius: 0;
           }
 
           .dropdown-menu.open {
             height: auto;
-            padding: 8px 0 8px 16px;
+            padding: 4px 0 8px 16px;
             transform: none;
+          }
+
+          .dropdown-menu li {
+            border-bottom: none !important;
+            padding: 0;
           }
 
           .dropdown-menu a {
             padding: 8px 0;
             font-size: 0.95rem;
+            font-weight: 500;
           }
 
           .dropdown-menu a:hover {
             background: transparent;
           }
         }
+
+        @media (max-width: 480px) {
+          .navbar {
+            padding: 12px 16px;
+            min-height: 56px;
+          }
+
+          .logo-image-wrapper {
+            height: 32px;
+          }
+
+          .nav-links {
+            padding: 70px 20px 20px;
+            width: 85%;
+          }
+
+          .nav-links a {
+            font-size: 0.95rem;
+            padding: 10px 0;
+          }
+
+          .dropdown-trigger {
+            font-size: 0.95rem;
+            padding: 10px 0;
+          }
+
+          /* ===== FIX: Button full width and centered on mobile ===== */
+          .btn-consult {
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            width: 100%;
+            justify-content: center;
+            display: flex;
+            text-align: center;
+          }
+
+          .dropdown-menu a {
+            font-size: 0.85rem;
+            padding: 6px 0;
+          }
+        }
       `}</style>
 
-      <Link to="/" className="brand-logo-container" aria-label="InspHired Recruitment Solutions Home">
+      <Link 
+        to="/" 
+        className="brand-logo-container" 
+        aria-label="InspHired Recruitment Solutions Home"
+        onClick={handleNavClick}
+      >
         <div className="logo-image-wrapper">
           <img 
             src="/assets/logo.png" 
@@ -412,10 +524,33 @@ function Navbar() {
       </button>
 
       <ul className={`nav-links ${isOpen ? "nav-links-open" : ""}`}>
-        <li><Link to="/" className={location.pathname === "/" ? "active" : ""}>Home</Link></li>
-        <li><Link to="/about-page" className={location.pathname === "/about-page" ? "active" : ""}>About</Link></li>
-        <li><Link to="/services" className={location.pathname === "/services" ? "active" : ""}>Services</Link></li>
-        
+        <li>
+          <Link 
+            to="/" 
+            className={location.pathname === "/" ? "active" : ""}
+            onClick={handleNavClick}
+          >
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/about-page" 
+            className={location.pathname === "/about-page" ? "active" : ""}
+            onClick={handleNavClick}
+          >
+            About
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/services" 
+            className={location.pathname === "/services" ? "active" : ""}
+            onClick={handleNavClick}
+          >
+            Services
+          </Link>
+        </li>
         
         {/* "Our Brands" Dropdown */}
         <li className="dropdown-wrapper">
@@ -429,15 +564,73 @@ function Navbar() {
             <span className={`arrow ${isDropdownOpen ? "open" : ""}`}>▾</span>
           </button>
           <ul className={`dropdown-menu ${isDropdownOpen ? "open" : ""}`}>
-            <li><Link to="/career-lab" onClick={() => setIsDropdownOpen(false)}>Career Lab</Link></li>
-            <li><Link to="/connect" onClick={() => setIsDropdownOpen(false)}>Connect</Link></li>
-            <li><Link to="/jobot" onClick={() => setIsDropdownOpen(false)}>Jobot</Link></li>
-            <li><Link to="/worx" onClick={() => setIsDropdownOpen(false)}>Worx</Link></li>
-            <li><Link to="/verify-me" onClick={() => setIsDropdownOpen(false)}>VerifyMe</Link></li>
+            <li>
+              <Link 
+                to="/career-lab" 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleNavClick();
+                }}
+              >
+                Career Lab
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/connect" 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleNavClick();
+                }}
+              >
+                Insphired Connect
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/jobot" 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleNavClick();
+                }}
+              >
+                Jobot
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/worx" 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleNavClick();
+                }}
+              >
+                Insphired Worx
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/verify-me" 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleNavClick();
+                }}
+              >
+                VerifyMe
+              </Link>
+            </li>
           </ul>
         </li>
 
-        <li><Link to="/contact" className={location.pathname === "/contact" ? "active" : ""}>Contact</Link></li>
+        <li>
+          <Link 
+            to="/contact" 
+            className={location.pathname === "/contact" ? "active" : ""}
+            onClick={handleNavClick}
+          >
+            Contact
+          </Link>
+        </li>
         <li>
           <a
             href="https://calendly.com/recruitment-insphired/book-a-consultation-with-a-client-relationship-manager?month=2026-05"
@@ -450,7 +643,7 @@ function Navbar() {
         </li>
       </ul>
 
-      {isOpen && <div className="nav-overlay" onClick={() => setIsOpen(false)}></div>}
+      {isOpen && <div className="nav-overlay visible" onClick={() => setIsOpen(false)}></div>}
     </header>
   );
 }

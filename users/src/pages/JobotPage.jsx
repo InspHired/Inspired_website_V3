@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -77,6 +77,65 @@ function PillarIcon({ type, color }) {
   }
 }
 
+// ============================================
+// SLIDE-IN ANIMATION HOOK
+// ============================================
+function useSlideIn(delay = 0) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsVisible(true);
+          }, delay);
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [delay]);
+
+  return { ref, isVisible };
+}
+
+// ============================================
+// SLIDE-IN CARD COMPONENT - Fixed sizing
+// ============================================
+function SlideInCard({ children, delay = 0 }) {
+  const { ref, isVisible } = useSlideIn(delay);
+
+  return (
+    <div
+      ref={ref}
+      className={`slide-in-card ${isVisible ? 'visible' : ''}`}
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%'
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 const JobotPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
@@ -98,6 +157,9 @@ const JobotPage = () => {
 
         .interactive-card {
           transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition) !important;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
         .interactive-card:hover {
           transform: translateY(-6px) !important;
@@ -195,25 +257,46 @@ const JobotPage = () => {
         .pi-gbar-3 { animation-delay: 0.5s; }
         @keyframes piGrowBar { 0%, 100% { transform: scaleY(0.85); } 50% { transform: scaleY(1); } }
 
-        /* ===== HERO IMAGE ===== */
+        /* ===== SLIDE-IN ANIMATIONS ===== */
+        .slide-in-card {
+          opacity: 0;
+          transform: translateX(60px);
+          transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                      transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .slide-in-card.visible {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        /* ===== HERO IMAGE - FIXED ===== */
         .hero-image-wrapper {
           position: relative;
           width: 320px;
           height: 320px;
           margin: 0 auto;
+          border-radius: 50%;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.05);
+          box-shadow: 
+            0 0 40px rgba(80, 155, 158, 0.2),
+            inset 0 0 60px rgba(80, 155, 158, 0.05);
+          animation: pulseGlow 3s ease-in-out infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .hero-image-wrapper img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.05);
-          padding: 20px;
-          box-shadow: 
-            0 0 40px rgba(80, 155, 158, 0.2),
-            inset 0 0 60px rgba(80, 155, 158, 0.05);
-          animation: pulseGlow 3s ease-in-out infinite;
+          object-fit: cover;
+          object-position: center;
+          display: block;
           transition: transform 0.3s ease;
         }
 
@@ -225,6 +308,18 @@ const JobotPage = () => {
           .hero-image-wrapper {
             width: 200px;
             height: 200px;
+          }
+          
+          .slide-in-card {
+            transform: translateX(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .slide-in-card {
+            transform: translateX(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
           }
         }
       `}</style>
@@ -277,14 +372,16 @@ const JobotPage = () => {
           </div>
 
           <div style={styles.featureGrid}>
-            {pillars.map((p) => (
-              <div key={p.title} style={{ ...styles.featureCard, borderTop: `4px solid ${p.accent}` }} className="interactive-card">
-                <div style={{ ...styles.iconBox, backgroundColor: `${p.accent}1A` }}>
-                  <PillarIcon type={p.icon} color={p.accent} />
+            {pillars.map((p, index) => (
+              <SlideInCard key={p.title} delay={index * 150}>
+                <div style={{ ...styles.featureCard, borderTop: `4px solid ${p.accent}` }} className="interactive-card">
+                  <div style={{ ...styles.iconBox, backgroundColor: `${p.accent}1A` }}>
+                    <PillarIcon type={p.icon} color={p.accent} />
+                  </div>
+                  <h3 style={styles.cardTitle}>{p.title}</h3>
+                  <p style={styles.cardText}>{p.text}</p>
                 </div>
-                <h3 style={styles.cardTitle}>{p.title}</h3>
-                <p style={styles.cardText}>{p.text}</p>
-              </div>
+              </SlideInCard>
             ))}
           </div>
         </div>
@@ -300,11 +397,13 @@ const JobotPage = () => {
           </div>
 
           <div style={styles.featureGrid}>
-            {modules.map((m) => (
-              <div key={m.title} style={{ ...styles.featureCard, borderLeft: `4px solid ${m.accent}` }} className="interactive-card">
-                <h4 style={{ ...styles.moduleHeading, color: m.accent }}>{m.title}</h4>
-                <p style={styles.cardText}>{m.text}</p>
-              </div>
+            {modules.map((m, index) => (
+              <SlideInCard key={m.title} delay={index * 150 + 200}>
+                <div style={{ ...styles.featureCard, borderLeft: `4px solid ${m.accent}` }} className="interactive-card">
+                  <h4 style={{ ...styles.moduleHeading, color: m.accent }}>{m.title}</h4>
+                  <p style={styles.cardText}>{m.text}</p>
+                </div>
+              </SlideInCard>
             ))}
           </div>
         </div>
@@ -355,7 +454,7 @@ const JobotPage = () => {
         </div>
       </section>
 
-
+      
     </div>
   );
 };
@@ -485,7 +584,10 @@ const styles = {
     border: '1px solid var(--border-light)',
     boxShadow: 'var(--shadow-sm)',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
   },
   iconBox: {
     width: '52px',
@@ -507,7 +609,8 @@ const styles = {
     fontSize: '0.94rem',
     color: '#5B6670',
     lineHeight: 1.65,
-    margin: 0
+    margin: 0,
+    flex: 1
   },
   moduleHeading: {
     fontFamily: "'Playfair Display', Georgia, serif",

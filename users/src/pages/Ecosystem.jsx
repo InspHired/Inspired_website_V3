@@ -16,7 +16,7 @@ const ecosystemPlatforms = [
     tagline: "In-house AI Applicant Tracking System",
     features: ["AI-powered candidate matching", "Full pipeline management", "ATS & CRM in one platform"],
     cta: "Learn more",
-    ctaTo: "/jobot",  // Changed from ctaHref to ctaTo
+    ctaTo: "/jobot",
     accent: C.teal,
     img: "/assets/JobBot.png",
   },
@@ -84,7 +84,6 @@ function Ecosystem() {
                   ))}
                 </ul>
 
-                {/* ✅ Use Link instead of a tag */}
                 <Link to={p.ctaTo} className="eco-btn" style={{ borderColor: p.accent }}>
                   {p.cta}
                   <span className="eco-arrow" style={{ background: p.accent }}>→</span>
