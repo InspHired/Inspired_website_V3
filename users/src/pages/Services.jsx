@@ -183,12 +183,12 @@ const AnimatedProcessStep = ({ step, index, hoveredStep, setHoveredStep }) => {
     >
       <span style={{ 
         ...styles.processNumber, 
-        color: hoveredStep === step.number ? step.accent || 'var(--teal)' : 'rgba(31, 53, 64, 0.08)' 
+        color: hoveredStep === step.number ? step.accent || 'var(--teal)' : 'rgba(255, 255, 255, 0.15)' 
       }}>
         {step.number}
       </span>
       <div style={styles.processStepContent}>
-        <h4 className="title-3d" style={{ fontSize: '1.05rem', marginBottom: '8px' }}>
+        <h4 className="title-3d-dark" style={{ fontSize: '1.05rem', marginBottom: '8px' }}>
           {step.title}
         </h4>
         <p style={styles.processText}>{step.text}</p>
@@ -201,7 +201,7 @@ const AnimatedProcessStep = ({ step, index, hoveredStep, setHoveredStep }) => {
 const AnimatedVerificationItem = ({ item, index }) => {
   const { elementRef } = useScrollAnimation(0.1);
   const delay = 0.2 + (index * 0.08);
-  const colors = ['var(--teal)', 'var(--orange)', 'var(--yellow)', 'var(--navy)', 'var(--teal)', 'var(--orange)'];
+  const colors = ['var(--teal)', 'var(--orange)', 'var(--yellow)', 'var(--teal)', 'var(--teal)', 'var(--orange)'];
   
   return (
     <div
@@ -220,7 +220,7 @@ const AnimatedVerificationItem = ({ item, index }) => {
       }}>
         <i className={`fas ${item.icon || 'fa-check'}`} aria-hidden="true"></i>
       </div>
-      <h4 className="title-3d" style={{ fontSize: '0.98rem', marginBottom: 0 }}>{item.title}</h4>
+      <h4 className="title-3d-dark" style={{ fontSize: '0.98rem', marginBottom: 0 }}>{item.title}</h4>
     </div>
   );
 };
@@ -727,6 +727,25 @@ const ServicesPage = () => {
             filter: drop-shadow(0 4px 8px rgba(31, 53, 64, 0.15));
           }
 
+          .title-3d-dark {
+            display: block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            position: relative;
+            text-shadow: 
+              0 2px 4px rgba(0, 0, 0, 0.3),
+              0 8px 16px rgba(0, 0, 0, 0.2),
+              0 12px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            background: linear-gradient(180deg, #ffffff 30%, #a8c4cc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+
           .title-section {
             font-size: clamp(2rem, 3.5vw, 2.8rem);
             line-height: 1.2;
@@ -756,6 +775,21 @@ const ServicesPage = () => {
             border-radius: 20px;
             margin-bottom: 16px;
             border: 1px solid rgba(80, 155, 158, 0.15);
+          }
+
+          .eyebrow-3d-dark {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal, #509b9e);
+            background: rgba(80, 155, 158, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(80, 155, 158, 0.25);
           }
 
           /* ── FINAL CTA HEADING ── */
@@ -856,12 +890,12 @@ const ServicesPage = () => {
           }
           .animate-fadeup { animation: fadeInUp 0.6s ease-out forwards; }
 
-          /* ── SLIDE IN FROM RIGHT - SLOW & INDIVIDUAL ── */
+          /* ── SLIDE IN FROM RIGHT - SLOWER ANIMATION ── */
           .slide-in-right {
             opacity: 0;
             transform: translateX(80px);
-            transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                        transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           }
 
           .slide-in-right.slide-in-visible {
@@ -885,7 +919,7 @@ const ServicesPage = () => {
           }
           .process-step:hover {
             transform: translateY(-4px) !important;
-            box-shadow: var(--shadow-md) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
           }
 
           .verify-item {
@@ -893,8 +927,8 @@ const ServicesPage = () => {
             will-change: transform, opacity;
           }
           .verify-item:hover {
-            background-color: var(--bg) !important;
-            border-color: rgba(80, 155, 158, 0.35) !important;
+            background-color: rgba(255, 255, 255, 0.12) !important;
+            border-color: rgba(80, 155, 158, 0.5) !important;
           }
 
           .testimonial-card {
@@ -903,7 +937,7 @@ const ServicesPage = () => {
           }
           .testimonial-card:hover {
             transform: translateY(-6px) !important;
-            box-shadow: var(--shadow-md) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
           }
 
           /* ── SERVICE PILLARS CANVAS CSS ── */
@@ -1224,8 +1258,8 @@ const ServicesPage = () => {
             /* Mobile: slide from bottom with slower animation */
             .slide-in-right {
               transform: translateY(50px) !important;
-              transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                          transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+              transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                          transform 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
             }
             .slide-in-right.slide-in-visible {
               transform: translateY(0) !important;
@@ -1349,12 +1383,12 @@ const ServicesPage = () => {
         </section>
 
         {/* ── FOR EMPLOYERS SECTION ── */}
-        <section style={styles.sectionWhite} aria-labelledby="employers-heading">
+        <section style={styles.sectionEmployers} aria-labelledby="employers-heading">
           <div style={styles.container}>
-            <div style={styles.centerHead}>
-              <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>For employers</span>
-              <h2 id="employers-heading" className="title-3d title-section">A proven hiring framework built for results</h2>
-              <p style={styles.sectionSub}>
+            <div style={styles.centerHeadDark}>
+              <span className="eyebrow-3d-dark" style={{ marginBottom: '8px' }}>For employers</span>
+              <h2 id="employers-heading" className="title-3d-dark title-section">A proven hiring framework built for results</h2>
+              <p style={styles.sectionSubDark}>
                 Every step of our recruitment process is intentionally designed to deliver exceptional candidates and long-term hiring success.
               </p>
             </div>
@@ -1373,20 +1407,20 @@ const ServicesPage = () => {
             </div>
 
             {/* Quote */}
-            <div style={styles.quoteWrap}>
-              <i className="fas fa-quote-left" style={styles.quoteMark} aria-hidden="true"></i>
-              <p style={styles.quoteText}>
+            <div style={styles.quoteWrapDark}>
+              <i className="fas fa-quote-left" style={styles.quoteMarkDark} aria-hidden="true"></i>
+              <p style={styles.quoteTextDark}>
                 {employersQuote.quote || 'Hiring is the most important people function you have, and most of us aren\'t as good at it as we think. Refocusing your resources on hiring better will have a higher return than almost any training program you can develop.'}
               </p>
-              <p style={styles.quoteAttribution}>{employersQuote.attribution || '— Laszlo Bock'}</p>
+              <p style={styles.quoteAttributionDark}>{employersQuote.attribution || '— Laszlo Bock'}</p>
             </div>
 
             {/* Verification Services */}
             <div style={styles.verifySection}>
-              <div style={styles.centerHead}>
-                <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Verification services</span>
-                <h2 className="title-3d title-section" style={{ marginBottom: '8px' }}>Recruitment backed by trusted verification</h2>
-                <p style={styles.sectionSub}>
+              <div style={styles.centerHeadDark}>
+                <span className="eyebrow-3d-dark" style={{ marginBottom: '8px' }}>Verification services</span>
+                <h2 className="title-3d-dark title-section" style={{ marginBottom: '8px' }}>Recruitment backed by trusted verification</h2>
+                <p style={styles.sectionSubDark}>
                   We ensure every candidate is thoroughly verified to protect your business and strengthen hiring confidence.
                 </p>
               </div>
@@ -1400,10 +1434,10 @@ const ServicesPage = () => {
 
             {/* Client Testimonials */}
             <div style={styles.testimonialSection}>
-              <div style={styles.centerHead}>
-                <span className="eyebrow-3d" style={{ marginBottom: '8px' }}>Client testimonials</span>
-                <h2 className="title-3d title-section" style={{ marginBottom: '8px' }}>Trusted by growing organisations</h2>
-                <p style={styles.sectionSub}>
+              <div style={styles.centerHeadDark}>
+                <span className="eyebrow-3d-dark" style={{ marginBottom: '8px' }}>Client testimonials</span>
+                <h2 className="title-3d-dark title-section" style={{ marginBottom: '8px' }}>Trusted by growing organisations</h2>
+                <p style={styles.sectionSubDark}>
                   Discover how InspHired has transformed recruitment experiences for businesses across Africa.
                 </p>
               </div>
@@ -1501,7 +1535,18 @@ const styles = {
   },
   sectionWhite: { padding: '100px 0', backgroundColor: '#FFFFFF' },
   sectionLight: { padding: '100px 0', backgroundColor: 'var(--bg)' },
+  sectionEmployers: { 
+    padding: '100px 0', 
+    background: 'linear-gradient(145deg, #1a2e38 0%, #0f1e26 100%)',
+  },
   centerHead: {
+    textAlign: 'center',
+    marginBottom: '56px',
+    maxWidth: '640px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  centerHeadDark: {
     textAlign: 'center',
     marginBottom: '56px',
     maxWidth: '640px',
@@ -1511,6 +1556,14 @@ const styles = {
   sectionSub: {
     fontSize: '1.05rem',
     color: '#5B6670',
+    maxWidth: '640px',
+    margin: '0 auto',
+    lineHeight: 1.6,
+    marginTop: '16px',
+  },
+  sectionSubDark: {
+    fontSize: '1.05rem',
+    color: 'rgba(255, 255, 255, 0.75)',
     maxWidth: '640px',
     margin: '0 auto',
     lineHeight: 1.6,
@@ -1533,7 +1586,7 @@ const styles = {
     border: '1px solid var(--border-light)',
     boxShadow: 'var(--shadow-sm)',
     position: 'relative',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   },
   serviceNumber: {
     display: 'block',
@@ -1590,7 +1643,7 @@ const styles = {
     lineHeight: 1.6,
     margin: 0
   },
-  // Employer section styles
+  // Employer section styles - updated for dark background
   processGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -1600,13 +1653,14 @@ const styles = {
   processStep: {
     display: 'flex',
     gap: '20px',
-    background: '#FFFFFF',
+    background: 'rgba(255, 255, 255, 0.06)',
     borderRadius: '16px',
     padding: '28px 24px',
-    border: '1px solid var(--border-light)',
-    boxShadow: 'var(--shadow-sm)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    alignItems: 'flex-start'
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    alignItems: 'flex-start',
+    backdropFilter: 'blur(8px)',
   },
   processNumber: {
     fontSize: '2.4rem',
@@ -1621,33 +1675,34 @@ const styles = {
   },
   processText: {
     fontSize: '0.92rem',
-    color: '#5B6670',
+    color: 'rgba(255, 255, 255, 0.8)',
     lineHeight: 1.6,
     margin: 0
   },
-  quoteWrap: {
+  quoteWrapDark: {
     maxWidth: '820px',
     margin: '0 auto 60px auto',
     textAlign: 'center',
     padding: '40px 30px',
-    backgroundColor: 'var(--bg)',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     borderRadius: '16px',
-    border: '1px solid var(--border-light)'
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    backdropFilter: 'blur(8px)',
   },
-  quoteMark: {
+  quoteMarkDark: {
     fontSize: '2rem',
     color: 'rgba(80, 155, 158, 0.5)',
     marginBottom: '20px',
     display: 'block'
   },
-  quoteText: {
+  quoteTextDark: {
     fontSize: '1.3rem',
     lineHeight: 1.6,
-    color: 'var(--navy)',
+    color: '#ffffff',
     fontWeight: 500,
     marginBottom: '20px'
   },
-  quoteAttribution: {
+  quoteAttributionDark: {
     fontSize: '0.95rem',
     color: 'var(--teal)',
     fontWeight: 600,
@@ -1665,11 +1720,12 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '16px',
-    background: '#FFFFFF',
-    border: '1px solid var(--border-light)',
+    background: 'rgba(255, 255, 255, 0.06)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
     borderRadius: '16px',
     padding: '22px',
-    transition: 'background-color 0.3s ease, border-color 0.3s ease'
+    transition: 'background-color 0.3s ease, border-color 0.3s ease',
+    backdropFilter: 'blur(8px)',
   },
   verifyIcon: {
     width: '46px',
@@ -1690,22 +1746,23 @@ const styles = {
     gap: '28px'
   },
   testimonialCard: {
-    background: 'var(--bg)',
+    background: 'rgba(255, 255, 255, 0.06)',
     borderRadius: 'var(--radius-card)',
     padding: '32px 28px',
-    border: '1px solid var(--border-light)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    backdropFilter: 'blur(8px)',
   },
   testimonialQuote: {
     fontSize: '0.98rem',
-    color: 'var(--navy)',
+    color: 'rgba(255, 255, 255, 0.9)',
     lineHeight: 1.65,
     marginBottom: '18px'
   },
   testimonialName: {
     fontSize: '0.92rem',
     fontWeight: 700,
-    color: '#5B6670',
+    color: 'rgba(255, 255, 255, 0.6)',
     margin: 0
   },
   starRow: {
