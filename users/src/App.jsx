@@ -12,6 +12,8 @@ import VerifyMePage from "./pages/VerifyMePage";
 import Services from "./pages/Services";
 import EmployersPage from "./pages/EmployersPage";
 import ContactPage from "./pages/ContactPage";
+import BlogPage from "./pages/BlogPage"; // ← Import BlogPage
+import BlogPostPage from "./pages/BlogPostPage"; // ← Import BlogPostPage
 import Navbar from "./components/Navbar";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Footer from "./components/Footer";
@@ -34,6 +36,8 @@ function App() {
           <Route path="/connect" element={<ConnectPage />} />
           <Route path="/verify-me" element={<VerifyMePage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
         </Routes>
         <Footer />
         <WhatsAppButton />

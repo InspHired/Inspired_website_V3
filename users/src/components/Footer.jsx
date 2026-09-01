@@ -38,6 +38,7 @@ const Footer = ({ content = {} }) => {
             <ul>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/about-page">About</Link></li>
+              <li><Link to="/blog">Blog</Link></li> {/* ← Added Blog Link */}
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/services">Services</Link></li>
             </ul>
@@ -47,10 +48,10 @@ const Footer = ({ content = {} }) => {
           <div className="footer-links">
             <h4 className="footer-heading">Solutions</h4>
             <ul>
-              <li><a href="/verify-me">VerifyMe</a></li>
-              <li><a href="/worx">InspHired Worx</a></li>
-              <li><a href="/connect">InspHired Connect</a></li>
-              <li><a href="/jobot">Jobot by InspHired</a></li>
+              <li><Link to="/verify-me">VerifyMe</Link></li>
+              <li><Link to="/worx">InspHired Worx</Link></li>
+              <li><Link to="/connect">InspHired Connect</Link></li>
+              <li><Link to="/jobot">Jobot by InspHired</Link></li>
             </ul>
           </div>
 
