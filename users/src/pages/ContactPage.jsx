@@ -10,8 +10,10 @@ const ContactPage = () => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+  const [activeForm, setActiveForm] = useState('company'); // 'company' or 'jobseeker'
 
-  const [formData, setFormData] = useState({
+  // Company Form Data
+  const [companyFormData, setCompanyFormData] = useState({
     name: '',
     email: '',
     phone: '',
@@ -22,20 +24,31 @@ const ContactPage = () => {
     message: ''
   });
 
-  // Web3Forms configuration
-  const { submit } = useWeb3Forms({
-    access_key:'635d93a9-3b33-4efa-8e41-22fe6f5adbac',
+  // Job Seeker Form Data
+  const [jobseekerFormData, setJobseekerFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    position: '',
+    experience: '',
+    qualification: '',
+    status: '',
+    message: ''
+  });
+
+  // Web3Forms configuration for Company form
+  const { submit: submitCompany } = useWeb3Forms({
+    access_key: '635d93a9-3b33-4efa-8e41-22fe6f5adbac',
     settings: {
-      from_name: 'Insphired Website',
-      subject: 'New Contact Form Submission',
+      from_name: 'Insphired Website - Company Enquiry',
+      subject: 'New Company/Employer Contact Form Submission',
     },
     onSuccess: (message, data) => {
       setSubmitStatus({
         type: 'success',
         message: 'Thank you! Our team will contact you shortly.'
       });
-      // Reset form
-      setFormData({
+      setCompanyFormData({
         name: '',
         email: '',
         phone: '',
@@ -43,6 +56,39 @@ const ContactPage = () => {
         position: '',
         service: '',
         ContactTime: '',
+        message: ''
+      });
+      setSubmitting(false);
+    },
+    onError: (message, data) => {
+      setSubmitStatus({
+        type: 'error',
+        message: message || 'Failed to submit form. Please try again.'
+      });
+      setSubmitting(false);
+    },
+  });
+
+  // Web3Forms configuration for Job Seeker form
+  const { submit: submitJobseeker } = useWeb3Forms({
+    access_key: '635d93a9-3b33-4efa-8e41-22fe6f5adbac',
+    settings: {
+      from_name: 'Insphired Website - Job Seeker Enquiry',
+      subject: 'New Job Seeker Contact Form Submission',
+    },
+    onSuccess: (message, data) => {
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you! Our recruitment team will review your profile and reach out.'
+      });
+      setJobseekerFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        position: '',
+        experience: '',
+        qualification: '',
+        status: '',
         message: ''
       });
       setSubmitting(false);
@@ -90,21 +136,44 @@ const ContactPage = () => {
     }
   }, [submitStatus]);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
+  const handleCompanyChange = (e) => {
+    setCompanyFormData({
+      ...companyFormData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleJobseekerChange = (e) => {
+    setJobseekerFormData({
+      ...jobseekerFormData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCompanySubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setSubmitStatus({ type: '', message: '' });
 
     try {
-      // Send form data using Web3Forms
-      await submit(formData);
+      await submitCompany(companyFormData);
+    } catch (err) {
+      console.error('Submission error:', err);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again.'
+      });
+      setSubmitting(false);
+    }
+  };
+
+  const handleJobseekerSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      await submitJobseeker(jobseekerFormData);
     } catch (err) {
       console.error('Submission error:', err);
       setSubmitStatus({
@@ -133,7 +202,7 @@ const ContactPage = () => {
   // Placeholders from backend or fallback
   const placeholders = data.placeholders || {};
 
-  // Map configuration with your office address
+  // Map configuration
   const mapConfig = {
     address: info.address || 'Block D, La Rocca Business Park, 321 Main Road, Bryanston, Johannesburg, 2191',
     latitude: info.latitude || -26.0581,
@@ -363,6 +432,42 @@ const ContactPage = () => {
           margin-bottom: 20px;
         }
 
+        /* Tab styles - Blue like submit button */
+        .form-tabs {
+          display: flex;
+          gap: 4px;
+          background: var(--bg, #faf6f0);
+          padding: 4px;
+          border-radius: 12px;
+          margin-bottom: 24px;
+          border: 1px solid var(--border-light);
+        }
+
+        .form-tab {
+          flex: 1;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 10px;
+          font-family: inherit;
+          font-size: 0.95rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          background: transparent;
+          color: #5B6670;
+          text-align: center;
+        }
+
+        .form-tab:hover {
+          background: rgba(80, 155, 158, 0.08);
+        }
+
+        .form-tab.active {
+          background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+          color: #ffffff;
+          box-shadow: 0 4px 15px rgba(80, 155, 158, 0.3);
+        }
+
         .map-container {
           border-radius: 12px;
           overflow: hidden;
@@ -385,6 +490,10 @@ const ContactPage = () => {
           }
           .hero-section {
             padding: 100px 0 60px;
+          }
+          .form-tabs {
+            flex-direction: column;
+            gap: 4px;
           }
         }
 
@@ -420,6 +529,28 @@ const ContactPage = () => {
               <span className="eyebrow-3d">Let's talk</span>
               <h2 className="title-3d title-section">Request your Contact</h2>
 
+              {/* Form Tabs - Blue like submit button */}
+              <div className="form-tabs">
+                <button
+                  className={`form-tab ${activeForm === 'company' ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveForm('company');
+                    setSubmitStatus({ type: '', message: '' });
+                  }}
+                >
+                  Company / Employer
+                </button>
+                <button
+                  className={`form-tab ${activeForm === 'jobseeker' ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveForm('jobseeker');
+                    setSubmitStatus({ type: '', message: '' });
+                  }}
+                >
+                  Job Seeker / Candidate
+                </button>
+              </div>
+
               {/* Status Message Display */}
               {submitStatus.message && (
                 <div className={submitStatus.type === 'success' ? 'status-success' : 'status-error'}>
@@ -427,105 +558,221 @@ const ContactPage = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder={placeholders.name || 'Full name *'}
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  className="Contact-input"
-                />
+              {/* COMPANY FORM */}
+              {activeForm === 'company' && (
+                <form onSubmit={handleCompanySubmit}>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder={placeholders.name || 'Full name *'}
+                    value={companyFormData.name}
+                    onChange={handleCompanyChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
 
-                <input
-                  type="email"
-                  name="email"
-                  placeholder={placeholders.email || 'Email address *'}
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  className="Contact-input"
-                />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder={placeholders.email || 'Email address *'}
+                    value={companyFormData.email}
+                    onChange={handleCompanyChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
 
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder={placeholders.phone || 'Phone number *'}
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  className="Contact-input"
-                />
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder={placeholders.phone || 'Phone number *'}
+                    value={companyFormData.phone}
+                    onChange={handleCompanyChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
 
-                <input
-                  type="text"
-                  name="company"
-                  placeholder={placeholders.company || 'Company name'}
-                  value={formData.company}
-                  onChange={handleChange}
-                  style={styles.input}
-                  className="Contact-input"
-                />
+                  <input
+                    type="text"
+                    name="company"
+                    placeholder={placeholders.company || 'Company name'}
+                    value={companyFormData.company}
+                    onChange={handleCompanyChange}
+                    style={styles.input}
+                    className="Contact-input"
+                  />
 
-                <input
-                  type="text"
-                  name="position"
-                  placeholder={placeholders.position || 'Job title'}
-                  value={formData.position}
-                  onChange={handleChange}
-                  style={styles.input}
-                  className="Contact-input"
-                />
+                  <input
+                    type="text"
+                    name="position"
+                    placeholder={placeholders.position || 'Job title'}
+                    value={companyFormData.position}
+                    onChange={handleCompanyChange}
+                    style={styles.input}
+                    className="Contact-input"
+                  />
 
-                <select
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  style={styles.input}
-                  className="Contact-select"
-                  required
-                >
-                  <option value="">{placeholders.service || 'Select service'}</option>
-                  {serviceOptions.map((option, index) => (
-                    <option key={index} value={option}>{option}</option>
-                  ))}
-                </select>
+                  <select
+                    name="service"
+                    value={companyFormData.service}
+                    onChange={handleCompanyChange}
+                    style={styles.input}
+                    className="Contact-select"
+                    required
+                  >
+                    <option value="">{placeholders.service || 'Select service'}</option>
+                    {serviceOptions.map((option, index) => (
+                      <option key={index} value={option}>{option}</option>
+                    ))}
+                  </select>
 
-                <select
-                  name="ContactTime"
-                  value={formData.ContactTime}
-                  onChange={handleChange}
-                  style={styles.input}
-                  className="Contact-select"
-                >
-                  <option value="">{placeholders.ContactTime || 'Preferred Contact time'}</option>
-                  {timeOptions.map((option, index) => (
-                    <option key={index} value={option}>{option}</option>
-                  ))}
-                </select>
+                  <select
+                    name="ContactTime"
+                    value={companyFormData.ContactTime}
+                    onChange={handleCompanyChange}
+                    style={styles.input}
+                    className="Contact-select"
+                  >
+                    <option value="">{placeholders.ContactTime || 'Preferred Contact time'}</option>
+                    {timeOptions.map((option, index) => (
+                      <option key={index} value={option}>{option}</option>
+                    ))}
+                  </select>
 
-                <textarea
-                  name="message"
-                  placeholder={placeholders.message || 'Tell us more about your needs...'}
-                  value={formData.message}
-                  onChange={handleChange}
-                  style={styles.textarea}
-                  className="Contact-textarea"
-                />
+                  <textarea
+                    name="message"
+                    placeholder={placeholders.message || 'Tell us more about your hiring needs...'}
+                    value={companyFormData.message}
+                    onChange={handleCompanyChange}
+                    style={styles.textarea}
+                    className="Contact-textarea"
+                  />
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="btn-3d-primary"
-                  style={{ width: '100%', justifyContent: 'center' }}
-                >
-                  {submitting ? 'Submitting...' : 'Request Contact'}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-3d-primary"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Enquiry'}
+                  </button>
+                </form>
+              )}
+
+              {/* JOB SEEKER FORM */}
+              {activeForm === 'jobseeker' && (
+                <form onSubmit={handleJobseekerSubmit}>
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Full name *"
+                    value={jobseekerFormData.fullName}
+                    onChange={handleJobseekerChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
+
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email address *"
+                    value={jobseekerFormData.email}
+                    onChange={handleJobseekerChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
+
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone number *"
+                    value={jobseekerFormData.phone}
+                    onChange={handleJobseekerChange}
+                    required
+                    style={styles.input}
+                    className="Contact-input"
+                  />
+
+                  <input
+                    type="text"
+                    name="position"
+                    placeholder="Target position / Job title"
+                    value={jobseekerFormData.position}
+                    onChange={handleJobseekerChange}
+                    style={styles.input}
+                    className="Contact-input"
+                  />
+
+                  <select
+                    name="experience"
+                    value={jobseekerFormData.experience}
+                    onChange={handleJobseekerChange}
+                    style={styles.input}
+                    className="Contact-select"
+                    required
+                  >
+                    <option value="">Years of experience</option>
+                    <option value="0-1">0-1 years</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="5-10">5-10 years</option>
+                    <option value="10+">10+ years</option>
+                  </select>
+
+                  <select
+                    name="qualification"
+                    value={jobseekerFormData.qualification}
+                    onChange={handleJobseekerChange}
+                    style={styles.input}
+                    className="Contact-select"
+                    required
+                  >
+                    <option value="">Highest qualification</option>
+                    <option value="matric">Matric / Grade 12</option>
+                    <option value="certificate">Certificate / Diploma</option>
+                    <option value="degree">Bachelor's Degree</option>
+                    <option value="honours">Honours Degree</option>
+                    <option value="masters">Master's Degree</option>
+                    <option value="phd">PhD / Doctorate</option>
+                  </select>
+
+                  <select
+                    name="status"
+                    value={jobseekerFormData.status}
+                    onChange={handleJobseekerChange}
+                    style={styles.input}
+                    className="Contact-select"
+                  >
+                    <option value="">Employment status</option>
+                    <option value="employed">Currently Employed (looking)</option>
+                    <option value="unemployed">Currently Unemployed</option>
+                    <option value="student">Student / Graduate</option>
+                    <option value="freelance">Freelance / Self-employed</option>
+                  </select>
+
+                  <textarea
+                    name="message"
+                    placeholder="Tell us about yourself, your skills, and what you're looking for..."
+                    value={jobseekerFormData.message}
+                    onChange={handleJobseekerChange}
+                    style={styles.textarea}
+                    className="Contact-textarea"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-3d-primary"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Application'}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* INFO CARD WITH STATIC MAP */}
@@ -587,7 +834,7 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {/* STATIC MAP - No API Key Required */}
+              {/* STATIC MAP */}
               <div style={{ marginBottom: '24px' }}>
                 <div className="map-container" style={{ height: '250px' }}>
                   <iframe
@@ -615,7 +862,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-     
+
     </div>
   );
 };
