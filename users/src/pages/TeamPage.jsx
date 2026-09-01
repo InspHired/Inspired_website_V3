@@ -29,6 +29,10 @@ const slides = [
   { name: "Unathi Mbasa", role: "Operations Team Lead", img: "../assets/insphiredTeam/Unathii.png" },
   { name: "Ene-ene Netshiswinzhe", role: "HR Generalist", img: "../assets/insphiredTeam/Ene-ene.png" },
   { name: "Tumelo Mpeta", role: "Talent Marketing & ATS Coordinator", img: "../assets/insphiredTeam/Tumelo.png" },
+  { name: "Jamie-Lee Buitendach", role: "Recruitment Researcher", img: "../assets/insphiredTeam/Jamie.jpg" },
+  { name: "Lucien Otto", role: "Client Relationship Manager", img: "../assets/insphiredTeam/Lucien.jpg" },
+  { name: "Emily Khathola", role: "Candidate Manager", img: "../assets/insphiredTeam/Emily.jpg" },
+  { name: "Gershwin Williams", role: "Business Development Manager", img: "../assets/insphiredTeam/Gershwin.jpg" },
 ];
  
 function TeamsCarousel() {
