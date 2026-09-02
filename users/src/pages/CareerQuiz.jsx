@@ -4,7 +4,7 @@ const questions = [
   {
     q: "How many years of professional work experience do you have?",
     options: [
-      { label: "None yet — I'm just starting out", track: 'entry', readiness: 1 },
+      { label: "None yet I'm just starting out", track: 'entry', readiness: 1 },
       { label: "Less than 2 years", track: 'entry', readiness: 2 },
       { label: "3–7 years", track: 'mid', readiness: 2 },
       { label: "8+ years", track: 'mid', readiness: 2 },

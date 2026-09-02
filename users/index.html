@@ -47,6 +47,27 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     
+    <!-- ===== GOOGLE ADS (gtag.js) ===== -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-837330608"></script>
+    <script>
+      // Initialize dataLayer
+      window.dataLayer = window.dataLayer || [];
+      
+      // Define gtag function
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      
+      // Initialize Google Ads
+      gtag('js', new Date());
+      gtag('config', 'AW-837330608');
+      
+      // Log that gtag is loaded (for debugging)
+      console.log('✅ Google Ads (gtag) initialized with ID: AW-837330608');
+      console.log('✅ gtag function available:', typeof gtag === 'function');
+    </script>
+    
     <!-- ===== SCHEMA.ORG STRUCTURED DATA ===== -->
     <script type="application/ld+json">
       {
@@ -79,8 +100,6 @@
         ]
       }
     </script>
-    
-    <title>InspHired - Recruitment Solutions</title>
   </head>
   <body>
     <div id="root"></div>

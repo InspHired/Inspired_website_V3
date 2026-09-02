@@ -12,8 +12,9 @@ import VerifyMePage from "./pages/VerifyMePage";
 import Services from "./pages/Services";
 import EmployersPage from "./pages/EmployersPage";
 import ContactPage from "./pages/ContactPage";
-import BlogPage from "./pages/BlogPage"; // ← Import BlogPage
-import BlogPostPage from "./pages/BlogPostPage"; // ← Import BlogPostPage
+import BlogPage from "./pages/BlogPage";
+import BlogPostPage from "./pages/BlogPostPage";
+import FormConfirmation from "./pages/FormConfirmation"; // ✅ Make sure this import exists
 import Navbar from "./components/Navbar";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Footer from "./components/Footer";
@@ -38,6 +39,8 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          {/* ✅ Add this route */}
+          <Route path="/form-confirmation" element={<FormConfirmation />} />
         </Routes>
         <Footer />
         <WhatsAppButton />

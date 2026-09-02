@@ -38,7 +38,7 @@ const Footer = ({ content = {} }) => {
             <ul>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/about-page">About</Link></li>
-              <li><Link to="/blog">Blog</Link></li> {/* ← Added Blog Link */}
+              <li><Link to="/blog">Our Blog</Link></li> {/* ← Added Blog Link */}
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/services">Services</Link></li>
             </ul>

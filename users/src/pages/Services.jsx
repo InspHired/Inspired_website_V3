@@ -1,7 +1,7 @@
 // users/src/pages/ServicesPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // ← Add useNavigate
 import { publicApi } from '../services/api';
 import { 
   OrganizationSchema, 
@@ -11,6 +11,8 @@ import {
 } from "../components/Schema";
 import { SEO_CONFIG } from "../config/seo.config";
 import Footer from '../components/Footer';
+import useWeb3Forms from '@web3forms/react';
+import { trackFormSubmission } from '../services/formTracking'; // ← Add this import
 
 // ── SERVICES VISUAL STAGE ──
 function ServicePillarsCanvas() {
@@ -262,6 +264,413 @@ function StarRow({ color }) {
   );
 }
 
+// ── SERVICE REQUEST MODAL ──
+const ServiceRequestModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate(); // ← Add useNavigate
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    service: '',
+    message: '',
+    form_type: 'service_request', // ← Add hidden field
+    form_identifier: 'service_request_form'
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
+  // Web3Forms configuration
+  const { submit } = useWeb3Forms({
+    access_key: '635d93a9-3b33-4efa-8e41-22fe6f5adbac',
+    settings: {
+      from_name: 'Insphired Website - Service Request',
+      subject: 'New Service Request from Services Page',
+    },
+    onSuccess: (message, data) => {
+      console.log('✅ Service Request submitted successfully', data);
+      
+      // Track the form submission with Google Ads
+      trackFormSubmission('service_request', formData);
+      
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you! Our team will contact you shortly.'
+      });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        service: '',
+        message: '',
+        form_type: 'service_request',
+        form_identifier: 'service_request_form'
+      });
+      setSubmitting(false);
+      
+      // Close modal and redirect to confirmation page
+      console.log('🔄 Redirecting to confirmation page...');
+      setTimeout(() => {
+        onClose();
+        navigate('/form-confirmation?type=service_request');
+      }, 1500);
+    },
+    onError: (message, data) => {
+      console.error('❌ Service Request error:', message, data);
+      setSubmitStatus({
+        type: 'error',
+        message: message || 'Failed to submit. Please try again.'
+      });
+      setSubmitting(false);
+    },
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('🔍 Service Request form submitted');
+    console.log('📝 Service Request form data:', formData);
+    
+    setSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      await submit(formData);
+      console.log('✅ Service Request submit completed');
+    } catch (err) {
+      console.error('❌ Service Request submit error:', err);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again.'
+      });
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose} aria-label="Close modal">✕</button>
+        
+        <div className="modal-header">
+          <span className="modal-eyebrow">Request a Service</span>
+          <h2 className="modal-title">Tell us what you need</h2>
+          <p className="modal-description">Fill in your details and we'll get back to you with a tailored solution.</p>
+        </div>
+
+        {submitStatus.message && (
+          <div className={submitStatus.type === 'success' ? 'status-success' : 'status-error'}>
+            {submitStatus.message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="modal-form">
+          {/* Hidden fields for tracking */}
+          <input type="hidden" name="form_type" value="service_request" />
+          <input type="hidden" name="form_identifier" value="service_request_form" />
+          
+          <div className="modal-form-row">
+            <div className="modal-form-group">
+              <label htmlFor="modal-name">Full Name *</label>
+              <input
+                type="text"
+                id="modal-name"
+                name="name"
+                placeholder="Your full name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="modal-form-group">
+              <label htmlFor="modal-email">Email Address *</label>
+              <input
+                type="email"
+                id="modal-email"
+                name="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="modal-form-row">
+            <div className="modal-form-group">
+              <label htmlFor="modal-phone">Phone Number *</label>
+              <input
+                type="tel"
+                id="modal-phone"
+                name="phone"
+                placeholder="+27 XX XXX XXXX"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="modal-form-group">
+              <label htmlFor="modal-company">Company Name</label>
+              <input
+                type="text"
+                id="modal-company"
+                name="company"
+                placeholder="Your company name"
+                value={formData.company}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="modal-form-group">
+            <label htmlFor="modal-service">Service of Interest *</label>
+            <select
+              id="modal-service"
+              name="service"
+              value={formData.service}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a service...</option>
+              <option value="Recruitment Process Outsourcing (RPO)">Recruitment Process Outsourcing (RPO)</option>
+              <option value="Executive Recruitment">Executive Recruitment</option>
+              <option value="Specialist Skill Recruitment">Specialist Skill Recruitment</option>
+              <option value="Targeted Headhunting">Targeted Headhunting</option>
+              <option value="Bulk & Contract Staffing">Bulk & Contract Staffing</option>
+              <option value="Efficient Temp Recruitment">Efficient Temp Recruitment</option>
+              <option value="Skills Training & Development">Skills Training & Development</option>
+              <option value="Verification & Background Screening">Verification & Background Screening</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="modal-form-group">
+            <label htmlFor="modal-message">Message</label>
+            <textarea
+              id="modal-message"
+              name="message"
+              placeholder="Tell us more about your requirements..."
+              value={formData.message}
+              onChange={handleChange}
+              rows="4"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="modal-submit-btn"
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Submit Request'}
+          </button>
+        </form>
+
+        <style>{`
+          .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          .modal-content {
+            background: #FFFFFF;
+            border-radius: 24px;
+            max-width: 640px;
+            width: 100%;
+            max-height: 90vh;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+          }
+          @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #7a8790;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 4px 8px;
+          }
+          .modal-close:hover {
+            color: #1f3540;
+          }
+          .modal-header {
+            margin-bottom: 24px;
+          }
+          .modal-eyebrow {
+            display: inline-block;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--teal, #509b9e);
+            background: rgba(80, 155, 158, 0.1);
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(80, 155, 158, 0.15);
+          }
+          .modal-title {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1f3540;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.02em;
+          }
+          .modal-description {
+            font-size: 0.95rem;
+            color: #5B6670;
+            margin: 0;
+          }
+          .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          }
+          .modal-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+          }
+          .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+          }
+          .modal-form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1f3540;
+          }
+          .modal-form-group input,
+          .modal-form-group select,
+          .modal-form-group textarea {
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: var(--bg);
+            color: #1f3540;
+          }
+          .modal-form-group input:focus,
+          .modal-form-group select:focus,
+          .modal-form-group textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(80, 155, 158, 0.15);
+          }
+          .modal-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            position: relative;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+            transform: translateY(-3px);
+            border: none;
+            color: #ffffff;
+            background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+            border: 1px solid #73c8cb;
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+              0 4px 0 #285759,
+              0 8px 15px rgba(31, 53, 64, 0.25);
+            text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            margin-top: 8px;
+          }
+          .modal-submit-btn:hover {
+            background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
+            transform: translateY(-5px);
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.7),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+              0 6px 0 #285759,
+              0 12px 20px rgba(80, 155, 158, 0.35);
+          }
+          .modal-submit-btn:active {
+            transform: translateY(1px) !important;
+            box-shadow: 
+              inset 0 2px 4px rgba(0, 0, 0, 0.3),
+              0 0 0 transparent,
+              0 3px 6px rgba(0, 0, 0, 0.2) !important;
+          }
+          .modal-submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(0) !important;
+          }
+          .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+          }
+          .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+          }
+          @media (max-width: 600px) {
+            .modal-content {
+              padding: 24px 20px;
+            }
+            .modal-form-row {
+              grid-template-columns: 1fr;
+            }
+            .modal-title {
+              font-size: 1.3rem;
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+};
+
 const ServicesPage = () => {
   const [servicesData, setServicesData] = useState(null);
   const [employersData, setEmployersData] = useState(null);
@@ -269,8 +678,7 @@ const ServicesPage = () => {
   const [error, setError] = useState(null);
   const [hoveredService, setHoveredService] = useState(null);
   const [hoveredStep, setHoveredStep] = useState(null);
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Fetch services and employers data
   useEffect(() => {
@@ -459,9 +867,12 @@ const ServicesPage = () => {
     }))
     : defaultTestimonials;
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    setSubscribed(true);
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
   };
 
   // ============ SEO VARIABLES ============
@@ -866,17 +1277,24 @@ const ServicesPage = () => {
             transform: translateY(-3px);
             border: none;
             color: #ffffff;
-            background: transparent;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
-            text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(180deg, #62b1b4 0%, #509b9e 45%, #39797c 100%);
+            border: 1px solid #73c8cb;
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+              0 4px 0 #285759,
+              0 8px 15px rgba(31, 53, 64, 0.25);
+            text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
           }
 
           .btn-3d-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, #6bc0c3 0%, #54a5a8 45%, #3d8386 100%);
             transform: translateY(-5px);
-            box-shadow: 0 6px 0 rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 
+              inset 0 1px 1px rgba(255, 255, 255, 0.7),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+              0 6px 0 #285759,
+              0 12px 20px rgba(80, 155, 158, 0.35);
           }
 
           .btn-3d-secondary:active {
@@ -1374,7 +1792,7 @@ const ServicesPage = () => {
                     {skillsTraining.visual_title || 'Training that sticks'}
                   </p>
                   <p style={styles.empowerVisualText}>
-                    {skillsTraining.visual_description || 'Practical, role-ready skills — not just theory — so candidates walk into day one prepared.'}
+                    {skillsTraining.visual_description || 'Practical, role-ready skills, not just theory so candidates walk into day one prepared.'}
                   </p>
                 </div>
               </div>
@@ -1460,37 +1878,25 @@ const ServicesPage = () => {
                   {hero.subscribe_title || 'Need one of these services?'}
                 </h3>
                 <p style={styles.subscribeText}>
-                  {hero.subscribe_text || 'Hey there 👋 Leave your email and our team will reach out to help.'}
+                  {hero.subscribe_text || 'Click the button below and our team will reach out to help.'}
                 </p>
               </div>
 
-              {subscribed ? (
-                <div style={styles.subscribeSuccess}>
-                  <i className="fas fa-check-circle" style={{ marginRight: '8px' }} aria-hidden="true"></i>
-                  Thanks — we'll be in touch soon!
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="subscribe-row" style={styles.subscribeRow}>
-                  <label htmlFor="subscribe-email" className="sr-only">Email address</label>
-                  <input
-                    type="email"
-                    id="subscribe-email"
-                    required
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="subscribe-input"
-                    aria-required="true"
-                  />
-                  <button type="submit" className="subscribe-btn">
-                    Get in touch
-                  </button>
-                </form>
-              )}
+              <button 
+                onClick={openModal} 
+                className="subscribe-btn"
+              >
+                Get in touch
+              </button>
             </div>
           </div>
         </section>
       </div>
+
+      {/* ── SERVICE REQUEST MODAL ── */}
+      <ServiceRequestModal isOpen={modalOpen} onClose={closeModal} />
+
+      <Footer />
     </>
   );
 };

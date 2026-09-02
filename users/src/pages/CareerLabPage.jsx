@@ -517,7 +517,7 @@ function CareerLabPage() {
             display: block;
             font-family: 'Playfair Display', Georgia, serif !important;
             font-weight: 700;
-            color: #1f3540;
+            color: #ffffff;
             margin-bottom: 12px;
             letter-spacing: -0.02em;
             position: relative;
@@ -569,6 +569,9 @@ function CareerLabPage() {
             font-weight: 700;
             color: white;
           }
+            .title-3dd {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            }
 
           @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -1079,7 +1082,7 @@ function CareerLabPage() {
                 <div style={styles.assessmentOverlay}></div>
                 <div style={styles.assessmentContent}>
                   <span className="eyebrow-3d" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.2)' }}>Diagnostic tool</span>
-                  <h3 className="title-3d" style={{ fontSize: '1.8rem', color: '#FFFFFF', marginBottom: '16px' }}>Find out your career readiness score</h3>
+                  <h3 className="title-3dd" style={{ fontSize: '1.8rem', color: '#FFFFFF', marginBottom: '16px' }}>Find out your career readiness score</h3>
                   <p style={styles.assessmentDesc}>
                     Not sure where to start? Take our free career readiness assessment to get a personalised snapshot of where you stand — and what to focus on next to accelerate your career.
                   </p>

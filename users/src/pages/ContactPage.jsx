@@ -1,10 +1,13 @@
 // users/src/pages/ContactPage.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { publicApi } from '../services/api';
 import Footer from '../components/Footer';
 import useWeb3Forms from '@web3forms/react';
+import { trackFormSubmission } from '../services/formTracking';
 
 const ContactPage = () => {
+  const navigate = useNavigate();
   const [contactData, setContactData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +24,9 @@ const ContactPage = () => {
     position: '',
     service: '',
     ContactTime: '',
-    message: ''
+    message: '',
+    form_type: 'company',
+    form_identifier: 'company_contact_form'
   });
 
   // Job Seeker Form Data
@@ -33,7 +38,9 @@ const ContactPage = () => {
     experience: '',
     qualification: '',
     status: '',
-    message: ''
+    message: '',
+    form_type: 'jobseeker',
+    form_identifier: 'jobseeker_contact_form'
   });
 
   // Web3Forms configuration for Company form
@@ -44,6 +51,11 @@ const ContactPage = () => {
       subject: 'New Company/Employer Contact Form Submission',
     },
     onSuccess: (message, data) => {
+      console.log('✅ Company form submitted successfully', data);
+      
+      // Track the form submission with Google Ads
+      trackFormSubmission('company', companyFormData);
+      
       setSubmitStatus({
         type: 'success',
         message: 'Thank you! Our team will contact you shortly.'
@@ -56,11 +68,20 @@ const ContactPage = () => {
         position: '',
         service: '',
         ContactTime: '',
-        message: ''
+        message: '',
+        form_type: 'company',
+        form_identifier: 'company_contact_form'
       });
       setSubmitting(false);
+      
+      // Redirect to confirmation page
+      console.log('🔄 Redirecting to confirmation page...');
+      setTimeout(() => {
+        navigate('/form-confirmation?type=company');
+      }, 1500);
     },
     onError: (message, data) => {
+      console.error('❌ Company form error:', message, data);
       setSubmitStatus({
         type: 'error',
         message: message || 'Failed to submit form. Please try again.'
@@ -77,6 +98,11 @@ const ContactPage = () => {
       subject: 'New Job Seeker Contact Form Submission',
     },
     onSuccess: (message, data) => {
+      console.log('✅ Job Seeker form submitted successfully', data);
+      
+      // Track the form submission with Google Ads
+      trackFormSubmission('jobseeker', jobseekerFormData);
+      
       setSubmitStatus({
         type: 'success',
         message: 'Thank you! Our recruitment team will review your profile and reach out.'
@@ -89,11 +115,20 @@ const ContactPage = () => {
         experience: '',
         qualification: '',
         status: '',
-        message: ''
+        message: '',
+        form_type: 'jobseeker',
+        form_identifier: 'jobseeker_contact_form'
       });
       setSubmitting(false);
+      
+      // Redirect to confirmation page
+      console.log('🔄 Redirecting to confirmation page...');
+      setTimeout(() => {
+        navigate('/form-confirmation?type=jobseeker');
+      }, 1500);
     },
     onError: (message, data) => {
+      console.error('❌ Job Seeker form error:', message, data);
       setSubmitStatus({
         type: 'error',
         message: message || 'Failed to submit form. Please try again.'
@@ -152,13 +187,17 @@ const ContactPage = () => {
 
   const handleCompanySubmit = async (e) => {
     e.preventDefault();
+    console.log('🔍 Company form submitted');
+    console.log('📝 Company form data:', companyFormData);
+    
     setSubmitting(true);
     setSubmitStatus({ type: '', message: '' });
 
     try {
       await submitCompany(companyFormData);
+      console.log('✅ Company form submit completed');
     } catch (err) {
-      console.error('Submission error:', err);
+      console.error('❌ Company form submit error:', err);
       setSubmitStatus({
         type: 'error',
         message: 'Something went wrong. Please try again.'
@@ -169,13 +208,17 @@ const ContactPage = () => {
 
   const handleJobseekerSubmit = async (e) => {
     e.preventDefault();
+    console.log('🔍 Job Seeker form submitted');
+    console.log('📝 Job Seeker form data:', jobseekerFormData);
+    
     setSubmitting(true);
     setSubmitStatus({ type: '', message: '' });
 
     try {
       await submitJobseeker(jobseekerFormData);
+      console.log('✅ Job Seeker form submit completed');
     } catch (err) {
-      console.error('Submission error:', err);
+      console.error('❌ Job Seeker form submit error:', err);
       setSubmitStatus({
         type: 'error',
         message: 'Something went wrong. Please try again.'
@@ -561,6 +604,10 @@ const ContactPage = () => {
               {/* COMPANY FORM */}
               {activeForm === 'company' && (
                 <form onSubmit={handleCompanySubmit}>
+                  {/* Hidden fields for tracking */}
+                  <input type="hidden" name="form_type" value="company" />
+                  <input type="hidden" name="form_identifier" value="company_contact_form" />
+                  
                   <input
                     type="text"
                     name="name"
@@ -664,6 +711,10 @@ const ContactPage = () => {
               {/* JOB SEEKER FORM */}
               {activeForm === 'jobseeker' && (
                 <form onSubmit={handleJobseekerSubmit}>
+                  {/* Hidden fields for tracking */}
+                  <input type="hidden" name="form_type" value="jobseeker" />
+                  <input type="hidden" name="form_identifier" value="jobseeker_contact_form" />
+                  
                   <input
                     type="text"
                     name="fullName"
@@ -862,7 +913,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-
+      <Footer />
     </div>
   );
 };
