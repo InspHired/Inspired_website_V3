@@ -75,6 +75,8 @@ function CareerLabPage() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('entry');
   const [hoveredModule, setHoveredModule] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -117,11 +119,80 @@ function CareerLabPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear status when user starts typing again
+    if (submitStatus) setSubmitStatus(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
+    
+    // Validate consent
+    if (!formData.consent) {
+      setSubmitStatus('error');
+      setSubmitStatus('Please confirm your consent to be contacted.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      // Web3Forms endpoint - Replace with your actual endpoint
+      const WEB3FORMS_ACCESS_KEY = '3569ebe1-fadb-4dcd-9a9f-85900ca40bb8'; // Replace with your key
+      
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          // Form fields
+          name: `${formData.firstName} ${formData.lastName}`,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone,
+          email: formData.email,
+          career_status: formData.careerStatus,
+          industry: formData.industry,
+          challenge: formData.challenge,
+          consent: formData.consent ? 'Yes' : 'No',
+          // Additional metadata
+          subject: 'Career Lab - Registration of Interest',
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          // Redirect URL (optional)
+          // redirect: 'https://your-website.com/thank-you'
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus('success');
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          phone: '',
+          email: '',
+          careerStatus: '',
+          industry: '',
+          challenge: '',
+          consent: false
+        });
+        // Optional: Scroll to success message
+        document.getElementById('register-interest')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        throw new Error(result.message || 'Failed to submit form');
+      }
+    } catch (err) {
+      console.error('Form submission error:', err);
+      setSubmitStatus('error');
+      setSubmitStatus(err.message || 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Use data from API or fallback to defaults
@@ -1022,33 +1093,97 @@ function CareerLabPage() {
                 <h3 id="register-heading" className="title-3d" style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Register your interest</h3>
                 <p style={styles.formSectionSub}>Tell us a bit about yourself and we'll be in touch with full programme details.</p>
 
+                {/* Submit Status Messages */}
+                {submitStatus === 'success' && (
+                  <div style={styles.successMessage}>
+                    <i className="fas fa-check-circle" style={{ marginRight: '10px' }}></i>
+                    Thank you! We've received your registration. Our team will be in touch shortly.
+                  </div>
+                )}
+                {submitStatus && submitStatus !== 'success' && (
+                  <div style={styles.errorMessage}>
+                    <i className="fas fa-exclamation-circle" style={{ marginRight: '10px' }}></i>
+                    {submitStatus}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} style={styles.actualForm} noValidate>
                   <div style={styles.formRow}>
                     <div>
                       <label style={styles.label} htmlFor="firstName">First name</label>
-                      <input type="text" id="firstName" name="firstName" required value={formData.firstName} onChange={handleInputChange} className="form-input" aria-required="true" />
+                      <input 
+                        type="text" 
+                        id="firstName" 
+                        name="firstName" 
+                        required 
+                        value={formData.firstName} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        aria-required="true" 
+                        disabled={isSubmitting}
+                      />
                     </div>
                     <div>
                       <label style={styles.label} htmlFor="lastName">Last name</label>
-                      <input type="text" id="lastName" name="lastName" required value={formData.lastName} onChange={handleInputChange} className="form-input" aria-required="true" />
+                      <input 
+                        type="text" 
+                        id="lastName" 
+                        name="lastName" 
+                        required 
+                        value={formData.lastName} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        aria-required="true" 
+                        disabled={isSubmitting}
+                      />
                     </div>
                   </div>
 
                   <div style={styles.formRow}>
                     <div>
                       <label style={styles.label} htmlFor="phone">Phone number</label>
-                      <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleInputChange} className="form-input" aria-required="true" />
+                      <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        required 
+                        value={formData.phone} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        aria-required="true" 
+                        disabled={isSubmitting}
+                      />
                     </div>
                     <div>
                       <label style={styles.label} htmlFor="email">Email address</label>
-                      <input type="email" id="email" name="email" required value={formData.email} onChange={handleInputChange} className="form-input" aria-required="true" />
+                      <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        value={formData.email} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        aria-required="true" 
+                        disabled={isSubmitting}
+                      />
                     </div>
                   </div>
 
                   <div style={styles.formRow}>
                     <div>
                       <label style={styles.label} htmlFor="careerStatus">Current career status</label>
-                      <select id="careerStatus" name="careerStatus" required value={formData.careerStatus} onChange={handleInputChange} className="form-input" style={{ height: '51px' }} aria-required="true">
+                      <select 
+                        id="careerStatus" 
+                        name="careerStatus" 
+                        required 
+                        value={formData.careerStatus} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        style={{ height: '51px' }} 
+                        aria-required="true"
+                        disabled={isSubmitting}
+                      >
                         <option value="">Select status...</option>
                         <option value="Graduate / student">Graduate / student</option>
                         <option value="Employed and looking for growth">Employed and looking for growth</option>
@@ -1058,23 +1193,72 @@ function CareerLabPage() {
                     </div>
                     <div>
                       <label style={styles.label} htmlFor="industry">Target industry</label>
-                      <input type="text" id="industry" name="industry" placeholder="e.g. Technology, Healthcare" required value={formData.industry} onChange={handleInputChange} className="form-input" aria-required="true" />
+                      <input 
+                        type="text" 
+                        id="industry" 
+                        name="industry" 
+                        placeholder="e.g. Technology, Healthcare" 
+                        required 
+                        value={formData.industry} 
+                        onChange={handleInputChange} 
+                        className="form-input" 
+                        aria-required="true" 
+                        disabled={isSubmitting}
+                      />
                     </div>
                   </div>
 
                   <div style={{ marginBottom: '20px' }}>
                     <label style={styles.label} htmlFor="challenge">Biggest career challenge right now</label>
-                    <textarea id="challenge" name="challenge" rows="3" required value={formData.challenge} onChange={handleInputChange} className="form-input" placeholder="Describe what hurdles you are currently facing..." aria-required="true"></textarea>
+                    <textarea 
+                      id="challenge" 
+                      name="challenge" 
+                      rows="3" 
+                      required 
+                      value={formData.challenge} 
+                      onChange={handleInputChange} 
+                      className="form-input" 
+                      placeholder="Describe what hurdles you are currently facing..." 
+                      aria-required="true"
+                      disabled={isSubmitting}
+                    ></textarea>
                   </div>
 
                   <div style={styles.consentRow}>
-                    <input type="checkbox" id="consent" name="consent" required checked={formData.consent} onChange={handleInputChange} style={styles.checkbox} aria-required="true" />
+                    <input 
+                      type="checkbox" 
+                      id="consent" 
+                      name="consent" 
+                      required 
+                      checked={formData.consent} 
+                      onChange={handleInputChange} 
+                      style={styles.checkbox} 
+                      aria-required="true"
+                      disabled={isSubmitting}
+                    />
                     <label htmlFor="consent" style={styles.consentLabel}>
                       I consent to being contacted by InspHired regarding the Career Lab programme.
                     </label>
                   </div>
 
-                  <button type="submit" style={styles.submitBtn} className="btn-3d-primary">Submit my interest</button>
+                  <button 
+                    type="submit" 
+                    style={{
+                      ...styles.submitBtn,
+                      opacity: isSubmitting ? 0.7 : 1,
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                    }} 
+                    className="btn-3d-primary"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-small"></span> Submitting...
+                      </>
+                    ) : (
+                      'Submit my interest'
+                    )}
+                  </button>
                 </form>
               </div>
 
@@ -1401,7 +1585,10 @@ const styles = {
     fontSize: '1rem',
     fontWeight: 700,
     cursor: 'pointer',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
   },
   assessmentCard: {
     position: 'relative',
@@ -1536,6 +1723,29 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.2s',
     boxShadow: '0 4px 15px rgba(80, 155, 158, 0.3)'
+  },
+  // New styles for form feedback
+  successMessage: {
+    backgroundColor: '#e8f5e9',
+    color: '#2e7d32',
+    padding: '16px 20px',
+    borderRadius: '10px',
+    marginBottom: '24px',
+    fontSize: '0.95rem',
+    display: 'flex',
+    alignItems: 'center',
+    border: '1px solid #a5d6a7'
+  },
+  errorMessage: {
+    backgroundColor: '#ffebee',
+    color: '#c62828',
+    padding: '16px 20px',
+    borderRadius: '10px',
+    marginBottom: '24px',
+    fontSize: '0.95rem',
+    display: 'flex',
+    alignItems: 'center',
+    border: '1px solid #ef9a9a'
   }
 };
 
@@ -1544,6 +1754,16 @@ const styleSheet = document.createElement("style");
 styleSheet.textContent = `
   @keyframes spin {
     to { transform: rotate(360deg); }
+  }
+  
+  .spinner-small {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
   }
 `;
 document.head.appendChild(styleSheet);

@@ -33,6 +33,10 @@ const slides = [
   { name: "Lucien Otto", role: "Client Relationship Manager", img: "../assets/insphiredTeam/Lucien.jpg" },
   { name: "Emily Khathola", role: "Candidate Manager", img: "../assets/insphiredTeam/Emily.jpg" },
   { name: "Gershwin Williams", role: "Business Development Manager", img: "../assets/insphiredTeam/Gershwin.jpg" },
+  { name: "Katlego Mxadana", role: "Candidate Manager", img: "../assets/insphiredTeam/Katlego.jpg" },
+  { name: "Similo Zwane", role: "Client Relationship Manager", img: "../assets/insphiredTeam/Smilo.jpg" },
+  { name: "Cynthia Savanhu ", role: "Candidate Manager", img: "../assets/insphiredTeam/Cynthia.jpg" },
+  { name: "Lucas Hlalele", role: "Candidate Manager", img: "../assets/insphiredTeam/Lucas.jpg" },
 ];
  
 function TeamsCarousel() {
